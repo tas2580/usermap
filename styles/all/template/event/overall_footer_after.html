@@ -1,0 +1,65 @@
+<!-- IF S_IN_USERMAP -->
+<!-- IF MAP_TYPE == 'osm' -->
+	<script type="text/javascript">
+	// <![CDATA[
+	function display_map()
+	{
+		OpenLayers.Lang.setCode('{S_USER_LANG}');
+		drawmap({USERMAP_LON}, {USERMAP_LAT}, {USERMAP_ZOOM}, {USERMAP_CONTROLS});
+
+		// Generate markers
+		<!-- BEGIN group_list -->
+		var marker_{group_list.GROUP_ID} = generateMarker('{MARKER_PATH}/{group_list.MARKER}');
+		<!-- END group_list -->
+
+		// Add markers
+		<!-- BEGIN user_list -->
+		addMarker(layer_markers, {user_list.LON}, {user_list.LAT}, '<strong>{L_USERNAME}</strong> {user_list.USERNAME}', marker_{user_list.GROUP_ID});
+		<!-- END user_list -->
+	}
+
+	<!-- IF A_USERMAP_ADD -->
+	function set_postion(lon, lat) {
+		window.location.href ='{U_SET_POSITON}?lon='+lon+'&lat='+lat;
+		/*
+		$.get('{U_SET_POSITON}?lon='+lon+'&lat='+lat,function(returndata){
+			phpbb.alert('{L_POSITION_SET_TITLE}',returndata);
+		});
+		*/
+	}
+	function alert_set_position(lon, lat) {
+		phpbb.alert('{L_SET_MY_POSITION}', '{L_CLICK_TO_SET}<br><br><input class="button2" type="submit" name="close" value="{L_SET_POSITION}" onclick="phpbb.alert.close($(\'#phpbb_alert\'), true);" />');
+	}
+	<!-- ENDIF -->
+	$('document').ready(display_map);
+	// ]]>
+	</script>
+<!-- ENDIF -->
+
+<!-- IF MAP_TYPE == 'google' -->
+	<script type="text/javascript">
+	var map;
+	function initMap() {
+		map = new google.maps.Map(document.getElementById('map'), {
+			center: {lat: {USERMAP_LAT}, lng: {USERMAP_LON}},
+			zoom: {USERMAP_ZOOM}
+		});
+		  // Generate markers
+		<!-- BEGIN group_list -->
+			var marker_{group_list.GROUP_ID} = '{MARKER_PATH}/{group_list.MARKER}';
+		<!-- END group_list -->
+		<!-- BEGIN user_list -->
+			var marker = new google.maps.Marker({
+				position: {lat: {user_list.LAT}, lng: {user_list.LON}},
+				map: map,
+				title: '<strong>{L_USERNAME}</strong> {user_list.USERNAME}',
+				icon: marker_{user_list.GROUP_ID}
+			});
+		<!-- END user_list -->
+	}
+	</script>
+	<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9SVsB5jbIG1hJ5BKCxAvYCshH37ohSJ8&callback=initMap">
+	</script>
+<!-- ENDIF -->
+<!-- ENDIF -->

@@ -1,0 +1,63 @@
+<!-- INCLUDE overall_header.html -->
+<h1>{L_ACP_USERMAP_TITLE}</h1>
+
+<form method="post" action="{U_ACTION}">
+
+<fieldset>
+	<legend>{L_ACP_SETTINGS}</legend>
+	<dl>
+		<dt><label for="usermap_zoom">{L_ACP_USERMAP_ZOOM}{L_COLON}</label><br /><span>{L_ACP_USERMAP_ZOOM_EXPLAIN}</span></dt>
+		<dd><input id="usermap_zoom" type="number" min="3" max="18" name="usermap_zoom" value="{USERMAP_ZOOM}" /></dd>
+	</dl>
+
+	<dl>
+		<dt><label for="usermap_lon">{L_ACP_COORDINATES}{L_COLON}</label><br /><span>{L_ACP_COORDINATES_EXPLAIN}</span></dt>
+		<dd>
+			<input id="usermap_lon" type="text" size="10" maxlength="10" name="usermap_lon" value="{USERMAP_LON}" style="width:62px;"> {L_ACP_USERMAP_LON}<br>
+			<input id="usermap_lat" type="text" size="10" maxlength="10" name="usermap_lat" value="{USERMAP_LAT}" style="width:62px;"> {L_ACP_USERMAP_LAT}<br>
+			<a href="#" onclick="return get_coordinates()">{L_ACP_GET_COORDINATES}</a>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="map_type">{L_ACP_MAP_TYPE}{L_COLON}</label><br /><span>{L_ACP_MAP_TYPE_EXPLAIN}</span></dt>
+		<dd><select id="map_type" name="map_type">{MAP_TYPE_SELECT}</select></dd>
+	</dl>
+	<dl>
+		<dt><label for="google_api_key">{L_ACP_GOOGLE_API_KEY}{L_COLON}</label><br /><span>{L_ACP_GOOGLE_API_KEY_EXPLAIN}</span></dt>
+		<dd><input id="google_api_key" type="text" name="google_api_key" value="{GOOGLE_API_KEY}" /></dd>
+	</dl>
+</fieldset>
+<script>
+	function get_coordinates() {
+		navigator.geolocation.getCurrentPosition(success, error, options);
+		var options = {
+			enableHighAccuracy: true,
+			timeout: 300,
+			maximumAge: 0
+		  };
+
+		  function success(pos) {
+			var longitude = pos.coords.longitude;
+			var latitude = pos.coords.latitude;
+			document.getElementById('user_usermap_lon').value = longitude;
+			document.getElementById('user_usermap_lat').value = latitude;
+		  };
+
+		  function error(err) {
+			phpbb.alert('{L_ERROR}', '{L_ERROR_GET_COORDINATES}');
+		  };
+		return false;
+	}
+</script>
+<fieldset>
+	<legend>{L_ACP_SUBMIT}</legend>
+	<p class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+	</p>
+	{S_FORM_TOKEN}
+</fieldset>
+
+
+</form>
+<!-- INCLUDE overall_footer.html -->

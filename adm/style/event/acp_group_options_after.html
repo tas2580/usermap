@@ -1,0 +1,15 @@
+		<dl>
+			<dt><label for="usermap_marker">{L_ACP_USERMAP_MARKER}{L_COLON}</label><br />
+				<span>{L_ACP_USERMAP_MARKER_DESCRIPTION}</span></dt>
+			<dd><select id="usermap_marker" name="usermap_marker" onchange="update_image(this.options[selectedIndex].value);">>{USERMAP_OPTIONS}</select></dd>
+			<dd><img src="{USERMAP_MARKER}" id="image" alt="" /></dd>
+		</dl>
+
+		<script type="text/javascript">
+			// <![CDATA[
+			function update_image(newimage)
+			{
+				document.getElementById('image').src = (newimage) ? "{USERMAP_MARKER_PATH}/" + encodeURI(newimage) : "./images/spacer.gif";
+			}
+			// ]]>
+		</script>

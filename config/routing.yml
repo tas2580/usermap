@@ -1,0 +1,6 @@
+tas2580_usermap_index:
+    pattern: /usermap/
+    defaults: { _controller: tas2580.usermap.main:index }
+tas2580_usermap_position:
+    pattern: /usermap/position
+    defaults: { _controller: tas2580.usermap.main:position }

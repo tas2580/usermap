@@ -1,0 +1,34 @@
+<!-- IF S_ADD_USERMAP -->
+<dl>
+	<dt><label for="user_usermap_lon">{L_UCP_USERMAP_COORDINATES}{L_COLON}</label><br /><span>{L_UCP_USERMAP_COORDINATES_EXPLAIN}</span></dt>
+	<dd>
+		<input type="text" name="usermap_lon" class="inputbox" id="user_usermap_lon" value="{USERMAP_LON}" maxlength="10" style="width:62px;"> {L_UCP_USERMAP_LON}<br>
+		<input type="text" name="usermap_lat" class="inputbox" id="user_usermap_lat" value="{USERMAP_LAT}" maxlength="10" style="width:62px;"> {L_UCP_USERMAP_LAT}<br>
+		<a href="#" onclick="return get_coordinates()">{L_UCP_USERMAP_GET_COORDINATES}</a>
+	</dd>
+</dl>
+
+<script>
+	function get_coordinates() {
+		navigator.geolocation.getCurrentPosition(success, error, options);
+		var options = {
+			enableHighAccuracy: true,
+			timeout: 300,
+			maximumAge: 0
+		  };
+
+		  function success(pos) {
+			var longitude = pos.coords.longitude;
+			var latitude = pos.coords.latitude;
+			document.getElementById('user_usermap_lon').value = longitude;
+			document.getElementById('user_usermap_lat').value = latitude;
+		  };
+
+		  function error(err) {
+			phpbb.alert('{L_ERROR}', '{L_ERROR_GET_COORDINATES}');
+			console.warn('ERROR(' + err.code + '): ' + err.message);
+		  };
+		return false;
+	}
+</script>
+<!-- ENDIF -->

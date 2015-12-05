@@ -1,0 +1,20 @@
+<!-- INCLUDE overall_header.html -->
+
+<h2>{L_USERMAP_TITLE}</h2>
+<div class="panel bg1">
+	<div class="inner">
+		<div class="content">
+			<div id="map" class="user_map" style="position:relative;"></div>
+			<!-- IF MAP_TYPE == 'osm' -->
+			© <a href="http://www.openstreetmap.org">OpenStreetMap</a> {L_AND} <a href="http://www.openstreetmap.org/copyright">Mitwirkende</a>, <a href="http://creativecommons.org/licenses/by-sa/2.0/deed.de">CC-BY-SA</a><br>
+			<!-- ENDIF -->
+		</div>
+	</div>
+</div>
+
+
+
+<!-- IF A_USERMAP_ADD -->
+<p><a href="#" onclick="return set_position()">{L_SET_MY_POSITION}</a></p>
+<!-- ENDIF -->
+<!-- INCLUDE overall_footer.html -->
