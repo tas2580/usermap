@@ -19,6 +19,9 @@ class listener_ucp implements EventSubscriberInterface
 	/** @var \phpbb\auth\auth */
 	protected $auth;
 
+	/** @var \phpbb\controller\helper */
+	protected $helper;
+
 	/** @var \phpbb\request\request */
 	protected $request;
 
@@ -41,9 +44,10 @@ class listener_ucp implements EventSubscriberInterface
 	* @param string						$phpbb_root_path	phpbb_root_path
 	* @access public
 	*/
-	public function __construct(\phpbb\auth\auth $auth,\phpbb\request\request $request, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path)
 	{
 		$this->auth = $auth;
+		$this->helper = $helper;
 		$this->request = $request;
 		$this->user = $user;
 		$this->template = $template;
@@ -145,9 +149,10 @@ class listener_ucp implements EventSubscriberInterface
 	private function add_field($lon, $lat)
 	{
 		$this->template->assign_vars(array(
-			'USERMAP_LON'		=> $lon,
-			'USERMAP_LAT'			=> $lat,
-			'S_ADD_USERMAP'		=> true,
+			'USERMAP_LON'						=> $lon,
+			'USERMAP_LAT'							=> $lat,
+			'S_ADD_USERMAP'						=> true,
+			'UCP_USERMAP_COORDINATES_EXPLAIN'		=> $this->user->lang('UCP_USERMAP_COORDINATES_EXPLAIN', $this->helper->route('tas2580_usermap_index', array())),
 		));
 	}
 }
