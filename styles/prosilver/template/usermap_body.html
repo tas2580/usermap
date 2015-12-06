@@ -1,5 +1,4 @@
 <!-- INCLUDE overall_header.html -->
-
 <h2>{L_USERMAP_TITLE}</h2>
 <div class="panel bg1">
 	<div class="inner">
@@ -11,61 +10,12 @@
 		</div>
 	</div>
 </div>
-<!-- IF A_USERMAP_ADD -->
-<p><a href="#" onclick="return set_position()">{L_SET_MY_POSITION}</a></p>
-<!-- ENDIF -->
 
-<!-- IF A_USERMAP_SEARCH -->
-<form id="postform" method="post" action="{U_USERMAP_SEARCH}">
-
-<div class="panel">
-	<div class="inner">
-	<h3 id="add">{L_SEARCH_USER}</h3>
-
-		<fieldset>
-			<dl>
-				<dt><label for="lon">{L_COORDINATES}{L_COLON}</label><br /><span>{L_COORDINATES_EXPLAIN}</span></dt>
-				<dd>
-					<input type="text" name="lon" class="inputbox" id="lon" value="{LON}" maxlength="10" style="width:62px;"> {L_LON}<br>
-					<input type="text" name="lat" class="inputbox" id="lat" value="{LAT}" maxlength="10" style="width:62px;"> {L_LAT}<br>
-					<a href="#" onclick="return get_coordinates()">{L_UCP_USERMAP_GET_COORDINATES}</a>
-				</dd>
-			</dl>
-
-
-		</fieldset>
-		<fieldset class="submit-buttons">
-			{S_HIDDEN_FIELDS}<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp;
-			<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
-			{S_FORM_TOKEN}
-		</fieldset>
-	</div>
+<div id="map_menu">
+	<ul>
+		<!-- IF A_USERMAP_ADD --><li><a href="{U_SET_POSITON}?LONLAT">{L_SET_MY_POSITION}</a></li><!-- ENDIF -->
+		<!-- IF A_USERMAP_SEARCH --><li><a href="{U_USERMAP_SEARCH}?LONLAT">{L_USERMAP_SEARCH}</a></li><!-- ENDIF -->
+		<li class="menu_close"><a href="#" onclick="hide_menu(); return false;">{L_MENU_CLOSE}</a>
+	</ul>
 </div>
-</form>
-<script>
-	function get_coordinates() {
-		navigator.geolocation.getCurrentPosition(success, error, options);
-		var options = {
-			enableHighAccuracy: true,
-			timeout: 300,
-			maximumAge: 0
-		  };
-
-		  function success(pos) {
-			var longitude = pos.coords.longitude;
-			var latitude = pos.coords.latitude;
-			document.getElementById('lon').value = longitude;
-			document.getElementById('lat').value = latitude;
-		  };
-
-		  function error(err) {
-			phpbb.alert('{L_ERROR}', '{L_ERROR_GET_COORDINATES}');
-			console.warn('ERROR(' + err.code + '): ' + err.message);
-		  };
-		return false;
-	}
-</script>
-<!-- ENDIF -->
-
-
 <!-- INCLUDE overall_footer.html -->

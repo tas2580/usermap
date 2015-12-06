@@ -28,7 +28,7 @@ function drawmap(lon, lat, zoom, controls) {
 	layer_markers = new OpenLayers.Layer.Markers("Address", { projection: new OpenLayers.Projection("EPSG:4326"), visibility: true});
 	map.addLayers([layer_mapnik, layer_markers]);
 	map.addControl(click);
-
+		click.activate();
 	jumpTo(lon, lat, zoom);
 }
 
@@ -59,15 +59,27 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 		var lonlat = map.getLonLatFromPixel(e.xy);
 		pos= new OpenLayers.LonLat(lonlat.lon,lonlat.lat).transform(toProjection,fromProjection);
 
+		display_menu(e, pos.lon,pos. lat)
 
-
-	$('#map').css('cursor', 'crosshair');
-	click.activate();
-		set_postion(pos.lon, pos.lat);
+		/*set_postion(pos.lon, pos.lat);*/
 	}
 });
 
-function set_position()
+
+function display_menu(e, lon, lat)
+{
+	$('#map_menu').css({'top':e.pageY,'left':e.pageX,'display':'block'});
+	$( "#map_menu" ).find('a').each(function() {
+	var value = $(this).attr('href');
+	$(this).attr('href', value.replace('LONLAT', 'lon='+lon+'&lat='+lat));
+	});
+}
+function hide_menu()
+{
+	$('#map_menu').css('display','none');
+}
+
+function trigger_set_position()
 {
 	alert_set_position();
 	$('#map').css('cursor', 'crosshair');

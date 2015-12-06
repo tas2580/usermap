@@ -109,6 +109,7 @@ class main
 			$this->template->assign_block_vars('user_list', array(
 				'USER_ID'			=> $row['user_id'],
 				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+				'USERNAME_SIMPLE'	=> get_username_string('username', $row['user_id'], $row['username'], $row['user_colour']),
 				'LON'				=> $row['user_usermap_lon'],
 				'LAT'				=> $row['user_usermap_lat'],
 				'GROUP_ID'		=> $row['group_id'],
