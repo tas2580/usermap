@@ -100,6 +100,17 @@ class listener implements EventSubscriberInterface
 	public function memberlist_view_profile($event)
 	{
 		$data = $event['member'];
+		if (!empty($this->user->data['user_usermap_lon']) && !empty($this->user->data['user_usermap_lat']))
+		{
+			$x1 = $this->user->data['user_usermap_lon'];
+			$y1 = $this->user->data['user_usermap_lat'];
+			$x2 = $data['user_usermap_lon'];
+			$y2 = $data['user_usermap_lat'];
+			// e = ARCCOS[ SIN(Breite1)*SIN(Breite2) + COS(Breite1)*COS(Breite2)*COS(Länge2-Länge1) ]
+			$distance = acos(sin($x1=deg2rad($x1))*sin($x2=deg2rad($x2))+cos($x1)*cos($x2)*cos(deg2rad($y2) - deg2rad($y1)))*(6378.137);
+		}
+
+
 		// Center the map to user
 		$this->template->assign_vars(array(
 			'S_IN_USERMAP'		=> true,
@@ -107,6 +118,7 @@ class listener implements EventSubscriberInterface
 			'USERMAP_LON'		=> $data['user_usermap_lon'],
 			'USERMAP_LAT'			=> $data['user_usermap_lat'],
 			'USERMAP_ZOOM'		=> (int) 10,
+			'DISTANCE'			=> ($distance <> 0) ? round($distance, 2) : '',
 			'MARKER_PATH'		=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker'),
 			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],

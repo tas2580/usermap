@@ -66,6 +66,11 @@ class main
 			trigger_error('NOT_AUTHORISED');
 		}
 
+		$this->template->assign_block_vars('navlinks', array(
+			'FORUM_NAME'		=> $this->user->lang('USERMAP_TITLE'),
+			'U_VIEW_FORUM'	=> $this->helper->route('tas2580_usermap_index', array()),
+		));
+
 		$sql = 'SELECT group_id, group_usermap_marker
 			FROM ' . GROUPS_TABLE . "
 			WHERE group_usermap_marker != ''";
@@ -80,6 +85,9 @@ class main
 
 		include($this->phpbb_root_path . 'includes/functions_display.' . $this->php_ext);
 
+		$my_lon = $this->user->data['user_usermap_lon'];
+		$my_lat = $this->user->data['user_usermap_lat'];
+
 		$sql = 'SELECT user_id, username, user_colour, group_id, user_usermap_lon, user_usermap_lat
 			FROM ' . USERS_TABLE . "
 			WHERE user_usermap_lon != ''
@@ -87,14 +95,30 @@ class main
 		$result = $this->db->sql_query($sql);
 		while($row = $this->db->sql_fetchrow($result))
 		{
+			$distance = 0;
+			if(!empty($my_lon) && !empty($my_lat))
+			{
+				$x1 = $my_lon;
+				$y1 = $my_lat;
+				$x2 = $row['user_usermap_lon'];
+				$y2 = $row['user_usermap_lat'];
+				// e = ARCCOS[ SIN(Breite1)*SIN(Breite2) + COS(Breite1)*COS(Breite2)*COS(Länge2-Länge1) ]
+				$distance = acos(sin($x1=deg2rad($x1))*sin($x2=deg2rad($x2))+cos($x1)*cos($x2)*cos(deg2rad($y2) - deg2rad($y1)))*(6378.137);
+			}
+
 			$this->template->assign_block_vars('user_list', array(
 				'USER_ID'			=> $row['user_id'],
 				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
 				'LON'				=> $row['user_usermap_lon'],
 				'LAT'				=> $row['user_usermap_lat'],
 				'GROUP_ID'		=> $row['group_id'],
+				'DISTANCE'		=> ($distance <> 0) ? round($distance, 2) : '',
 			));
 		}
+
+
+
+
 
 		$this->template->assign_vars(array(
 			'USERMAP_CONTROLS'	=> 'true',

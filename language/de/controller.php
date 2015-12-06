@@ -20,6 +20,8 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'USERMAP_TITLE'						=> 'Benutzer Karte',
 	'BACK_TO_USERMAP'					=> 'Zurück zur Karte',
+	'DISTANCE'							=> 'Diszanz zu mir',
+	'KM'									=> 'KM',
 	'SET_MY_POSITION'						=> 'Eigene Positon ändern',
 	'CLICK_TO_SET'							=> 'Klicke auf die Map um deine Positon angzugeben.',
 	'SET_POSITION'							=> 'Position setzen',
