@@ -25,5 +25,7 @@ $lang = array_merge($lang, array(
 	'SET_MY_POSITION'						=> 'Eigene Positon ändern',
 	'CLICK_TO_SET'							=> 'Klicke auf die Map um deine Positon angzugeben.',
 	'SET_POSITION'							=> 'Position setzen',
-	'COORDINATES_SET'						=> 'Deine Position wurde auf die folgenden Koordinaten gesetzt:<br>Längengrad %1$s<br> Breitengrad %2$s'
+	'COORDINATES_SET'						=> 'Deine Position wurde auf die folgenden Koordinaten gesetzt:<br>Längengrad %1$s<br> Breitengrad %2$s',
+	'LON'									=> 'Längengrad',
+	'LAT'									=> 'Breitengrad',
 ));

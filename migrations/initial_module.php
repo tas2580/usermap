@@ -40,6 +40,7 @@ class initial_module extends \phpbb\db\migration\migration
 			// Add permissions
 			array('permission.add', array('u_usermap_view', true, 'u_')),
 			array('permission.add', array('u_usermap_add', true, 'u_')),
+			array('permission.add', array('u_usermap_search', true, 'u_')),
 
 			array('custom', array(array($this, 'insert_icons'))),
 		);

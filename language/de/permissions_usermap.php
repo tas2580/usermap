@@ -33,6 +33,7 @@ if (empty($lang) || !is_array($lang))
 // ’ » “ ” …
 //
 $lang = array_merge($lang, array(
-	'ACL_U_USERMAP_VIEW'		=> 'Kann die User Map anschauen',
-	'ACL_U_USERMAP_ADD'		=> 'Kann sich in die User Map eintragen',
+	'ACL_U_USERMAP_VIEW'		=> 'Kann die Benutzer Karte anschauen',
+	'ACL_U_USERMAP_ADD'		=> 'Kann sich in die Benutzer Karte eintragen',
+	'ACL_U_USERMAP_SEARCH'	=> 'Kann Benutzer im Umkreis suchen',
 ));

@@ -116,10 +116,6 @@ class main
 			));
 		}
 
-
-
-
-
 		$this->template->assign_vars(array(
 			'USERMAP_CONTROLS'	=> 'true',
 			'S_IN_USERMAP'		=> true,
@@ -131,8 +127,65 @@ class main
 			'U_SET_POSITON'		=> $this->helper->route('tas2580_usermap_position', array()),
 			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
+			'A_USERMAP_SEARCH'	=> true,
+			'U_USERMAP_SEARCH'	=> $this->helper->route('tas2580_usermap_search', array()),
 		));
 		return $this->helper->render('usermap_body.html', $this->user->lang('USERMAP_TITLE'));
+	}
+
+	public function search()
+	{
+
+		if (!$this->auth->acl_get('u_usermap_search'))
+		{
+		//	trigger_error('NOT_AUTHORISED');
+		}
+
+		$this->template->assign_block_vars('navlinks', array(
+			'FORUM_NAME'		=> $this->user->lang('USERMAP_TITLE'),
+			'U_VIEW_FORUM'	=> $this->helper->route('tas2580_usermap_index', array()),
+		));
+
+		$lon = substr($this->request->variable('lon', ''), 0, 10);
+		$lat = substr($this->request->variable('lat', ''), 0, 10);
+
+		$entf = 40; // max. Km-Entfernung von Startort
+
+		$alpha = 180*$entf/(6378137/1000*3.14159);
+
+		$min_lon = $lon-$alpha;
+		$max_lon = $lon+$alpha;
+		$min_lat = $lat-$alpha;
+		$max_lat = $lat+$alpha;
+
+		$sql = 'SELECT user_id, username, user_colour, user_regdate, user_posts, group_id, user_usermap_lon, user_usermap_lat
+			FROM ' . USERS_TABLE . "
+			WHERE ( user_usermap_lon >= '$min_lon' AND user_usermap_lon <= '$max_lon')
+				AND ( user_usermap_lat >= '$min_lat' AND user_usermap_lat<= '$max_lat')
+				";
+		$result = $this->db->sql_query($sql);
+		while($row = $this->db->sql_fetchrow($result))
+		{
+			$x1 = $lon;
+			$y1 = $lat;
+			$x2 = $row['user_usermap_lon'];
+			$y2 = $row['user_usermap_lat'];
+			// e = ARCCOS[ SIN(Breite1)*SIN(Breite2) + COS(Breite1)*COS(Breite2)*COS(Länge2-Länge1) ]
+			$distance = acos(sin($x1=deg2rad($x1))*sin($x2=deg2rad($x2))+cos($x1)*cos($x2)*cos(deg2rad($y2) - deg2rad($y1)))*(6378.137);
+
+			$this->template->assign_block_vars('memberrow', array(
+				'USER_ID'			=> $row['user_id'],
+				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+				'JOINED'				=> $this->user->format_date($row['user_regdate']),
+				'POSTS'				=> $row['user_posts'],
+				'GROUP_ID'		=> $row['group_id'],
+				'DISTANCE'		=> ($distance <> 0) ? round($distance, 2) : '',
+			));
+
+		}
+
+
+		return $this->helper->render('usermap_search.html', $this->user->lang('USERMAP_TITLE'));
 	}
 
 

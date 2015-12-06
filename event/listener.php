@@ -82,6 +82,10 @@ class listener implements EventSubscriberInterface
 				'lang'		=> 'ACL_U_USERMAP_ADD',
 				'cat'		=> 'profile'
 			),
+			'u_usermap_search'	=> array(
+				'lang'		=> 'ACL_U_USERMAP_SEARCH',
+				'cat'		=> 'profile'
+			),
 		);
 		$event['permissions'] = $permissions;
 	}
