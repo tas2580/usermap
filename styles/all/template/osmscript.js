@@ -28,7 +28,7 @@ function drawmap(lon, lat, zoom, controls) {
 	layer_markers = new OpenLayers.Layer.Markers("Address", { projection: new OpenLayers.Projection("EPSG:4326"), visibility: true});
 	map.addLayers([layer_mapnik, layer_markers]);
 	map.addControl(click);
-		click.activate();
+	click.activate();
 	jumpTo(lon, lat, zoom);
 }
 
@@ -68,24 +68,22 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 
 function display_menu(e, lon, lat)
 {
+	hide_menu();
 	$('#map_menu').css({'top':e.pageY,'left':e.pageX,'display':'block'});
-	$( "#map_menu" ).find('a').each(function() {
-	var value = $(this).attr('href');
-	$(this).attr('href', value.replace('LONLAT', 'lon='+lon+'&lat='+lat));
+	$('#map_menu').find('a').each(function() {
+		var href = $(this).attr('href');
+		$(this).attr('href', href.replace('LONLAT', 'lon='+lon+'&lat='+lat));
 	});
 }
 function hide_menu()
 {
 	$('#map_menu').css('display','none');
+	$('#map_menu').find('a').each(function() {
+		var href = $(this).attr('href');
+		$(this).attr('href', href.replace(/&?lon=(.*)&lat=(.*)/gi, 'LONLAT'));
+	});
 }
 
-function trigger_set_position()
-{
-	alert_set_position();
-	$('#map').css('cursor', 'crosshair');
-	click.activate();
-	return false;
-}
 
 function jumpTo(lon, lat, zoom) {
 	var x = Lon2Merc(lon);
@@ -137,15 +135,3 @@ function addMarker(layer, lon, lat, popupContentHTML, marker) {
 	layer.addMarker(marker);
 }
 
-$('#map').oncontextmenu = function noContextMenu(e) {
-    if(!e){ //dear IE...
-		var e = window.event;
-		e.returnValue = false;
-    }
-
-    var f = layer_mapnik.getFeatureFromEvent(e);
-    alert(f);
-    //f is the pointed vector.feature :)
-
-    return false; //Prevent display of browser context menu
-}

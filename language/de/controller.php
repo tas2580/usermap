@@ -20,14 +20,17 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'USERMAP_TITLE'						=> 'Benutzer Karte',
 	'BACK_TO_USERMAP'					=> 'Zurück zur Karte',
-	'DISTANCE'							=> 'Diszanz zu mir',
-	'KM'									=> 'KM',
+	'DISTANCE'							=> 'Diszanz',
+	'KM'									=> 'Kilometer',
 	'SET_MY_POSITION'						=> 'Eigene Positon hier setzen',
 	'CLICK_TO_SET'							=> 'Klicke auf die Map um deine Positon angzugeben.',
 	'SET_POSITION'							=> 'Position setzen',
-	'COORDINATES_SET'						=> 'Deine Position wurde auf die folgenden Koordinaten gesetzt:<br>Längengrad %1$s<br> Breitengrad %2$s',
+	'CONFIRM_COORDINATES_SET'				=> 'Bist du sicher das du deine Position auf die folgenden Koordinaten setzen möchtest:<br>Längengrad %1$s<br> Breitengrad %2$s',
 	'LON'									=> 'Längengrad',
 	'LAT'									=> 'Breitengrad',
 	'MENU_CLOSE'							=> 'Abbrechen',
-
+	'MENU_SEARCH'						=> 'Benutzer der Nähe (%s KM)',
+	'SEARCH_EXPLAIN'						=> 'Benutzer im Umkreis von %1$s Kilometern um %2$s, %3$s',
+	'USERMAP_SEARCH'						=> 'Benutzer Suche',
+	'MEMBERS'							=> 'Benutzername',
 ));

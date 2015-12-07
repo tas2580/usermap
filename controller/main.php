@@ -21,6 +21,8 @@ class main
 	protected $db;
 	/** @var \phpbb\controller\helper */
 	protected $helper;
+	/** @var \phpbb\paginationr */
+	protected $paginationr;
 	/** @var \phpbb\path_helper */
 	protected $path_helper;
 	/** @var string */
@@ -43,12 +45,13 @@ class main
 	* @param \phpbb\controller\helper	$helper
 	* @param \phpbb\template\template	$template
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
 		$this->db = $db;
 		$this->helper = $helper;
+		$this->pagination = $pagination;
 		$this->path_helper = $path_helper;
 		$this->phpbb_extension_manager = $phpbb_extension_manager;
 		$this->request = $request;
@@ -71,15 +74,16 @@ class main
 			'U_VIEW_FORUM'	=> $this->helper->route('tas2580_usermap_index', array()),
 		));
 
-		$sql = 'SELECT group_id, group_usermap_marker
+		$sql = 'SELECT group_id, group_name, group_usermap_marker
 			FROM ' . GROUPS_TABLE . "
 			WHERE group_usermap_marker != ''";
 		$result = $this->db->sql_query($sql);
 		while($row = $this->db->sql_fetchrow($result))
 		{
 			$this->template->assign_block_vars('group_list', array(
-				'GROUP_ID'	=> $row['group_id'],
-				'MARKER'		=> $row['group_usermap_marker'],
+				'GROUP_ID'		=> $row['group_id'],
+				'GROUP_NAME'		=> $this->user->lang($row['group_name']),
+				'MARKER'			=> $row['group_usermap_marker'],
 			));
 		}
 
@@ -130,11 +134,14 @@ class main
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
 			'A_USERMAP_SEARCH'	=> true,
 			'U_USERMAP_SEARCH'	=> $this->helper->route('tas2580_usermap_search', array()),
+			'L_MENU_SEARCH'		=> $this->user->lang('MENU_SEARCH', $this->config['tas2580_usermap_search_distance'])
+
+
 		));
 		return $this->helper->render('usermap_body.html', $this->user->lang('USERMAP_TITLE'));
 	}
 
-	public function search()
+	public function search($start = 1)
 	{
 
 		if (!$this->auth->acl_get('u_usermap_search'))
@@ -149,22 +156,26 @@ class main
 
 		$lon = substr($this->request->variable('lon', ''), 0, 10);
 		$lat = substr($this->request->variable('lat', ''), 0, 10);
+		$dst = $this->request->variable('dst', $this->config['tas2580_usermap_search_distance']);
 
-		$entf = 40; // max. Km-Entfernung von Startort
+		$alpha = 180 * $dst / (6378137 / 1000 * 3.14159);
+		$min_lon = $this->db->sql_escape($lon - $alpha);
+		$max_lon = $this->db->sql_escape($lon + $alpha);
+		$min_lat = $this->db->sql_escape($lat - $alpha);
+		$max_lat = $this->db->sql_escape($lat + $alpha);
 
-		$alpha = 180*$entf/(6378137/1000*3.14159);
+		$where = " WHERE ( user_usermap_lon >= '$min_lon' AND user_usermap_lon <= '$max_lon') AND ( user_usermap_lat >= '$min_lat' AND user_usermap_lat<= '$max_lat')";
+		$limit = (int) $this->config['topics_per_page'];
 
-		$min_lon = $lon-$alpha;
-		$max_lon = $lon+$alpha;
-		$min_lat = $lat-$alpha;
-		$max_lat = $lat+$alpha;
+		$sql = 'SELECT COUNT(user_id) AS num_users
+			FROM ' . USERS_TABLE . $where;
+		$result = $this->db->sql_query($sql);
+		$total_users = (int) $this->db->sql_fetchfield('num_users');
+		$this->db->sql_freeresult($result);
 
 		$sql = 'SELECT user_id, username, user_colour, user_regdate, user_posts, group_id, user_usermap_lon, user_usermap_lat
-			FROM ' . USERS_TABLE . "
-			WHERE ( user_usermap_lon >= '$min_lon' AND user_usermap_lon <= '$max_lon')
-				AND ( user_usermap_lat >= '$min_lat' AND user_usermap_lat<= '$max_lat')
-				";
-		$result = $this->db->sql_query($sql);
+			FROM ' . USERS_TABLE . $where;
+		$result = $this->db->sql_query_limit($sql, $limit, ($start -1)  * $limit);
 		while($row = $this->db->sql_fetchrow($result))
 		{
 			$x1 = $lon;
@@ -182,11 +193,23 @@ class main
 				'GROUP_ID'		=> $row['group_id'],
 				'DISTANCE'		=> ($distance <> 0) ? round($distance, 2) : '',
 			));
-
 		}
 
+		$this->pagination->generate_template_pagination(array(
+			'routes' => array(
+				'tas2580_usermap_search',
+				'tas2580_usermap_search_page',
+			),
+			'params' => array(
+			),
+		), 'pagination', 'start', $total_users, $limit, ($start - 1)  * $limit);
 
-		return $this->helper->render('usermap_search.html', $this->user->lang('USERMAP_TITLE'));
+		$this->template->assign_vars(array(
+			'TOTAL_USERS'		=> $this->user->lang('TOTAL_USERS', (int) $total_users),
+			'L_SEARCH_EXPLAIN'		=> $this->user->lang('SEARCH_EXPLAIN', $dst, $lon, $lat),
+		));
+
+		return $this->helper->render('usermap_search.html', $this->user->lang('USERMAP_SEARCH'));
 	}
 
 
@@ -199,36 +222,48 @@ class main
 
 		$lon = substr($this->request->variable('lon', ''), 0, 10);
 		$lat = substr($this->request->variable('lat', ''), 0, 10);
-		$data = array(
-			'user_usermap_lon'			=> $lon,
-			'user_usermap_lat'			=> $lat,
-		);
 
-		if (!function_exists('validate_data'))
+		if (confirm_box(true))
 		{
-			include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
+			$data = array(
+				'user_usermap_lon'			=> $lon,
+				'user_usermap_lat'			=> $lat,
+			);
+
+			if (!function_exists('validate_data'))
+			{
+				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
+			}
+			$error = validate_data($data, array(
+				'user_usermap_lon'			=> array(
+					array('string', true, 5, 10)
+				),
+				'user_usermap_lat'			=> array(
+					array('string', true, 5, 10)
+				),
+			));
+			$error = array_map(array($this->user, 'lang'), $error);
+			if (sizeof($error))
+			{
+				trigger_error(implode('<br>', $error) . '<br><br><a href="' . $this->helper->route('tas2580_usermap_index', array()) . '">' . $this->user->lang('BACK_TO_USERMAP') . '</a>');
+			}
+			$sql = 'UPDATE ' . USERS_TABLE . '
+				SET ' . $this->db->sql_build_array('UPDATE', $data) . '
+				WHERE user_id = ' . (int) $this->user->data['user_id'] ;
+
+			$this->db->sql_query($sql);
+
+			redirect($this->helper->route('tas2580_usermap_index', array()));
 		}
-		$error = validate_data($data, array(
-			'user_usermap_lon'			=> array(
-				array('string', true, 5, 10)
-			),
-			'user_usermap_lat'			=> array(
-				array('string', true, 5, 10)
-			),
-		));
-		$error = array_map(array($this->user, 'lang'), $error);
-		if (sizeof($error))
+		else
 		{
-			trigger_error(implode('<br>', $error) . '<br><br><a href="' . $this->helper->route('tas2580_usermap_index', array()) . '">' . $this->user->lang('BACK_TO_USERMAP') . '</a>');
+			confirm_box(false, $this->user->lang('CONFIRM_COORDINATES_SET', $lon, $lat), build_hidden_fields(array(
+				'lon'		=> $lon,
+				'lat'		=> $lat))
+			);
 		}
-		$sql = 'UPDATE ' . USERS_TABLE . '
-			SET ' . $this->db->sql_build_array('UPDATE', $data) . '
-			WHERE user_id = ' . (int) $this->user->data['user_id'] ;
+		return $this->index();
 
-		$this->db->sql_query($sql);
 
-		trigger_error($this->user->lang('COORDINATES_SET', $lon, $lat) . '<br><br><a href="' . $this->helper->route('tas2580_usermap_index', array()) . '">' . $this->user->lang('BACK_TO_USERMAP') . '</a>');
-
-		return new Response($this->user->lang('COORDINATES_SET', $lon, $lat));
 	}
 }

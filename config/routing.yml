@@ -7,3 +7,6 @@ tas2580_usermap_position:
 tas2580_usermap_search:
     pattern: /usermap/search
     defaults: { _controller: tas2580.usermap.main:search }
+tas2580_usermap_search_page:
+    pattern: /usermap/search/page-{start}.html
+    defaults: { _controller: tas2580.usermap.main:search }

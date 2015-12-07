@@ -1,12 +1,13 @@
 <!-- INCLUDE overall_header.html -->
-
+<h2>{L_USERMAP_SEARCH}</h2>
+<p>{L_SEARCH_EXPLAIN}</p>
 <div class="forumbg forumbg-table">
 	<div class="inner">
 
 	<table class="table1">
 	<thead>
 	<tr>
-		<th class="name">{L_GROUP_MEMBERS}</th>
+		<th class="name">{L_MEMBERS}</th>
 		<th class="posts">{L_POSTS}</th>
 		<th class="joined">{L_JOINED}</th>
 		<th class="joined">{L_DISTANCE}</th>
@@ -18,7 +19,7 @@
 		<td>{memberrow.USERNAME}</td>
 		<td>{memberrow.POSTS}</td>
 		<td>{memberrow.JOINED}</td>
-		<td>{memberrow.DISTANCE}</td>
+		<td>{memberrow.DISTANCE} {L_KM}</td>
 	</tr>
 		<!-- BEGINELSE -->
 	<tr class="bg1">
@@ -30,5 +31,14 @@
 
 	</div>
 </div>
-
+<!-- IF .pagination or TOTAL_USERS -->
+	<div class="pagination">
+		{TOTAL_USERS}
+		<!-- IF .pagination -->
+			<!-- INCLUDE pagination.html -->
+		<!-- ELSE -->
+			&bull; {PAGE_NUMBER}
+		<!-- ENDIF -->
+	</div>
+<!-- ENDIF -->
 <!-- INCLUDE overall_footer.html -->

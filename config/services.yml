@@ -6,6 +6,7 @@ services:
             - @config
             - @dbal.conn
             - @controller.helper
+            - @pagination
             - @path_helper
             - @request
             - @ext.manager

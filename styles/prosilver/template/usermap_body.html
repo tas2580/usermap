@@ -11,10 +11,18 @@
 	</div>
 </div>
 
+<div class="panel bg1">
+	<div class="inner">
+		<!-- BEGIN group_list -->
+		<img src="{MARKER_PATH}/{group_list.MARKER}"> {group_list.GROUP_NAME}<br>
+		<!-- END group_list -->
+	</div>
+</div>
+
 <div id="map_menu">
 	<ul>
 		<!-- IF A_USERMAP_ADD --><li><a href="{U_SET_POSITON}?LONLAT">{L_SET_MY_POSITION}</a></li><!-- ENDIF -->
-		<!-- IF A_USERMAP_SEARCH --><li><a href="{U_USERMAP_SEARCH}?LONLAT">{L_USERMAP_SEARCH}</a></li><!-- ENDIF -->
+		<!-- IF A_USERMAP_SEARCH --><li><a href="{U_USERMAP_SEARCH}?LONLAT">{L_MENU_SEARCH}</a></li><!-- ENDIF -->
 		<li class="menu_close"><a href="#" onclick="hide_menu(); return false;">{L_MENU_CLOSE}</a>
 	</ul>
 </div>
