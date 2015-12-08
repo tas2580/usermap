@@ -24,6 +24,8 @@ class listener implements EventSubscriberInterface
 			'core.page_header'						=> 'page_header',
 			'core.permissions'						=> 'permissions',
 			'core.memberlist_view_profile'				=> 'memberlist_view_profile',
+			'core.viewtopic_cache_user_data'			=> 'viewtopic_cache_user_data',
+			'core.viewtopic_modify_post_row'			=> 'viewtopic_modify_post_row',
 		);
 	}
 
@@ -70,6 +72,13 @@ class listener implements EventSubscriberInterface
 		$this->user = $user;
 	}
 
+	/**
+	* Add permissions
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
 	public function permissions($event)
 	{
 		$permissions = $event['permissions'];
@@ -90,6 +99,13 @@ class listener implements EventSubscriberInterface
 		$event['permissions'] = $permissions;
 	}
 
+	/**
+	* Add link to header
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
 	public function page_header($event)
 	{
 		if ($this->auth->acl_get('u_usermap_view'))
@@ -101,6 +117,13 @@ class listener implements EventSubscriberInterface
 		}
 	}
 
+	/**
+	* Add map to users profile
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
 	public function memberlist_view_profile($event)
 	{
 		if($this->config['tas2580_usermap_map_in_viewprofile'] == 0)
@@ -155,5 +178,63 @@ class listener implements EventSubscriberInterface
 				'MARKER'		=> $row['group_usermap_marker'],
 			));
 		}
+	}
+
+	/**
+	* Add distance to viewtopic
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
+	public function viewtopic_cache_user_data($event)
+	{
+		if(!$this->config['tas2580_usermap_distance_in_viewtopic'])
+		{
+			return false;
+		}
+
+		$data = $event['row'];
+		// not on own profile
+		if($data['user_id'] == $this->user->data['user_id'])
+		{
+			return false;
+		}
+
+		$distance = 0;
+		$user_cache_data = $event['user_cache_data'];
+		if (!empty($this->user->data['user_usermap_lon']) && !empty($this->user->data['user_usermap_lat']) &&
+			!empty($data['user_usermap_lat']) && !empty($data['user_usermap_lat'])
+		)
+		{
+			$x1 = $this->user->data['user_usermap_lon'];
+			$y1 = $this->user->data['user_usermap_lat'];
+			$x2 = $data['user_usermap_lon'];
+			$y2 = $data['user_usermap_lat'];
+			// e = ARCCOS[ SIN(Breite1)*SIN(Breite2) + COS(Breite1)*COS(Breite2)*COS(Länge2-Länge1) ]
+			$distance = acos(sin($x1=deg2rad($x1))*sin($x2=deg2rad($x2))+cos($x1)*cos($x2)*cos(deg2rad($y2) - deg2rad($y1)))*(6378.137);
+		}
+
+		$user_cache_data['distance'] = round($distance, 2);
+		$event['user_cache_data'] = $user_cache_data;
+	}
+
+	public function viewtopic_modify_post_row($event)
+	{
+		if(!$this->config['tas2580_usermap_distance_in_viewtopic'])
+		{
+			return false;
+		}
+
+		// not on own profile
+		if($event['user_poster_data']['user_id'] == $this->user->data['user_id'])
+		{
+			return false;
+		}
+
+		$this->user->add_lang_ext('tas2580/usermap', 'controller');
+		$post_row = $event['post_row'];
+		$post_row['DISTANCE'] = $event['user_poster_data']['distance'];
+		$event['post_row'] =$post_row;
 	}
 }

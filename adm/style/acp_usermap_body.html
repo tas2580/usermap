@@ -44,6 +44,13 @@
 			<label><input type="radio" name="map_in_viewprofile" value="0"<!-- IF not MAP_IN_VIEWPROFILE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
 		</dd>
 	</dl>
+	<dl>
+		<dt><label for="distance_in_viewtopic">{L_ACP_DISTANCE_IN_VIEWTOPIC}{L_COLON}</label><br /><span>{L_DISTANCE_IN_VIEWTOPIC_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="distance_in_viewtopic" name="distance_in_viewtopic" value="1"<!-- IF DISTANCE_IN_VIEWTOPIC --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="distance_in_viewtopic" value="0"<!-- IF not DISTANCE_IN_VIEWTOPIC --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
 </fieldset>
 
 <script>

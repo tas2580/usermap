@@ -34,6 +34,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'ACP_USERMAP_TITLE'					=> 'Benutzer Karte',
 	'ACP_MAP_SETTINGS'					=> 'Karten Einstellungen',
+	'ACP_SETTINGS'						=> 'Weitere Einstellungen',
 	'ACP_USERMAP_ZOOM'					=> 'Zoom',
 	'ACP_USERMAP_ZOOM_EXPLAIN'			=> 'Standard Zoom beim aufrufen der Karte.',
 	'ACP_COORDINATES'						=> 'Standard Koordinaten',
@@ -58,4 +59,6 @@ $lang = array_merge($lang, array(
 	'ACP_SEARCH_DISTANCE_EXPLAIN'			=> 'Umkreis in dem Benutzer gesucht werden sollen wenn nichts anderes angegeben ist.',
 	'ACP_MAP_IN_VIEWPROFILE'				=> 'Karte im Profil anzeigen',
 	'ACP_MAP_IN_VIEWPROFILE_EXPLAIN'		=> 'Zeigt eine Karte mit dem Standort des Benutzers im Profil an. Zusätzlich wird berechnet wie weit man selber von dem Benutzer entfernt ist.',
+	'ACP_DISTANCE_IN_VIEWTOPIC'				=> 'Distanz in Themenansicht',
+	'DISTANCE_IN_VIEWTOPIC_EXPLAIN'			=> 'Zeigt die Distanz zu einem Benutzer neben seinen Beiträgen an. Dazu müssen der jeweilige Benutzer und der angemeldete Benutzer auf der Karte eingetragen sein.'
 ));
