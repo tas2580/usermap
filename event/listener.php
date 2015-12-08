@@ -126,7 +126,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	*/
 	public function memberlist_view_profile($event)
 	{
-		if($this->config['tas2580_usermap_map_in_viewprofile'] == 0)
+		if ($this->config['tas2580_usermap_map_in_viewprofile'] == 0)
 		{
 			return false;
 		}
@@ -161,7 +161,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 			FROM ' . GROUPS_TABLE . '
 			WHERE group_id = ' . (int) $data['group_id'];
 		$result = $this->db->sql_query($sql);
-		while($row = $this->db->sql_fetchrow($result))
+		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$this->template->assign_block_vars('group_list', array(
 				'GROUP_ID'	=> $row['group_id'],
@@ -179,14 +179,14 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	*/
 	public function viewtopic_cache_user_data($event)
 	{
-		if(!$this->config['tas2580_usermap_distance_in_viewtopic'])
+		if (!$this->config['tas2580_usermap_distance_in_viewtopic'])
 		{
 			return false;
 		}
 
 		$data = $event['row'];
 		// not on own profile
-		if($data['user_id'] == $this->user->data['user_id'])
+		if ($data['user_id'] == $this->user->data['user_id'])
 		{
 			return false;
 		}
@@ -208,13 +208,13 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	*/
 	public function viewtopic_modify_post_row($event)
 	{
-		if(!$this->config['tas2580_usermap_distance_in_viewtopic'])
+		if (!$this->config['tas2580_usermap_distance_in_viewtopic'])
 		{
 			return false;
 		}
 
 		// not on own profile
-		if($event['user_poster_data']['user_id'] == $this->user->data['user_id'])
+		if ($event['user_poster_data']['user_id'] == $this->user->data['user_id'])
 		{
 			return false;
 		}

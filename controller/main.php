@@ -9,8 +9,6 @@
 
 namespace tas2580\usermap\controller;
 
-use Symfony\Component\HttpFoundation\Response;
-
 class main extends \tas2580\usermap\includes\class_usermap
 {
 	/** @var \phpbb\auth\auth */
@@ -79,7 +77,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 			WHERE group_usermap_marker != ''
 			ORDER BY group_name";
 		$result = $this->db->sql_query($sql);
-		while($row = $this->db->sql_fetchrow($result))
+		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$group_name = ($row['group_type'] == GROUP_SPECIAL) ? $this->user->lang('G_' . $row['group_name']) : $row['group_name'];
 			$colour_text = ($row['group_colour']) ? ' style="color:#' . $row['group_colour'] . '"' : '';
@@ -109,7 +107,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 			WHERE user_usermap_lon != ''
 				AND user_usermap_lat != ''";
 		$result = $this->db->sql_query($sql);
-		while($row = $this->db->sql_fetchrow($result))
+		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$distance = $this->get_distance($my_lon, $my_lat, $row['user_usermap_lon'], $row['user_usermap_lat']);
 			$this->template->assign_block_vars('user_list', array(
@@ -176,7 +174,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$sql = 'SELECT user_id, username, user_colour, user_regdate, user_posts, group_id, user_usermap_lon, user_usermap_lat
 			FROM ' . USERS_TABLE . $where;
 		$result = $this->db->sql_query_limit($sql, $limit, ($start -1)  * $limit);
-		while($row = $this->db->sql_fetchrow($result))
+		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$distance = $this->get_distance($lon, $lat, $row['user_usermap_lon'], $row['user_usermap_lat']);
 			$this->template->assign_block_vars('memberrow', array(

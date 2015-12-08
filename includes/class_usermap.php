@@ -21,7 +21,7 @@ class class_usermap
 			$distance = acos(sin($x1=deg2rad($x1))*sin($x2=deg2rad($x2))+cos($x1)*cos($x2)*cos(deg2rad($y2) - deg2rad($y1)))*(6378.137);
 		}
 
-		if($this->config['tas2580_usermap_distance_format'])
+		if ($this->config['tas2580_usermap_distance_format'])
 		{
 			return round($distance, 2) . ' ' . $this->user->lang('KM');
 		}

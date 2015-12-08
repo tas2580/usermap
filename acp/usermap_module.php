@@ -58,8 +58,6 @@ class usermap_module
 			'MAP_IN_VIEWPROFILE'		=> $config['tas2580_usermap_map_in_viewprofile'],
 			'DISTANCE_IN_VIEWTOPIC'		=> $config['tas2580_usermap_distance_in_viewtopic'],
 			'DISTANCE_FORMAT'			=> $config['tas2580_usermap_distance_format'],
-
-
 		));
 	}
 

@@ -128,7 +128,9 @@ class listener_acp implements EventSubscriberInterface
 			$event['error'] = array_merge($array, $error);
 	}
 
-//evtl weg
+	/**
+	 * evtl weg
+	 */
 	public function acp_manage_group_initialise_data($event)
 	{
 		$test_variables = $event['test_variables'];
