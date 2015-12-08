@@ -104,7 +104,9 @@ class listener implements EventSubscriberInterface
 	public function memberlist_view_profile($event)
 	{
 		$data = $event['member'];
-		if (!empty($this->user->data['user_usermap_lon']) && !empty($this->user->data['user_usermap_lat']))
+		if (!empty($this->user->data['user_usermap_lon']) && !empty($this->user->data['user_usermap_lat']) &&
+			!empty($data['user_usermap_lat']) && !empty($data['user_usermap_lat'])
+		)
 		{
 			$x1 = $this->user->data['user_usermap_lon'];
 			$y1 = $this->user->data['user_usermap_lat'];
