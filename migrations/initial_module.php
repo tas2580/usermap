@@ -37,7 +37,8 @@ class initial_module extends \phpbb\db\migration\migration
 			array('config.add', array('tas2580_usermap_map_type', 'osm')),
 			array('config.add', array('tas2580_usermap_google_api_key', '')),
 			array('config.add', array('tas2580_usermap_search_distance', '50')),
-
+			array('config.add', array('tas2580_usermap_map_in_viewprofile', '1')),
+			
 			// Add permissions
 			array('permission.add', array('u_usermap_view', true, 'u_')),
 			array('permission.add', array('u_usermap_add', true, 'u_')),

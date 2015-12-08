@@ -22,7 +22,9 @@
 		<dd><select id="map_type" name="map_type">{MAP_TYPE_SELECT}</select></dd>
 	</dl>
 	<dl>
-		<dt><label for="google_api_key">{L_ACP_GOOGLE_API_KEY}{L_COLON}</label><br /><span>{L_ACP_GOOGLE_API_KEY_EXPLAIN}</span></dt>
+		<dt><label for="google_api_key">{L_ACP_GOOGLE_API_KEY}{L_COLON}</label><br />
+			<span>{L_ACP_GOOGLE_API_KEY_EXPLAIN}</span>
+		</dt>
 		<dd><input id="google_api_key" type="text" name="google_api_key" value="{GOOGLE_API_KEY}" /></dd>
 	</dl>
 </fieldset>
@@ -30,8 +32,17 @@
 <fieldset>
 <legend>{L_ACP_SETTINGS}</legend>
 	<dl>
-		<dt><label for="search_distance">{L_ACP_SEARCH_DISTANCE}{L_COLON}</label><br /><span>{L_ACP_SEARCH_DISTANCE_EXPLAIN}</span></dt>
+		<dt><label for="search_distance">{L_ACP_SEARCH_DISTANCE}{L_COLON}</label><br />
+			<span>{L_ACP_SEARCH_DISTANCE_EXPLAIN}</span>
+		</dt>
 		<dd><input id="search_distance" type="number" name="search_distance" value="{SEARCH_DISTANCE}" /> {L_ACP_KM}</dd>
+	</dl>
+	<dl>
+		<dt><label for="map_in_viewprofile">{L_ACP_MAP_IN_VIEWPROFILE}{L_COLON}</label><br /><span>{L_ACP_MAP_IN_VIEWPROFILE_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="map_in_viewprofile" name="map_in_viewprofile" value="1"<!-- IF MAP_IN_VIEWPROFILE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="map_in_viewprofile" value="0"<!-- IF not MAP_IN_VIEWPROFILE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
 	</dl>
 </fieldset>
 

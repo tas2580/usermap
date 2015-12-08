@@ -56,5 +56,6 @@ $lang = array_merge($lang, array(
 	'ACP_KM'								=> 'Kilometer',
 	'ACP_SEARCH_DISTANCE'					=> 'Such Distanz',
 	'ACP_SEARCH_DISTANCE_EXPLAIN'			=> 'Umkreis in dem Benutzer gesucht werden sollen wenn nichts anderes angegeben ist.',
-
+	'ACP_MAP_IN_VIEWPROFILE'				=> 'Karte im Profil anzeigen',
+	'ACP_MAP_IN_VIEWPROFILE_EXPLAIN'		=> 'Zeigt eine Karte mit dem Standort des Benutzers im Profil an. Zusätzlich wird berechnet wie weit man selber von dem Benutzer entfernt ist.',
 ));

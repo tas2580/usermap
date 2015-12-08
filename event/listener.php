@@ -103,6 +103,11 @@ class listener implements EventSubscriberInterface
 
 	public function memberlist_view_profile($event)
 	{
+		if($this->config['tas2580_usermap_map_in_viewprofile'] == 0)
+		{
+			return false;
+		}
+
 		$data = $event['member'];
 		if (!empty($this->user->data['user_usermap_lon']) && !empty($this->user->data['user_usermap_lat']) &&
 			!empty($data['user_usermap_lat']) && !empty($data['user_usermap_lat'])
