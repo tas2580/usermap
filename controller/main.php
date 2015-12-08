@@ -128,9 +128,9 @@ class main extends \tas2580\usermap\includes\class_usermap
 			'USERMAP_LAT'			=> empty($this->config['tas2580_usermap_lat']) ? 0 : $this->config['tas2580_usermap_lat'],
 			'USERMAP_ZOOM'		=> (int) $this->config['tas2580_usermap_zoom'],
 			'MARKER_PATH'		=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker'),
-			'A_USERMAP_ADD'		=> $this->auth->acl_get('u_usermap_add'),
+			'A_USERMAP_ADD'		=> (($this->user->data['user_id'] <> ANONYMOUS) && $this->auth->acl_get('u_usermap_add')),
 			'A_USERMAP_SEARCH'	=> $this->auth->acl_get('u_usermap_search'),
-			'S_CAN_ADD'			=> ($this->auth->acl_get('u_usermap_add') && (empty($this->user->data['user_usermap_lon']) || empty($this->user->data['user_usermap_lat']))),
+			'S_CAN_ADD'			=> (empty($this->user->data['user_usermap_lon']) || empty($this->user->data['user_usermap_lat'])),
 			'U_SET_POSITON'		=> $this->helper->route('tas2580_usermap_position', array()),
 			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
@@ -208,7 +208,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 
 	public function position()
 	{
-		if (!$this->auth->acl_get('u_usermap_add'))
+		if (($this->user->data['user_id'] <> ANONYMOUS) || !$this->auth->acl_get('u_usermap_add'))
 		{
 			trigger_error('NOT_AUTHORISED');
 		}
