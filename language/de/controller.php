@@ -34,4 +34,5 @@ $lang = array_merge($lang, array(
 	'SEARCH_EXPLAIN'						=> 'Benutzer im Umkreis von %1$s Kilometern um %2$s, %3$s',
 	'USERMAP_SEARCH'						=> 'Benutzer Suche',
 	'MEMBERS'							=> 'Benutzername',
+	'KLICK_TO_ADD'						=> 'Klick auf die Karte um dich einzutragen!',
 ));

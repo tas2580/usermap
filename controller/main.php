@@ -130,6 +130,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 			'MARKER_PATH'		=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker'),
 			'A_USERMAP_ADD'		=> $this->auth->acl_get('u_usermap_add'),
 			'A_USERMAP_SEARCH'	=> $this->auth->acl_get('u_usermap_search'),
+			'S_CAN_ADD'			=> ($this->auth->acl_get('u_usermap_add') && (empty($this->user->data['user_usermap_lon']) || empty($this->user->data['user_usermap_lat']))),
 			'U_SET_POSITON'		=> $this->helper->route('tas2580_usermap_position', array()),
 			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
