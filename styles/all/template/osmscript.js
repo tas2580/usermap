@@ -28,7 +28,7 @@ function drawmap(lon, lat, zoom, controls) {
 	layer_markers = new OpenLayers.Layer.Markers("Address", { projection: new OpenLayers.Projection("EPSG:4326"), visibility: true});
 	map.addLayers([layer_mapnik, layer_markers]);
 	map.addControl(click);
-	click.activate();
+
 	jumpTo(lon, lat, zoom);
 }
 

@@ -16,9 +16,12 @@
 		<!-- BEGIN user_list -->
 		addMarker(layer_markers, {user_list.LON}, {user_list.LAT}, '<strong>{L_USERNAME}</strong> {user_list.USERNAME}<br>{L_DISTANCE} {user_list.DISTANCE}', marker_{user_list.GROUP_ID});
 		<!-- END user_list -->
+		<!-- IF A_USERMAP_ADD or A_USERMAP_SEARCH -->
+		alert_set_position();
+		<!-- ENDIF -->
 	}
 
-	<!-- IF A_USERMAP_ADD -->
+	<!-- IF A_USERMAP_ADD or A_USERMAP_SEARCH -->
 	function set_postion(lon, lat) {
 		window.location.href ='{U_SET_POSITON}?lon='+lon+'&lat='+lat;
 		/*
