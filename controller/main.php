@@ -11,7 +11,7 @@ namespace tas2580\usermap\controller;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class main
+class main extends \tas2580\usermap\includes\class_usermap
 {
 	/** @var \phpbb\auth\auth */
 	protected $auth;
@@ -74,15 +74,27 @@ class main
 			'U_VIEW_FORUM'	=> $this->helper->route('tas2580_usermap_index', array()),
 		));
 
-		$sql = 'SELECT group_id, group_name, group_usermap_marker
+		$sql = 'SELECT group_id, group_name, group_usermap_marker, group_type, group_colour
 			FROM ' . GROUPS_TABLE . "
-			WHERE group_usermap_marker != ''";
+			WHERE group_usermap_marker != ''
+			ORDER BY group_name";
 		$result = $this->db->sql_query($sql);
 		while($row = $this->db->sql_fetchrow($result))
 		{
+			$group_name = ($row['group_type'] == GROUP_SPECIAL) ? $this->user->lang('G_' . $row['group_name']) : $row['group_name'];
+			$colour_text = ($row['group_colour']) ? ' style="color:#' . $row['group_colour'] . '"' : '';
+			if ($row['group_name'] == 'BOTS' || ($this->user->data['user_id'] != ANONYMOUS && !$this->auth->acl_get('u_viewprofile')))
+			{
+				$legend = '<span' . $colour_text . '>' . $group_name . '</span>';
+			}
+			else
+			{
+				$legend = '<a' . $colour_text . ' href="' . append_sid("{$this->phpbb_root_path}memberlist.{$this->php_ext}", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_name . '</a>';
+			}
 			$this->template->assign_block_vars('group_list', array(
 				'GROUP_ID'		=> $row['group_id'],
-				'GROUP_NAME'		=> $this->user->lang($row['group_name']),
+				'GROUP_NAME'		=> $legend,
+				'ALT'				=> $group_name,
 				'MARKER'			=> $row['group_usermap_marker'],
 			));
 		}
@@ -99,17 +111,7 @@ class main
 		$result = $this->db->sql_query($sql);
 		while($row = $this->db->sql_fetchrow($result))
 		{
-			$distance = 0;
-			if(!empty($my_lon) && !empty($my_lat))
-			{
-				$x1 = $my_lon;
-				$y1 = $my_lat;
-				$x2 = $row['user_usermap_lon'];
-				$y2 = $row['user_usermap_lat'];
-				// e = ARCCOS[ SIN(Breite1)*SIN(Breite2) + COS(Breite1)*COS(Breite2)*COS(Länge2-Länge1) ]
-				$distance = acos(sin($x1=deg2rad($x1))*sin($x2=deg2rad($x2))+cos($x1)*cos($x2)*cos(deg2rad($y2) - deg2rad($y1)))*(6378.137);
-			}
-
+			$distance = $this->get_distance($my_lon, $my_lat, $row['user_usermap_lon'], $row['user_usermap_lat']);
 			$this->template->assign_block_vars('user_list', array(
 				'USER_ID'			=> $row['user_id'],
 				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
@@ -117,7 +119,7 @@ class main
 				'LON'				=> $row['user_usermap_lon'],
 				'LAT'				=> $row['user_usermap_lat'],
 				'GROUP_ID'		=> $row['group_id'],
-				'DISTANCE'		=> ($distance <> 0) ? round($distance, 2) : '',
+				'DISTANCE'		=> $distance,
 			));
 		}
 
@@ -135,8 +137,6 @@ class main
 			'A_USERMAP_SEARCH'	=> true,
 			'U_USERMAP_SEARCH'	=> $this->helper->route('tas2580_usermap_search', array()),
 			'L_MENU_SEARCH'		=> $this->user->lang('MENU_SEARCH', $this->config['tas2580_usermap_search_distance'])
-
-
 		));
 		return $this->helper->render('usermap_body.html', $this->user->lang('USERMAP_TITLE'));
 	}
@@ -178,20 +178,14 @@ class main
 		$result = $this->db->sql_query_limit($sql, $limit, ($start -1)  * $limit);
 		while($row = $this->db->sql_fetchrow($result))
 		{
-			$x1 = $lon;
-			$y1 = $lat;
-			$x2 = $row['user_usermap_lon'];
-			$y2 = $row['user_usermap_lat'];
-			// e = ARCCOS[ SIN(Breite1)*SIN(Breite2) + COS(Breite1)*COS(Breite2)*COS(Länge2-Länge1) ]
-			$distance = acos(sin($x1=deg2rad($x1))*sin($x2=deg2rad($x2))+cos($x1)*cos($x2)*cos(deg2rad($y2) - deg2rad($y1)))*(6378.137);
-
+			$distance = $this->get_distance($lon, $lat, $row['user_usermap_lon'], $row['user_usermap_lat']);
 			$this->template->assign_block_vars('memberrow', array(
 				'USER_ID'			=> $row['user_id'],
 				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
-				'JOINED'				=> $this->user->format_date($row['user_regdate']),
-				'POSTS'				=> $row['user_posts'],
+				'JOINED'			=> $this->user->format_date($row['user_regdate']),
+				'POSTS'			=> $row['user_posts'],
 				'GROUP_ID'		=> $row['group_id'],
-				'DISTANCE'		=> ($distance <> 0) ? round($distance, 2) : '',
+				'DISTANCE'		=> $distance,
 			));
 		}
 
@@ -263,7 +257,5 @@ class main
 			);
 		}
 		return $this->index();
-
-
 	}
 }

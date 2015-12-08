@@ -60,5 +60,9 @@ $lang = array_merge($lang, array(
 	'ACP_MAP_IN_VIEWPROFILE'				=> 'Karte im Profil anzeigen',
 	'ACP_MAP_IN_VIEWPROFILE_EXPLAIN'		=> 'Zeigt eine Karte mit dem Standort des Benutzers im Profil an. Zusätzlich wird berechnet wie weit man selber von dem Benutzer entfernt ist.',
 	'ACP_DISTANCE_IN_VIEWTOPIC'				=> 'Distanz in Themenansicht',
-	'DISTANCE_IN_VIEWTOPIC_EXPLAIN'			=> 'Zeigt die Distanz zu einem Benutzer neben seinen Beiträgen an. Dazu müssen der jeweilige Benutzer und der angemeldete Benutzer auf der Karte eingetragen sein.'
+	'DISTANCE_IN_VIEWTOPIC_EXPLAIN'			=> 'Zeigt die Distanz zu einem Benutzer neben seinen Beiträgen an. Dazu müssen der jeweilige Benutzer und der angemeldete Benutzer auf der Karte eingetragen sein.',
+	'ACP_DISTANCE_FORMAT'					=> 'Distanzen Format',
+	'DISTANCE_FORMAT_EXPLAIN'				=> 'Distanzen in Kilometern oder Meilen anzeigen',
+	'ACP_KM'								=> 'Kilometer',
+	'ACP_MILES'							=> 'Meilen',
 ));

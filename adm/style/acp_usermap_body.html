@@ -51,6 +51,15 @@
 			<label><input type="radio" name="distance_in_viewtopic" value="0"<!-- IF not DISTANCE_IN_VIEWTOPIC --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
 		</dd>
 	</dl>
+
+	<dl>
+		<dt><label for="distance_format">{L_ACP_DISTANCE_FORMAT}{L_COLON}</label><br /><span>{L_DISTANCE_FORMAT_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="distance_format" name="distance_format" value="1"<!-- IF DISTANCE_FORMAT --> checked="checked"<!-- ENDIF --> class="radio" /> {L_ACP_KM}</label>
+			<label><input type="radio" name="distance_format" value="0"<!-- IF not DISTANCE_FORMAT --> checked="checked"<!-- ENDIF --> class="radio" /> {L_ACP_MILES}</label>
+		</dd>
+	</dl>
+
 </fieldset>
 
 <script>

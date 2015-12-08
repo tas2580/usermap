@@ -22,6 +22,7 @@ $lang = array_merge($lang, array(
 	'BACK_TO_USERMAP'					=> 'Zurück zur Karte',
 	'DISTANCE'							=> 'Diszanz',
 	'KM'									=> 'Kilometer',
+	'MILES'								=> 'Meilen',
 	'SET_MY_POSITION'						=> 'Eigene Positon hier setzen',
 	'CLICK_TO_SET'							=> 'Klicke auf die Map um deine Positon angzugeben.',
 	'SET_POSITION'							=> 'Position setzen',

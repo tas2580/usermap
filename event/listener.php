@@ -16,7 +16,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
 * Event listener
 */
-class listener implements EventSubscriberInterface
+class listener extends \tas2580\usermap\includes\class_usermap implements EventSubscriberInterface
 {
 	static public function getSubscribedEvents()
 	{
@@ -132,18 +132,8 @@ class listener implements EventSubscriberInterface
 		}
 
 		$data = $event['member'];
-		if (!empty($this->user->data['user_usermap_lon']) && !empty($this->user->data['user_usermap_lat']) &&
-			!empty($data['user_usermap_lat']) && !empty($data['user_usermap_lat'])
-		)
-		{
-			$x1 = $this->user->data['user_usermap_lon'];
-			$y1 = $this->user->data['user_usermap_lat'];
-			$x2 = $data['user_usermap_lon'];
-			$y2 = $data['user_usermap_lat'];
-			// e = ARCCOS[ SIN(Breite1)*SIN(Breite2) + COS(Breite1)*COS(Breite2)*COS(Länge2-Länge1) ]
-			$distance = acos(sin($x1=deg2rad($x1))*sin($x2=deg2rad($x2))+cos($x1)*cos($x2)*cos(deg2rad($y2) - deg2rad($y1)))*(6378.137);
-		}
-
+		$this->user->add_lang_ext('tas2580/usermap', 'controller');
+		$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $data['user_usermap_lon'], $data['user_usermap_lat']);
 
 		// Center the map to user
 		$this->template->assign_vars(array(
@@ -152,7 +142,7 @@ class listener implements EventSubscriberInterface
 			'USERMAP_LON'		=> $data['user_usermap_lon'],
 			'USERMAP_LAT'			=> $data['user_usermap_lat'],
 			'USERMAP_ZOOM'		=> (int) 10,
-			'DISTANCE'			=> ($distance <> 0) ? round($distance, 2) : '',
+			'DISTANCE'			=> $distance,
 			'MARKER_PATH'		=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker'),
 			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
@@ -201,24 +191,21 @@ class listener implements EventSubscriberInterface
 			return false;
 		}
 
-		$distance = 0;
+		$this->user->add_lang_ext('tas2580/usermap', 'controller');
 		$user_cache_data = $event['user_cache_data'];
-		if (!empty($this->user->data['user_usermap_lon']) && !empty($this->user->data['user_usermap_lat']) &&
-			!empty($data['user_usermap_lat']) && !empty($data['user_usermap_lat'])
-		)
-		{
-			$x1 = $this->user->data['user_usermap_lon'];
-			$y1 = $this->user->data['user_usermap_lat'];
-			$x2 = $data['user_usermap_lon'];
-			$y2 = $data['user_usermap_lat'];
-			// e = ARCCOS[ SIN(Breite1)*SIN(Breite2) + COS(Breite1)*COS(Breite2)*COS(Länge2-Länge1) ]
-			$distance = acos(sin($x1=deg2rad($x1))*sin($x2=deg2rad($x2))+cos($x1)*cos($x2)*cos(deg2rad($y2) - deg2rad($y1)))*(6378.137);
-		}
+		$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $data['user_usermap_lon'], $data['user_usermap_lat']);
 
-		$user_cache_data['distance'] = round($distance, 2);
+		$user_cache_data['distance'] = $distance;
 		$event['user_cache_data'] = $user_cache_data;
 	}
 
+	/**
+	* Add distance to viewtopic
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
 	public function viewtopic_modify_post_row($event)
 	{
 		if(!$this->config['tas2580_usermap_distance_in_viewtopic'])
@@ -232,7 +219,6 @@ class listener implements EventSubscriberInterface
 			return false;
 		}
 
-		$this->user->add_lang_ext('tas2580/usermap', 'controller');
 		$post_row = $event['post_row'];
 		$post_row['DISTANCE'] = $event['user_poster_data']['distance'];
 		$event['post_row'] =$post_row;
