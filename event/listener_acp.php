@@ -83,9 +83,11 @@ class listener_acp implements EventSubscriberInterface
 	public function acp_profile_modify_profile_info($event)
 	{
 		$row = $event['user_row'];
+		$lon = substr($this->request->variable('usermap_lon', $row['user_usermap_lon']), 0, 10);
+		$lat = substr($this->request->variable('usermap_lat', $row['user_usermap_lat']), 0, 10);
 		$event['user_row'] = array_merge($event['user_row'], array(
-			'user_usermap_lon'	=> substr($this->request->variable('usermap_lon', $row['user_usermap_lon']), 0, 10),
-			'user_usermap_lat'	=> substr($this->request->variable('usermap_lat', $row['user_usermap_lat']), 0, 10),
+			'user_usermap_lon'	=> empty($lon) ? '' : $lon,
+			'user_usermap_lat'	=> empty($lat) ? '' : $lat,
 		));
 		$this->add_field($event['user_row']['user_usermap_lon'], $event['user_row']['user_usermap_lat']);
 	}
