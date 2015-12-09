@@ -35,7 +35,7 @@ function drawmap(lon, lat, zoom, controls) {
 	OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 		defaultHandlerOptions: {
 			'single': true,
-			'double': true,
+			'double': false,
 			'pixelTolerance': 0,
 			'stopSingle': false,
 			'stopDouble': false
@@ -136,7 +136,6 @@ function generateMarker(image){
 }
 
 function addMarker(layer, lon, lat, popupContentHTML, marker) {
-
 	var ll = new OpenLayers.LonLat(Lon2Merc(lon), Lat2Merc(lat));
 	var feature = new OpenLayers.Feature(layer, ll);
 	feature.closeBox = true;
@@ -157,7 +156,7 @@ function addMarker(layer, lon, lat, popupContentHTML, marker) {
 		OpenLayers.Event.stop(evt);
 	};
 	marker.events.register("mousedown", feature, markerClick);
-
+	marker.events.register("touchstart", feature, markerClick);
 	layer.addMarker(marker);
 }
 
