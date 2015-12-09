@@ -1,46 +1,29 @@
 <!-- IF S_IN_USERMAP -->
 <!-- IF MAP_TYPE == 'osm' -->
+	<!-- INCLUDEJS @tas2580_usermap/osmscript.js -->
 	<script type="text/javascript">
 	// <![CDATA[
-	function display_map()
-	{
+	function display_map() {
 		OpenLayers.Lang.setCode('{S_USER_LANG}');
 		drawmap({USERMAP_LON}, {USERMAP_LAT}, {USERMAP_ZOOM}, {USERMAP_CONTROLS});
-
-		// Generate markers
-		<!-- BEGIN group_list -->
-		var marker_{group_list.GROUP_ID} = generateMarker('{MARKER_PATH}/{group_list.MARKER}');
-		<!-- END group_list -->
-
-		// Add markers
-		<!-- BEGIN user_list -->
-		addMarker(layer_markers, {user_list.LON}, {user_list.LAT}, '<strong>{L_USERNAME}</strong> {user_list.USERNAME}<br>{L_DISTANCE} {user_list.DISTANCE}', marker_{user_list.GROUP_ID});
-		<!-- END user_list -->
 		<!-- IF A_USERMAP_ADD or A_USERMAP_SEARCH -->
-		alert_set_position();
+			$('#map').css('cursor', 'crosshair');
+			click.activate();
 		<!-- ENDIF -->
 	}
 
-	<!-- IF A_USERMAP_ADD or A_USERMAP_SEARCH -->
-	function set_postion(lon, lat) {
-		window.location.href ='{U_SET_POSITON}?lon='+lon+'&lat='+lat;
-		/*
-		$.get('{U_SET_POSITON}?lon='+lon+'&lat='+lat,function(returndata){
-			phpbb.alert('{L_POSITION_SET_TITLE}',returndata);
+	function reload_marker(Alon, Alat, Blon, Blat) {
+		layer_markers.clearMarkers();
+		$.get('{U_GET_MARKER}?alon='+Alon+'&alat='+Alat+'&blon='+Blon+'&blat='+Blat, function(returndata){
+			returndata.forEach(function(element, index, array) {
+				var marker = generateMarker('{MARKER_PATH}/'+element.marker);
+				addMarker(layer_markers, parseFloat(element.lon), parseFloat(element.lat), element.title+'<br>{L_DISTANCE}{L_COLON} '+element.distance, marker);
+			});
 		});
-		*/
 	}
-	function alert_set_position() {
 
-		$('#map').css('cursor', 'crosshair');
-		click.activate();
-		/*
-		phpbb.alert('{L_SET_MY_POSITION}', '{L_CLICK_TO_SET}<br><br><input class="button2" type="submit" name="close" value="{L_SET_POSITION}" onclick="phpbb.alert.close($(\'#phpbb_alert\'), true);" />');
-		*/
-	}
-	<!-- ENDIF -->
 	$('document').ready(display_map);
-	// ]]>
+// ]]>
 	</script>
 <!-- ENDIF -->
 

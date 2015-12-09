@@ -4,7 +4,12 @@
 	<div class="inner">
 		<div class="content">
 			<!-- IF  S_CAN_ADD and A_USERMAP_ADD --><p>{L_KLICK_TO_ADD}</p><!-- ENDIF -->
-			<div id="map" class="user_map" style="position:relative;"></div>
+			<div id="map" class="user_map" style="position:relative;">
+				<noscript>
+				<h2>{L_ERROR}</h2>
+				<p>{L_JAVASCRIPT_ERROR}</p>
+				</noscript>
+			</div>
 			<!-- IF MAP_TYPE == 'osm' -->
 			© <a href="http://www.openstreetmap.org">OpenStreetMap</a> {L_AND} <a href="http://www.openstreetmap.org/copyright">Mitwirkende</a>, <a href="http://creativecommons.org/licenses/by-sa/2.0/deed.de">CC-BY-SA</a><br>
 			<!-- ENDIF -->
@@ -23,9 +28,9 @@
 
 <div id="map_menu">
 	<ul>
-		<!-- IF A_USERMAP_ADD --><li><a href="{U_SET_POSITON}?LONLAT">{L_SET_MY_POSITION}</a></li><!-- ENDIF -->
+		<!-- IF A_USERMAP_ADD --><li><a href="{U_SET_POSITON}?LONLAT" onclick="hide_menu(false);" data-ajax="usermap.set_position">{L_SET_MY_POSITION}</a></li><!-- ENDIF -->
 		<!-- IF A_USERMAP_SEARCH --><li><a href="{U_USERMAP_SEARCH}?LONLAT">{L_MENU_SEARCH}</a></li><!-- ENDIF -->
-		<li class="menu_close"><a href="#" onclick="hide_menu(); return false;">{L_MENU_CLOSE}</a>
+		<li class="menu_close"><a href="#" onclick="hide_menu(true); return false;">{L_MENU_CLOSE}</a>
 	</ul>
 </div>
 <!-- INCLUDE overall_footer.html -->

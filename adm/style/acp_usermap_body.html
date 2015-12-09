@@ -6,6 +6,10 @@
 <fieldset>
 	<legend>{L_ACP_MAP_SETTINGS}</legend>
 	<dl>
+		<dt><label for="max_marker">{L_ACP_MAX_MARKER}{L_COLON}</label><br /><span>{L_ACP_MAX_MARKER_EXPLAIN}</span></dt>
+		<dd><input id="max_marker" type="number" name="max_marker" value="{MAX_MARKER}" /></dd>
+	</dl>
+	<dl>
 		<dt><label for="usermap_zoom">{L_ACP_USERMAP_ZOOM}{L_COLON}</label><br /><span>{L_ACP_USERMAP_ZOOM_EXPLAIN}</span></dt>
 		<dd><input id="usermap_zoom" type="number" min="3" max="18" name="usermap_zoom" value="{USERMAP_ZOOM}" /></dd>
 	</dl>
@@ -59,7 +63,6 @@
 			<label><input type="radio" name="distance_format" value="0"<!-- IF not DISTANCE_FORMAT --> checked="checked"<!-- ENDIF --> class="radio" /> {L_ACP_MILES}</label>
 		</dd>
 	</dl>
-
 </fieldset>
 
 <script>

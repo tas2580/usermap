@@ -97,30 +97,6 @@ class main extends \tas2580\usermap\includes\class_usermap
 			));
 		}
 
-		include($this->phpbb_root_path . 'includes/functions_display.' . $this->php_ext);
-
-		$my_lon = $this->user->data['user_usermap_lon'];
-		$my_lat = $this->user->data['user_usermap_lat'];
-
-		$sql = 'SELECT user_id, username, user_colour, group_id, user_usermap_lon, user_usermap_lat
-			FROM ' . USERS_TABLE . "
-			WHERE user_usermap_lon != ''
-				AND user_usermap_lat != ''";
-		$result = $this->db->sql_query($sql);
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$distance = $this->get_distance($my_lon, $my_lat, $row['user_usermap_lon'], $row['user_usermap_lat']);
-			$this->template->assign_block_vars('user_list', array(
-				'USER_ID'			=> $row['user_id'],
-				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
-				'USERNAME_SIMPLE'	=> get_username_string('username', $row['user_id'], $row['username'], $row['user_colour']),
-				'LON'				=> $row['user_usermap_lon'],
-				'LAT'				=> $row['user_usermap_lat'],
-				'GROUP_ID'		=> $row['group_id'],
-				'DISTANCE'		=> $distance,
-			));
-		}
-
 		$this->template->assign_vars(array(
 			'USERMAP_CONTROLS'	=> 'true',
 			'S_IN_USERMAP'		=> true,
@@ -132,12 +108,50 @@ class main extends \tas2580\usermap\includes\class_usermap
 			'A_USERMAP_SEARCH'	=> $this->auth->acl_get('u_usermap_search'),
 			'S_CAN_ADD'			=> (empty($this->user->data['user_usermap_lon']) || empty($this->user->data['user_usermap_lat'])),
 			'U_SET_POSITON'		=> $this->helper->route('tas2580_usermap_position', array()),
+			'U_GET_MARKER'		=> $this->helper->route('tas2580_usermap_get_marker', array()),
 			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
 			'U_USERMAP_SEARCH'	=> $this->helper->route('tas2580_usermap_search', array()),
 			'L_MENU_SEARCH'		=> $this->user->lang('MENU_SEARCH', $this->config['tas2580_usermap_search_distance'])
 		));
 		return $this->helper->render('usermap_body.html', $this->user->lang('USERMAP_TITLE'));
+	}
+
+
+	public function marker()
+	{
+		$data = array();
+
+		$min_lon = (float) substr($this->request->variable('alon', ''), 0, 10);
+		$max_lat = (float) substr($this->request->variable('alat', ''), 0, 10);
+		$max_lon = (float) substr($this->request->variable('blon', ''), 0, 10);
+		$min_lat = (float) substr($this->request->variable('blat', ''), 0, 10);
+		$my_lon = $this->user->data['user_usermap_lon'];
+		$my_lat = $this->user->data['user_usermap_lat'];
+
+		$sql_array['FROM'][USERS_TABLE] = 'u';
+		$sql_array['SELECT'] .= 'u.user_id, u.username, u.user_colour, u.user_regdate, u.user_posts, u.group_id, u.user_usermap_lon, u.user_usermap_lat, g.group_usermap_marker';
+		$sql_array['LEFT_JOIN'][] = array(
+			'FROM'	=> array(GROUPS_TABLE => 'g'),
+			'ON'		=> 'u.group_id = g.group_id'
+		);
+		$sql_array['WHERE'] = "(u.user_usermap_lon >= $min_lon AND u.user_usermap_lon <= $max_lon) AND (u.user_usermap_lat >= $min_lat AND u.user_usermap_lat<= $max_lat)";
+		$sql = $this->db->sql_build_query('SELECT', $sql_array);
+		$result = $this->db->sql_query_limit($sql, (int) $this->config['tas2580_usermap_max_marker']);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$distance = $this->get_distance($my_lon, $my_lat, $row['user_usermap_lon'], $row['user_usermap_lat']);
+			$data[] = array(
+				'marker'		=> $row['group_usermap_marker'],
+				'lon'			=> $row['user_usermap_lon'],
+				'lat'			=> $row['user_usermap_lat'],
+				'title'			=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+				'distance'		=> $distance,
+			);
+		}
+
+		$json_response = new \phpbb\json_response;
+		$json_response->send($data);
 	}
 
 	public function search($start = 1)
@@ -208,7 +222,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 
 	public function position()
 	{
-		if (($this->user->data['user_id'] <> ANONYMOUS) || !$this->auth->acl_get('u_usermap_add'))
+		if (($this->user->data['user_id'] == ANONYMOUS) || !$this->auth->acl_get('u_usermap_add'))
 		{
 			trigger_error('NOT_AUTHORISED');
 		}
@@ -245,8 +259,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 				WHERE user_id = ' . (int) $this->user->data['user_id'] ;
 
 			$this->db->sql_query($sql);
-
-			redirect($this->helper->route('tas2580_usermap_index', array()));
+			trigger_error('POSITION_SET');
 		}
 		else
 		{

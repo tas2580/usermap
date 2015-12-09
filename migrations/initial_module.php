@@ -40,6 +40,7 @@ class initial_module extends \phpbb\db\migration\migration
 			array('config.add', array('tas2580_usermap_map_in_viewprofile', '1')),
 			array('config.add', array('tas2580_usermap_distance_in_viewtopic', '1')),
 			array('config.add', array('tas2580_usermap_distance_format', '1')),
+			array('config.add', array('tas2580_usermap_max_marker', '100')),
 
 			// Add permissions
 			array('permission.add', array('u_usermap_view', true, 'u_')),

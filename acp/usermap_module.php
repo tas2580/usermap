@@ -42,6 +42,7 @@ class usermap_module
 			$config->set('tas2580_usermap_map_in_viewprofile', $request->variable('map_in_viewprofile', 0));
 			$config->set('tas2580_usermap_distance_in_viewtopic', $request->variable('distance_in_viewtopic', 0));
 			$config->set('tas2580_usermap_distance_format', $request->variable('distance_format', 0));
+			$config->set('tas2580_usermap_max_marker', $request->variable('max_marker', 100));
 
 			trigger_error($user->lang('ACP_SAVED') . adm_back_link($this->u_action));
 		}
@@ -58,6 +59,7 @@ class usermap_module
 			'MAP_IN_VIEWPROFILE'		=> $config['tas2580_usermap_map_in_viewprofile'],
 			'DISTANCE_IN_VIEWTOPIC'		=> $config['tas2580_usermap_distance_in_viewtopic'],
 			'DISTANCE_FORMAT'			=> $config['tas2580_usermap_distance_format'],
+			'MAX_MARKER'				=> $config['tas2580_usermap_max_marker'],
 		));
 	}
 
