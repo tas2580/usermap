@@ -5,21 +5,31 @@
 	// <![CDATA[
 	function display_map() {
 		OpenLayers.Lang.setCode('{S_USER_LANG}');
-		drawmap({USERMAP_LON}, {USERMAP_LAT}, {USERMAP_ZOOM}, {USERMAP_CONTROLS});
+		usermap.drawmap({USERMAP_LON}, {USERMAP_LAT}, {USERMAP_ZOOM}, {USERMAP_CONTROLS});
 		<!-- IF A_USERMAP_ADD or A_USERMAP_SEARCH -->
 			$('#map').css('cursor', 'crosshair');
+			map.addControl(click);
 			click.activate();
 		<!-- ENDIF -->
 	}
 
 	function reload_marker(Alon, Alat, Blon, Blat) {
 		layer_markers.clearMarkers();
+		<!-- IF U_GET_MARKER -->
 		$.get('{U_GET_MARKER}?alon='+Alon+'&alat='+Alat+'&blon='+Blon+'&blat='+Blat, function(returndata){
-			returndata.forEach(function(element, index, array) {
-				var marker = generateMarker('{MARKER_PATH}/'+element.marker);
-				addMarker(layer_markers, parseFloat(element.lon), parseFloat(element.lat), element.title+'<br>{L_DISTANCE}{L_COLON} '+element.distance, marker);
-			});
+			if($.isArray(returndata)){
+				returndata.forEach(function(element, index, array) {
+					var marker = usermap.generateMarker('{MARKER_PATH}/'+element.marker);
+					usermap.addMarker(layer_markers, parseFloat(element.lon), parseFloat(element.lat), element.title+'<br>{L_DISTANCE}{L_COLON} '+element.distance, marker);
+				});
+			} else {
+				phpbb.alert('{L_ERROR}', returndata);
+			}
 		});
+		<!-- ELSE -->
+		var marker = usermap.generateMarker('{MARKER_PATH}/{USERMAP_MARKER}');
+		usermap.addMarker(layer_markers, {USERMAP_LON}, {USERMAP_LAT}, '{USERNAME}', marker);
+		<!-- ENDIF -->
 	}
 
 	$('document').ready(display_map);
