@@ -75,6 +75,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$sql = 'SELECT group_id, group_name, group_usermap_marker, group_type, group_colour
 			FROM ' . GROUPS_TABLE . "
 			WHERE group_usermap_marker != ''
+				AND group_legend <> 0
 			ORDER BY group_name";
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
