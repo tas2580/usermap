@@ -67,6 +67,6 @@ $lang = array_merge($lang, array(
 	'ACP_MILES'							=> 'Meilen',
 	'ACP_MAX_MARKER'						=> 'Max. Marker',
 	'ACP_MAX_MARKER_EXPLAIN'				=> 'Anzahl der maximal angezeigten Marker pro Karten Ausschnitt und Zoom Stufe. Beachte das zu viele Marker die Karte langsam machen können.',
-	'ACP_USERMAP_LEGEND'					=> 'In der Legende anzeigen',
-	'ACP_USERMAP_LEGEND_DESCRIPTION'		=> 'Wenn gesetzt wird der Marker der Gruppe in der Legende angezeigt.',
+	'ACP_USERMAP_LEGEND'					=> 'In der Legende verbergen',
+	'ACP_USERMAP_LEGEND_DESCRIPTION'		=> 'Wenn gesetzt wird der Marker der Gruppe in der Legende ausgeblendet.',
 ));
