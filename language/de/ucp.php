@@ -37,4 +37,6 @@ $lang = array_merge($lang, array(
 	'UCP_USERMAP_LON'					=> 'Längengrad',
 	'UCP_USERMAP_LAT'						=> 'Breitengrad',
 	'UCP_USERMAP_GET_COORDINATES'		=> 'Meine Koordinaten eintragen',
+	'UCP_USERMAP_HIDE'					=> 'Auf Karte anzeigen',
+	'UCP_USERMAP_HIDE_DESCRIPTION'			=> 'Soll dein Standort auf der Karte angezeigt werden?',
 ));

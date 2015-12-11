@@ -75,7 +75,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$sql = 'SELECT group_id, group_name, group_usermap_marker, group_type, group_colour
 			FROM ' . GROUPS_TABLE . "
 			WHERE group_usermap_marker != ''
-				AND group_legend <> 0
+				AND group_usermap_legend <> 0
 			ORDER BY group_name";
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
@@ -136,7 +136,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 			'FROM'	=> array(GROUPS_TABLE => 'g'),
 			'ON'		=> 'u.group_id = g.group_id'
 		);
-		$sql_array['WHERE'] = "(u.user_usermap_lon >= $min_lon AND u.user_usermap_lon <= $max_lon) AND (u.user_usermap_lat >= $min_lat AND u.user_usermap_lat<= $max_lat)";
+		$sql_array['WHERE'] = "(u.user_usermap_lon >= $min_lon AND u.user_usermap_lon <= $max_lon) AND (u.user_usermap_lat >= $min_lat AND u.user_usermap_lat<= $max_lat) AND user_usermap_hide = 0";
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, (int) $this->config['tas2580_usermap_max_marker']);
 		while ($row = $this->db->sql_fetchrow($result))

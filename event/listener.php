@@ -95,6 +95,10 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 				'lang'		=> 'ACL_U_USERMAP_SEARCH',
 				'cat'		=> 'profile'
 			),
+			'u_usermap_hide'	=> array(
+				'lang'		=> 'ACL_U_USERMAP_HIDE',
+				'cat'		=> 'profile'
+			),
 		);
 		$event['permissions'] = $permissions;
 	}
@@ -139,6 +143,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		$this->template->assign_vars(array(
 			'S_IN_USERMAP'		=> true,
 			'USERMAP_CONTROLS'	=> 'false',
+			'USERNAME'			=> get_username_string('full', $data['user_id'], $data['username'], $data['user_colour']),
 			'USERMAP_LON'		=> $data['user_usermap_lon'],
 			'USERMAP_LAT'			=> $data['user_usermap_lat'],
 			'USERMAP_ZOOM'		=> (int) 10,
@@ -148,26 +153,14 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
 		));
 
-		// Set marker for user
-		$this->template->assign_block_vars('user_list', array(
-			'USER_ID'			=> $data['user_id'],
-			'USERNAME'		=> get_username_string('full', $data['user_id'], $data['username'], $data['user_colour']),
-			'LON'				=> $data['user_usermap_lon'],
-			'LAT'				=> $data['user_usermap_lat'],
-			'GROUP_ID'		=> $data['group_id'],
-		));
-
 		$sql = 'SELECT group_id, group_usermap_marker
 			FROM ' . GROUPS_TABLE . '
 			WHERE group_id = ' . (int) $data['group_id'];
 		$result = $this->db->sql_query($sql);
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$this->template->assign_block_vars('group_list', array(
-				'GROUP_ID'	=> $row['group_id'],
-				'MARKER'		=> $row['group_usermap_marker'],
-			));
-		}
+		$row = $this->db->sql_fetchrow($result);
+		$this->template->assign_vars(array(
+			'USERMAP_MARKER'		=> $row['group_usermap_marker'],
+		));
 	}
 
 	/**

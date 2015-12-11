@@ -7,7 +7,17 @@
 		<a href="#" onclick="return get_coordinates()">{L_UCP_USERMAP_GET_COORDINATES}</a>
 	</dd>
 </dl>
-
+<!-- IF A_USERMAP_HIDE -->
+<dl>
+	<dt><label for="usermap_hide">{L_UCP_USERMAP_HIDE}{L_COLON}</label><br />
+		<span>{L_UCP_USERMAP_HIDE_DESCRIPTION}</span>
+	</dt>
+	<dd>
+		<label><input type="radio" id="usermap_hide" name="usermap_hide" value="1"<!-- IF USERMAP_HIDE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+		<label><input type="radio" name="usermap_hide" value="0"<!-- IF not USERMAP_HIDE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+	</dd>
+</dl>
+<!-- ENDIF -->
 <script>
 	function get_coordinates() {
 		navigator.geolocation.getCurrentPosition(success, error, options);
