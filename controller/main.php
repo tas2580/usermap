@@ -43,7 +43,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 
 	/** @var string phpbb_root_path */
 	protected $phpbb_root_path;
-	
+
 	/** @var string php_ext */
 	protected $php_ext;
 
@@ -299,13 +299,13 @@ class main extends \tas2580\usermap\includes\class_usermap
 			trigger_error('NOT_AUTHORISED');
 		}
 
+		$data = array(
+			'user_usermap_lon'		=> substr($this->request->variable('lon', ''), 0, 10),
+			'user_usermap_lat'		=> substr($this->request->variable('lat', ''), 0, 10),
+		);
+
 		if (confirm_box(true))
 		{
-			$data = array(
-				'user_usermap_lon'		=> substr($this->request->variable('lon', ''), 0, 10),
-				'user_usermap_lat'		=> substr($this->request->variable('lat', ''), 0, 10),
-			);
-
 			if (!function_exists('validate_data'))
 			{
 				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
@@ -330,9 +330,9 @@ class main extends \tas2580\usermap\includes\class_usermap
 		}
 		else
 		{
-			confirm_box(false, $this->user->lang('CONFIRM_COORDINATES_SET', $data['lon'], $data['lat']), build_hidden_fields(array(
-				'lon'		=> $data['lon'],
-				'lat'		=> $data['lat']))
+			confirm_box(false, $this->user->lang('CONFIRM_COORDINATES_SET', $data['user_usermap_lon'], $data['user_usermap_lat']), build_hidden_fields(array(
+				'lon'		=> $data['user_usermap_lon'],
+				'lat'		=> $data['user_usermap_lat']))
 			);
 		}
 		return $this->index();
