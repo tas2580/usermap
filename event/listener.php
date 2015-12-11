@@ -207,7 +207,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		}
 
 		// not on own profile
-		if ($event['user_poster_data']['user_id'] == $this->user->data['user_id'])
+		if ($event['poster_id'] == $this->user->data['user_id'])
 		{
 			return false;
 		}
