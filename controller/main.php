@@ -121,28 +121,47 @@ class main extends \tas2580\usermap\includes\class_usermap
 
 	public function marker()
 	{
-		$data = array();
+		$data = array(
+			'min_lon'		=> (float) substr($this->request->variable('alon', ''), 0, 10),
+			'max_lat'		=> (float) substr($this->request->variable('alat', ''), 0, 10),
+			'max_lon'		=> (float) substr($this->request->variable('blon', ''), 0, 10),
+			'min_lat'		=> (float) substr($this->request->variable('blat', ''), 0, 10),
+		);
 
-		$min_lon = (float) substr($this->request->variable('alon', ''), 0, 10);
-		$max_lat = (float) substr($this->request->variable('alat', ''), 0, 10);
-		$max_lon = (float) substr($this->request->variable('blon', ''), 0, 10);
-		$min_lat = (float) substr($this->request->variable('blat', ''), 0, 10);
-		$my_lon = $this->user->data['user_usermap_lon'];
-		$my_lat = $this->user->data['user_usermap_lat'];
+		$validate_array = array(
+			'min_lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+			'max_lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+			'max_lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+			'min_lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+		);
 
+		if (!function_exists('validate_data'))
+		{
+			include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
+		}
+
+		$error = validate_data($data, $validate_array);
+		if(sizeof($error))
+		{
+			$error = array_map(array($this->user, 'lang'), $error);
+			$json_response = new \phpbb\json_response;
+			$json_response->send($error);
+		}
+
+		$return = array();
 		$sql_array['FROM'][USERS_TABLE] = 'u';
 		$sql_array['SELECT'] .= 'u.user_id, u.username, u.user_colour, u.user_regdate, u.user_posts, u.group_id, u.user_usermap_lon, u.user_usermap_lat, g.group_usermap_marker';
 		$sql_array['LEFT_JOIN'][] = array(
 			'FROM'	=> array(GROUPS_TABLE => 'g'),
 			'ON'		=> 'u.group_id = g.group_id'
 		);
-		$sql_array['WHERE'] = "(u.user_usermap_lon >= $min_lon AND u.user_usermap_lon <= $max_lon) AND (u.user_usermap_lat >= $min_lat AND u.user_usermap_lat<= $max_lat) AND user_usermap_hide = 0";
+		$sql_array['WHERE'] = "(u.user_usermap_lon >= {$data['min_lon']} AND u.user_usermap_lon <= {$data['max_lon']}) AND (u.user_usermap_lat >= {$data['min_lat']} AND u.user_usermap_lat<= {$data['max_lat']}) AND user_usermap_hide = 0";
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, (int) $this->config['tas2580_usermap_max_marker']);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$distance = $this->get_distance($my_lon, $my_lat, $row['user_usermap_lon'], $row['user_usermap_lat']);
-			$data[] = array(
+			$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $row['user_usermap_lon'], $row['user_usermap_lat']);
+			$return[] = array(
 				'marker'		=> $row['group_usermap_marker'],
 				'lon'			=> $row['user_usermap_lon'],
 				'lat'			=> $row['user_usermap_lat'],
@@ -152,12 +171,11 @@ class main extends \tas2580\usermap\includes\class_usermap
 		}
 
 		$json_response = new \phpbb\json_response;
-		$json_response->send($data);
+		$json_response->send($return);
 	}
 
 	public function search($start = 1)
 	{
-
 		if (!$this->auth->acl_get('u_usermap_search'))
 		{
 			trigger_error('NOT_AUTHORISED');
@@ -168,17 +186,30 @@ class main extends \tas2580\usermap\includes\class_usermap
 			'U_VIEW_FORUM'	=> $this->helper->route('tas2580_usermap_index', array()),
 		));
 
-		$lon = substr($this->request->variable('lon', ''), 0, 10);
-		$lat = substr($this->request->variable('lat', ''), 0, 10);
-		$dst = $this->request->variable('dst', $this->config['tas2580_usermap_search_distance']);
+		$data = array(
+			'lon'	=> substr($this->request->variable('lon', ''), 0, 10),
+			'lat'	=> substr($this->request->variable('lat', ''), 0, 10),
+			'dst'	=> (int) $this->request->variable('dst', $this->config['tas2580_usermap_search_distance']),
+		);
 
-		$alpha = 180 * $dst / (6378137 / 1000 * 3.14159);
-		$min_lon = (float) ($lon - $alpha);
-		$max_lon = (float) ($lon + $alpha);
-		$min_lat = (float) ($lat - $alpha);
-		$max_lat = (float) ($lat + $alpha);
+		$validate_array = array(
+			'lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+			'lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+		);
 
-		$where = " WHERE (user_usermap_lon >= $min_lon AND user_usermap_lon <= $max_lon) AND (user_usermap_lat >= $min_lat AND user_usermap_lat<= $max_lat)";
+		if (!function_exists('validate_data'))
+		{
+			include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
+		}
+		$error = validate_data($data, $validate_array);
+
+		$alpha = 180 * $data['dst'] / (6378137 / 1000 * 3.14159);
+		$min_lon = (float) ($data['lon'] - $alpha);
+		$max_lon = (float) ($data['lon'] + $alpha);
+		$min_lat = (float) ($data['lat'] - $alpha);
+		$max_lat = (float) ($data['lat'] + $alpha);
+
+		$where = " WHERE ( user_usermap_lon >= $min_lon AND user_usermap_lon <= $max_lon) AND ( user_usermap_lat >= $min_lat AND user_usermap_lat<= $max_lat)";
 		$limit = (int) $this->config['topics_per_page'];
 
 		$sql = 'SELECT COUNT(user_id) AS num_users
@@ -192,7 +223,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$result = $this->db->sql_query_limit($sql, $limit, ($start -1)  * $limit);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$distance = $this->get_distance($lon, $lat, $row['user_usermap_lon'], $row['user_usermap_lat']);
+			$distance = $this->get_distance($data['lon'], $data['lat'], $row['user_usermap_lon'], $row['user_usermap_lat']);
 			$this->template->assign_block_vars('memberrow', array(
 				'USER_ID'			=> $row['user_id'],
 				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
@@ -212,9 +243,11 @@ class main extends \tas2580\usermap\includes\class_usermap
 			),
 		), 'pagination', 'start', $total_users, $limit, ($start - 1)  * $limit);
 
+		$error = array_map(array($this->user, 'lang'), $error);
 		$this->template->assign_vars(array(
+			'ERROR'				=> (sizeof($error)) ? implode('<br />', $error) : '',
 			'TOTAL_USERS'			=> $this->user->lang('TOTAL_USERS', (int) $total_users),
-			'L_SEARCH_EXPLAIN'		=> $this->user->lang('SEARCH_EXPLAIN', $dst, $lon, $lat),
+			'L_SEARCH_EXPLAIN'		=> $this->user->lang('SEARCH_EXPLAIN', $data['dst'], $data['lon'], $data['lat']),
 		));
 
 		return $this->helper->render('usermap_search.html', $this->user->lang('USERMAP_SEARCH'));
@@ -243,12 +276,8 @@ class main extends \tas2580\usermap\includes\class_usermap
 				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 			$error = validate_data($data, array(
-				'user_usermap_lon'			=> array(
-					array('string', true, 5, 10)
-				),
-				'user_usermap_lat'			=> array(
-					array('string', true, 5, 10)
-				),
+				'user_usermap_lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+				'user_usermap_lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
 			));
 			$error = array_map(array($this->user, 'lang'), $error);
 			if (sizeof($error))

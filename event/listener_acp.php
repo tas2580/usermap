@@ -125,8 +125,8 @@ class listener_acp implements EventSubscriberInterface
 				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 			$validate_array = array(
-				'user_usermap_lon'	=> array('string', false, 0, 12),
-				'user_usermap_lat'	=> array('string', false, 0, 12),
+				'user_usermap_lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+				'user_usermap_lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
 			);
 
 			$error = validate_data($event['data'], $validate_array);
@@ -180,7 +180,12 @@ class listener_acp implements EventSubscriberInterface
 		if ($event['mode'] == 'load')
 		{
 			$display_vars = $event['display_vars'];
-			$insert = array('tas2580_usermap_map_in_viewprofile' => array('lang' => 'ACP_MAP_IN_VIEWPROFILE', 'validate' => 'bool', 'type' => 'radio:yes_no', 'explain' => true));
+			$insert = array('tas2580_usermap_map_in_viewprofile' => array(
+				'lang'		=> 'ACP_MAP_IN_VIEWPROFILE',
+				'validate'	=> 'bool',
+				'type'	=> 'radio:yes_no',
+				'explain'	=> true
+			));
 			$display_vars['vars'] = $this->array_insert($display_vars['vars'], 'legend3', $insert);
 			$event['display_vars'] = $display_vars;
 		}

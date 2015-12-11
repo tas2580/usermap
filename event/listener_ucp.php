@@ -116,8 +116,8 @@ class listener_ucp implements EventSubscriberInterface
 				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 			$validate_array = array(
-				'user_usermap_lon'	=> array('string', false, 0, 12),
-				'user_usermap_lat'	=> array('string', false, 0, 12),
+				'user_usermap_lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+				'user_usermap_lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
 			);
 
 			$error = validate_data($event['data'], $validate_array);
