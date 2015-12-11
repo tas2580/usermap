@@ -174,7 +174,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 
 		$return = array();
 		$sql_array['FROM'][USERS_TABLE] = 'u';
-		$sql_array['SELECT'] .= 'u.user_id, u.username, u.user_colour, u.user_regdate, u.user_posts, u.group_id, u.user_usermap_lon, u.user_usermap_lat, g.group_usermap_marker';
+		$sql_array['SELECT'] = 'u.user_id, u.username, u.user_colour, u.user_regdate, u.user_posts, u.group_id, u.user_usermap_lon, u.user_usermap_lat, g.group_usermap_marker';
 		$sql_array['LEFT_JOIN'][] = array(
 			'FROM'	=> array(GROUPS_TABLE => 'g'),
 			'ON'		=> 'u.group_id = g.group_id'
