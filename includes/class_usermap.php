@@ -4,6 +4,9 @@ namespace tas2580\usermap\includes;
 
 class class_usermap
 {
+	const REGEX_LON =  '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#';
+	const REGEX_LAT =  '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#';
+
 	/**
 	 * Get the distance between A and B
 	 *

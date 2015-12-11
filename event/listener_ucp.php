@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
 * Event listener
 */
-class listener_ucp implements EventSubscriberInterface
+class listener_ucp extends \tas2580\usermap\includes\class_usermap implements EventSubscriberInterface
 {
 	/** @var \phpbb\auth\auth */
 	protected $auth;
@@ -116,8 +116,8 @@ class listener_ucp implements EventSubscriberInterface
 				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 			$validate_array = array(
-				'user_usermap_lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
-				'user_usermap_lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+				'user_usermap_lon'		=> array('match', false, self::REGEX_LON),
+				'user_usermap_lat'		=> array('match', false, self::REGEX_LAT),
 			);
 
 			$error = validate_data($event['data'], $validate_array);

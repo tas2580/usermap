@@ -129,10 +129,10 @@ class main extends \tas2580\usermap\includes\class_usermap
 		);
 
 		$validate_array = array(
-			'min_lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
-			'max_lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
-			'max_lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
-			'min_lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+			'min_lon'		=> array('match', false, self::REGEX_LON),
+			'max_lat'		=> array('match', false, self::REGEX_LAT),
+			'max_lon'		=> array('match', false, self::REGEX_LON),
+			'min_lat'		=> array('match', false, self::REGEX_LAT),
 		);
 
 		if (!function_exists('validate_data'))
@@ -193,8 +193,8 @@ class main extends \tas2580\usermap\includes\class_usermap
 		);
 
 		$validate_array = array(
-			'lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
-			'lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+			'lon'		=> array('match', false, self::REGEX_LON),
+			'lat'		=> array('match', false, self::REGEX_LAT),
 		);
 
 		if (!function_exists('validate_data'))
@@ -276,8 +276,8 @@ class main extends \tas2580\usermap\includes\class_usermap
 				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 			$error = validate_data($data, array(
-				'user_usermap_lon'		=> array('match', false, '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
-				'user_usermap_lat'		=> array('match', false, '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#'),
+				'user_usermap_lon'		=> array('match', false, self::REGEX_LON),
+				'user_usermap_lat'		=> array('match', false, self::REGEX_LAT),
 			));
 			$error = array_map(array($this->user, 'lang'), $error);
 			if (sizeof($error))
