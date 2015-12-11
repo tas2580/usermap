@@ -173,12 +173,12 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$dst = $this->request->variable('dst', $this->config['tas2580_usermap_search_distance']);
 
 		$alpha = 180 * $dst / (6378137 / 1000 * 3.14159);
-		$min_lon = $this->db->sql_escape($lon - $alpha);
-		$max_lon = $this->db->sql_escape($lon + $alpha);
-		$min_lat = $this->db->sql_escape($lat - $alpha);
-		$max_lat = $this->db->sql_escape($lat + $alpha);
+		$min_lon = (float) ($lon - $alpha);
+		$max_lon = (float) ($lon + $alpha);
+		$min_lat = (float) ($lat - $alpha);
+		$max_lat = (float) ($lat + $alpha);
 
-		$where = " WHERE ( user_usermap_lon >= '$min_lon' AND user_usermap_lon <= '$max_lon') AND ( user_usermap_lat >= '$min_lat' AND user_usermap_lat<= '$max_lat')";
+		$where = " WHERE ( user_usermap_lon >= $min_lon AND user_usermap_lon <= $max_lon) AND ( user_usermap_lat >= $min_lat AND user_usermap_lat<= $max_lat)";
 		$limit = (int) $this->config['topics_per_page'];
 
 		$sql = 'SELECT COUNT(user_id) AS num_users
