@@ -34,7 +34,7 @@ $lang = array_merge($lang, array(
 	'SEARCH_EXPLAIN'						=> 'Benutzer im Umkreis von %1$s Kilometern um %2$s, %3$s',
 	'USERMAP_SEARCH'						=> 'Benutzer Suche',
 	'MEMBERS'							=> 'Benutzername',
-	'KLICK_TO_ADD'						=> 'Klick mit der linken Maustaste auf die Karte um dich einzutragen!',
+	'KLICK_TO_ADD'						=> 'Klick mit der rechten Maustaste auf die Karte um dich einzutragen!',
 	'POSITION_SET'							=> 'Deine Position auf der Karte wurde geändert!',
 	'JAVASCRIPT_ERROR'						=> 'Du hast JavaScript deaktiviert oder es ist ein Fehler aufgetreten. Um die Benutzer Karte anzeigen zu können muss JavaScript aktiviert sein!',
 
