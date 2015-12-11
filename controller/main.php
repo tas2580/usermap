@@ -178,7 +178,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$min_lat = (float) ($lat - $alpha);
 		$max_lat = (float) ($lat + $alpha);
 
-		$where = " WHERE ( user_usermap_lon >= $min_lon AND user_usermap_lon <= $max_lon) AND ( user_usermap_lat >= $min_lat AND user_usermap_lat<= $max_lat)";
+		$where = " WHERE (user_usermap_lon >= $min_lon AND user_usermap_lon <= $max_lon) AND (user_usermap_lat >= $min_lat AND user_usermap_lat<= $max_lat)";
 		$limit = (int) $this->config['topics_per_page'];
 
 		$sql = 'SELECT COUNT(user_id) AS num_users
@@ -213,7 +213,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 		), 'pagination', 'start', $total_users, $limit, ($start - 1)  * $limit);
 
 		$this->template->assign_vars(array(
-			'TOTAL_USERS'		=> $this->user->lang('TOTAL_USERS', (int) $total_users),
+			'TOTAL_USERS'			=> $this->user->lang('TOTAL_USERS', (int) $total_users),
 			'L_SEARCH_EXPLAIN'		=> $this->user->lang('SEARCH_EXPLAIN', $dst, $lon, $lat),
 		));
 
