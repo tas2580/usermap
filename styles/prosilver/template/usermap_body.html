@@ -34,9 +34,9 @@
 
 <div id="map_menu">
 	<ul>
-		<!-- IF A_USERMAP_ADD --><li><a href="{U_SET_POSITON}?LONLAT" onclick="hide_menu(false);" data-ajax="usermap.set_position">{L_SET_MY_POSITION}</a></li><!-- ENDIF -->
+		<!-- IF A_USERMAP_ADD --><li><a href="{U_SET_POSITON}?LONLAT" onclick="usermap.hide_menu(false);" data-ajax="usermap.set_position">{L_SET_MY_POSITION}</a></li><!-- ENDIF -->
 		<!-- IF A_USERMAP_SEARCH --><li><a href="{U_USERMAP_SEARCH}?LONLAT">{L_MENU_SEARCH}</a></li><!-- ENDIF -->
-		<li class="menu_close"><a href="#" onclick="hide_menu(true); return false;">{L_MENU_CLOSE}</a>
+		<li class="menu_close"><a href="#" onclick="usermap.hide_menu(true); return false;">{L_MENU_CLOSE}</a>
 	</ul>
 </div>
 <!-- INCLUDE overall_footer.html -->
