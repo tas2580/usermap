@@ -13,26 +13,37 @@ class main extends \tas2580\usermap\includes\class_usermap
 {
 	/** @var \phpbb\auth\auth */
 	protected $auth;
+
 	/** @var \phpbb\config\config */
 	protected $config;
+
 	/** @var \phpbb\db\driver\driver */
 	protected $db;
+
 	/** @var \phpbb\controller\helper */
 	protected $helper;
+
 	/** @var \phpbb\paginationr */
 	protected $paginationr;
+
 	/** @var \phpbb\path_helper */
 	protected $path_helper;
+
 	/** @var string */
 	protected $phpbb_extension_manager;
+
 	/** @var \phpbb\request\request */
 	protected $request;
+
 	/** @var \phpbb\user */
 	protected $user;
+
 	/** @var \phpbb\template\template */
 	protected $template;
+
 	/** @var string phpbb_root_path */
 	protected $phpbb_root_path;
+	
 	/** @var string php_ext */
 	protected $php_ext;
 
@@ -60,6 +71,11 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
 	}
 
+	/**
+	 * Display the map
+	 *
+	 * @return type
+	 */
 	public function index()
 	{
 		if (!$this->auth->acl_get('u_usermap_view'))
@@ -67,6 +83,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 			trigger_error('NOT_AUTHORISED');
 		}
 
+		// Add breadcrumb
 		$this->template->assign_block_vars('navlinks', array(
 			'FORUM_NAME'		=> $this->user->lang('USERMAP_TITLE'),
 			'U_VIEW_FORUM'	=> $this->helper->route('tas2580_usermap_index', array()),
@@ -118,9 +135,16 @@ class main extends \tas2580\usermap\includes\class_usermap
 		return $this->helper->render('usermap_body.html', $this->user->lang('USERMAP_TITLE'));
 	}
 
-
+	/**
+	 * Get the markers
+	 */
 	public function marker()
 	{
+		if (!$this->auth->acl_get('u_usermap_view'))
+		{
+			trigger_error('NOT_AUTHORISED');
+		}
+
 		$data = array(
 			'min_lon'		=> (float) substr($this->request->variable('alon', ''), 0, 10),
 			'max_lat'		=> (float) substr($this->request->variable('alat', ''), 0, 10),
@@ -174,6 +198,12 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$json_response->send($return);
 	}
 
+	/**
+	 * Display the search page
+	 *
+	 * @param type $start
+	 * @return type
+	 */
 	public function search($start = 1)
 	{
 		if (!$this->auth->acl_get('u_usermap_search'))
@@ -202,6 +232,12 @@ class main extends \tas2580\usermap\includes\class_usermap
 			include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 		}
 		$error = validate_data($data, $validate_array);
+
+		if (sizeof($error))
+		{
+			$error = array_map(array($this->user, 'lang'), $error);
+			trigger_error(implode('<br>', $error) . '<br><br><a href="' . $this->helper->route('tas2580_usermap_index', array()) . '">' . $this->user->lang('BACK_TO_USERMAP') . '</a>');
+		}
 
 		$alpha = 180 * $data['dst'] / (6378137 / 1000 * 3.14159);
 		$min_lon = (float) ($data['lon'] - $alpha);
@@ -243,9 +279,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 			),
 		), 'pagination', 'start', $total_users, $limit, ($start - 1)  * $limit);
 
-		$error = array_map(array($this->user, 'lang'), $error);
 		$this->template->assign_vars(array(
-			'ERROR'				=> (sizeof($error)) ? implode('<br />', $error) : '',
 			'TOTAL_USERS'			=> $this->user->lang('TOTAL_USERS', (int) $total_users),
 			'L_SEARCH_EXPLAIN'		=> $this->user->lang('SEARCH_EXPLAIN', $data['dst'], $data['lon'], $data['lat']),
 		));
@@ -253,7 +287,11 @@ class main extends \tas2580\usermap\includes\class_usermap
 		return $this->helper->render('usermap_search.html', $this->user->lang('USERMAP_SEARCH'));
 	}
 
-
+	/**
+	 * Set own position on map
+	 *
+	 * @return type
+	 */
 	public function position()
 	{
 		if (($this->user->data['user_id'] == ANONYMOUS) || !$this->auth->acl_get('u_usermap_add'))
@@ -261,41 +299,40 @@ class main extends \tas2580\usermap\includes\class_usermap
 			trigger_error('NOT_AUTHORISED');
 		}
 
-		$lon = substr($this->request->variable('lon', ''), 0, 10);
-		$lat = substr($this->request->variable('lat', ''), 0, 10);
-
 		if (confirm_box(true))
 		{
 			$data = array(
-				'user_usermap_lon'			=> $lon,
-				'user_usermap_lat'			=> $lat,
+				'user_usermap_lon'		=> substr($this->request->variable('lon', ''), 0, 10),
+				'user_usermap_lat'		=> substr($this->request->variable('lat', ''), 0, 10),
 			);
 
 			if (!function_exists('validate_data'))
 			{
 				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
+
 			$error = validate_data($data, array(
 				'user_usermap_lon'		=> array('match', false, self::REGEX_LON),
 				'user_usermap_lat'		=> array('match', false, self::REGEX_LAT),
 			));
-			$error = array_map(array($this->user, 'lang'), $error);
+
 			if (sizeof($error))
 			{
-				trigger_error(implode('<br>', $error) . '<br><br><a href="' . $this->helper->route('tas2580_usermap_index', array()) . '">' . $this->user->lang('BACK_TO_USERMAP') . '</a>');
+				$error = array_map(array($this->user, 'lang'), $error);
+				trigger_error(implode('<br>', $error));
 			}
+
 			$sql = 'UPDATE ' . USERS_TABLE . '
 				SET ' . $this->db->sql_build_array('UPDATE', $data) . '
 				WHERE user_id = ' . (int) $this->user->data['user_id'] ;
-
 			$this->db->sql_query($sql);
 			trigger_error('POSITION_SET');
 		}
 		else
 		{
-			confirm_box(false, $this->user->lang('CONFIRM_COORDINATES_SET', $lon, $lat), build_hidden_fields(array(
-				'lon'		=> $lon,
-				'lat'		=> $lat))
+			confirm_box(false, $this->user->lang('CONFIRM_COORDINATES_SET', $data['lon'], $data['lat']), build_hidden_fields(array(
+				'lon'		=> $data['lon'],
+				'lat'		=> $data['lat']))
 			);
 		}
 		return $this->index();

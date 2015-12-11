@@ -138,9 +138,9 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 		if ($this->auth->acl_get('u_usermap_add'))
 		{
 			$event['sql_ary'] = array_merge($event['sql_ary'], array(
-				'user_usermap_lon'	=> $event['data']['user_usermap_lon'],
-				'user_usermap_lat'	=> $event['data']['user_usermap_lat'],
-				'user_usermap_hide'	=> $event['data']['user_usermap_hide'],
+				'user_usermap_lon'		=> $event['data']['user_usermap_lon'],
+				'user_usermap_lat'		=> $event['data']['user_usermap_lat'],
+				'user_usermap_hide'		=> $event['data']['user_usermap_hide'],
 			));
 		}
 	}
