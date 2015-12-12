@@ -38,6 +38,12 @@ class usermap_module
 			$config->set('tas2580_usermap_zoom', $request->variable('usermap_zoom', 0));
 			$config->set('tas2580_usermap_map_type', $request->variable('map_type', ''));
 			$config->set('tas2580_usermap_google_api_key', $request->variable('google_api_key', ''));
+			$config->set('tas2580_usermap_search_distance', $request->variable('search_distance', 0));
+			$config->set('tas2580_usermap_map_in_viewprofile', $request->variable('map_in_viewprofile', 0));
+			$config->set('tas2580_usermap_distance_in_viewtopic', $request->variable('distance_in_viewtopic', 0));
+			$config->set('tas2580_usermap_distance_format', $request->variable('distance_format', 0));
+			$config->set('tas2580_usermap_max_marker', $request->variable('max_marker', 100));
+
 			trigger_error($user->lang('ACP_SAVED') . adm_back_link($this->u_action));
 		}
 
@@ -49,6 +55,11 @@ class usermap_module
 			'USERMAP_ZOOM'			=> $config['tas2580_usermap_zoom'],
 			'MAP_TYPE_SELECT'			=> $this->map_select($config['tas2580_usermap_map_type']),
 			'GOOGLE_API_KEY'			=> $config['tas2580_usermap_google_api_key'],
+			'SEARCH_DISTANCE'			=> $config['tas2580_usermap_search_distance'],
+			'MAP_IN_VIEWPROFILE'		=> $config['tas2580_usermap_map_in_viewprofile'],
+			'DISTANCE_IN_VIEWTOPIC'		=> $config['tas2580_usermap_distance_in_viewtopic'],
+			'DISTANCE_FORMAT'			=> $config['tas2580_usermap_distance_format'],
+			'MAX_MARKER'				=> $config['tas2580_usermap_max_marker'],
 		));
 	}
 

@@ -6,6 +6,7 @@
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
+
 /**
 * DO NOT CHANGE
 */
@@ -13,6 +14,7 @@ if (!defined('IN_PHPBB'))
 {
 	exit;
 }
+
 if (empty($lang) || !is_array($lang))
 {
 	$lang = array();
@@ -30,11 +32,9 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 //
 // Some characters you may want to copy&paste:
-// ’ » “ ” …
+// â€™ Â» â€œ â€ â€¦
 //
 $lang = array_merge($lang, array(
-	'ACL_U_USERMAP_VIEW'		=> 'Kann die Benutzer Karte anschauen',
-	'ACL_U_USERMAP_ADD'		=> 'Kann sich in die Benutzer Karte eintragen',
-	'ACL_U_USERMAP_SEARCH'	=> 'Kann Benutzer im Umkreis suchen',
-	'ACL_U_USERMAP_HIDE'		=> 'Kann seinen Standort auf der Benutzer Karte ausblenden',
+	'USERMAP'					=> 'User Map',
+
 ));

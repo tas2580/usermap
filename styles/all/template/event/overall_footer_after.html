@@ -1,38 +1,39 @@
 <!-- IF S_IN_USERMAP -->
 <!-- IF MAP_TYPE == 'osm' -->
+	<!-- INCLUDEJS @tas2580_usermap/osmscript.js -->
 	<script type="text/javascript">
 	// <![CDATA[
-	function display_map()
-	{
+	function display_map() {
 		OpenLayers.Lang.setCode('{S_USER_LANG}');
-		drawmap({USERMAP_LON}, {USERMAP_LAT}, {USERMAP_ZOOM}, {USERMAP_CONTROLS});
-
-		// Generate markers
-		<!-- BEGIN group_list -->
-		var marker_{group_list.GROUP_ID} = generateMarker('{MARKER_PATH}/{group_list.MARKER}');
-		<!-- END group_list -->
-
-		// Add markers
-		<!-- BEGIN user_list -->
-		addMarker(layer_markers, {user_list.LON}, {user_list.LAT}, '<strong>{L_USERNAME}</strong> {user_list.USERNAME}', marker_{user_list.GROUP_ID});
-		<!-- END user_list -->
+		usermap.drawmap({USERMAP_LON}, {USERMAP_LAT}, {USERMAP_ZOOM}, {USERMAP_CONTROLS});
+		<!-- IF A_USERMAP_ADD or A_USERMAP_SEARCH -->
+			$('#map').css('cursor', 'crosshair');
+			map.addControl(click);
+			click.activate();
+		<!-- ENDIF -->
 	}
 
-	<!-- IF A_USERMAP_ADD -->
-	function set_postion(lon, lat) {
-		window.location.href ='{U_SET_POSITON}?lon='+lon+'&lat='+lat;
-		/*
-		$.get('{U_SET_POSITON}?lon='+lon+'&lat='+lat,function(returndata){
-			phpbb.alert('{L_POSITION_SET_TITLE}',returndata);
+	function reload_marker(Alon, Alat, Blon, Blat) {
+		layer_markers.clearMarkers();
+		<!-- IF U_GET_MARKER -->
+		$.get('{U_GET_MARKER}?alon='+Alon+'&alat='+Alat+'&blon='+Blon+'&blat='+Blat, function(returndata){
+			if($.isArray(returndata)){
+				returndata.forEach(function(element, index, array) {
+					var marker = usermap.generateMarker('{MARKER_PATH}/'+element.marker);
+					usermap.addMarker(layer_markers, parseFloat(element.lon), parseFloat(element.lat), element.title+'<br>{L_DISTANCE}{L_COLON} '+element.distance, marker);
+				});
+			} else {
+				phpbb.alert('{L_ERROR}', returndata);
+			}
 		});
-		*/
+		<!-- ELSE -->
+		var marker = usermap.generateMarker('{MARKER_PATH}/{USERMAP_MARKER}');
+		usermap.addMarker(layer_markers, {USERMAP_LON}, {USERMAP_LAT}, '{USERNAME}', marker);
+		<!-- ENDIF -->
 	}
-	function alert_set_position(lon, lat) {
-		phpbb.alert('{L_SET_MY_POSITION}', '{L_CLICK_TO_SET}<br><br><input class="button2" type="submit" name="close" value="{L_SET_POSITION}" onclick="phpbb.alert.close($(\'#phpbb_alert\'), true);" />');
-	}
-	<!-- ENDIF -->
+
 	$('document').ready(display_map);
-	// ]]>
+// ]]>
 	</script>
 <!-- ENDIF -->
 
@@ -52,7 +53,7 @@
 			var marker = new google.maps.Marker({
 				position: {lat: {user_list.LAT}, lng: {user_list.LON}},
 				map: map,
-				title: '<strong>{L_USERNAME}</strong> {user_list.USERNAME}',
+				title: '{user_list.USERNAME_SIMPLE}',
 				icon: marker_{user_list.GROUP_ID}
 			});
 		<!-- END user_list -->

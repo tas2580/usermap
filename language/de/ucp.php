@@ -33,8 +33,10 @@ if (empty($lang) || !is_array($lang))
 //
 $lang = array_merge($lang, array(
 	'UCP_USERMAP_COORDINATES'			=> 'Koordinaten für die Benutzer Karte',
-	'UCP_USERMAP_COORDINATES_EXPLAIN'		=> 'Gib hier deine Koordinaten an um dich auf der Benutzer Karte einzutragen.',
+	'UCP_USERMAP_COORDINATES_EXPLAIN'		=> 'Gib hier deine Koordinaten an um dich auf der <a href="%s">Benutzer Karte</a> einzutragen.',
 	'UCP_USERMAP_LON'					=> 'Längengrad',
 	'UCP_USERMAP_LAT'						=> 'Breitengrad',
 	'UCP_USERMAP_GET_COORDINATES'		=> 'Meine Koordinaten eintragen',
+	'UCP_USERMAP_HIDE'					=> 'Auf Karte verbergen',
+	'UCP_USERMAP_HIDE_DESCRIPTION'			=> 'Stelle die Option auf Ja um deinen Marker auf der Karte auszublenden.',
 ));

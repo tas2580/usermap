@@ -16,7 +16,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
 * Event listener
 */
-class listener implements EventSubscriberInterface
+class listener extends \tas2580\usermap\includes\class_usermap implements EventSubscriberInterface
 {
 	static public function getSubscribedEvents()
 	{
@@ -24,6 +24,8 @@ class listener implements EventSubscriberInterface
 			'core.page_header'						=> 'page_header',
 			'core.permissions'						=> 'permissions',
 			'core.memberlist_view_profile'				=> 'memberlist_view_profile',
+			'core.viewtopic_cache_user_data'			=> 'viewtopic_cache_user_data',
+			'core.viewtopic_modify_post_row'			=> 'viewtopic_modify_post_row',
 		);
 	}
 
@@ -70,6 +72,13 @@ class listener implements EventSubscriberInterface
 		$this->user = $user;
 	}
 
+	/**
+	* Add permissions
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
 	public function permissions($event)
 	{
 		$permissions = $event['permissions'];
@@ -82,10 +91,25 @@ class listener implements EventSubscriberInterface
 				'lang'		=> 'ACL_U_USERMAP_ADD',
 				'cat'		=> 'profile'
 			),
+			'u_usermap_search'	=> array(
+				'lang'		=> 'ACL_U_USERMAP_SEARCH',
+				'cat'		=> 'profile'
+			),
+			'u_usermap_hide'	=> array(
+				'lang'		=> 'ACL_U_USERMAP_HIDE',
+				'cat'		=> 'profile'
+			),
 		);
 		$event['permissions'] = $permissions;
 	}
 
+	/**
+	* Add link to header
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
 	public function page_header($event)
 	{
 		if ($this->auth->acl_get('u_usermap_view'))
@@ -97,40 +121,99 @@ class listener implements EventSubscriberInterface
 		}
 	}
 
+	/**
+	* Add map to users profile
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
 	public function memberlist_view_profile($event)
 	{
+		if ($this->config['tas2580_usermap_map_in_viewprofile'] == 0)
+		{
+			return false;
+		}
+
 		$data = $event['member'];
+		$this->user->add_lang_ext('tas2580/usermap', 'controller');
+		$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $data['user_usermap_lon'], $data['user_usermap_lat']);
+
 		// Center the map to user
 		$this->template->assign_vars(array(
 			'S_IN_USERMAP'		=> true,
 			'USERMAP_CONTROLS'	=> 'false',
+			'USERNAME'			=> get_username_string('full', $data['user_id'], $data['username'], $data['user_colour']),
 			'USERMAP_LON'		=> $data['user_usermap_lon'],
 			'USERMAP_LAT'			=> $data['user_usermap_lat'],
 			'USERMAP_ZOOM'		=> (int) 10,
+			'DISTANCE'			=> $distance,
 			'MARKER_PATH'		=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker'),
 			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
-		));
-
-		// Set marker for user
-		$this->template->assign_block_vars('user_list', array(
-			'USER_ID'			=> $data['user_id'],
-			'USERNAME'		=> get_username_string('full', $data['user_id'], $data['username'], $data['user_colour']),
-			'LON'				=> $data['user_usermap_lon'],
-			'LAT'				=> $data['user_usermap_lat'],
-			'GROUP_ID'		=> $data['group_id'],
 		));
 
 		$sql = 'SELECT group_id, group_usermap_marker
 			FROM ' . GROUPS_TABLE . '
 			WHERE group_id = ' . (int) $data['group_id'];
 		$result = $this->db->sql_query($sql);
-		while($row = $this->db->sql_fetchrow($result))
+		$row = $this->db->sql_fetchrow($result);
+		$this->template->assign_vars(array(
+			'USERMAP_MARKER'		=> $row['group_usermap_marker'],
+		));
+	}
+
+	/**
+	* Add distance to viewtopic
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
+	public function viewtopic_cache_user_data($event)
+	{
+		if (!$this->config['tas2580_usermap_distance_in_viewtopic'])
 		{
-			$this->template->assign_block_vars('group_list', array(
-				'GROUP_ID'	=> $row['group_id'],
-				'MARKER'		=> $row['group_usermap_marker'],
-			));
+			return false;
 		}
+
+		$data = $event['row'];
+		// not on own profile
+		if ($data['user_id'] == $this->user->data['user_id'])
+		{
+			return false;
+		}
+
+		$this->user->add_lang_ext('tas2580/usermap', 'controller');
+		$user_cache_data = $event['user_cache_data'];
+		$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $data['user_usermap_lon'], $data['user_usermap_lat']);
+
+		$user_cache_data['distance'] = $distance;
+		$event['user_cache_data'] = $user_cache_data;
+	}
+
+	/**
+	* Add distance to viewtopic
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
+	public function viewtopic_modify_post_row($event)
+	{
+		if (!$this->config['tas2580_usermap_distance_in_viewtopic'])
+		{
+			return false;
+		}
+
+		// not on own profile
+		if ($event['poster_id'] == $this->user->data['user_id'])
+		{
+			return false;
+		}
+
+		$post_row = $event['post_row'];
+		$post_row['DISTANCE'] = $event['user_poster_data']['distance'];
+		$event['post_row'] =$post_row;
 	}
 }

@@ -1,9 +1,27 @@
+<!-- IF S_IN_USERMAP -->
 <div class="panel bg1">
 	<div class="inner">
 
-	<div class="column1">
-		<h3>{L_USER_MAP}</h3>
-		<div id="map" class="ucp_map" style="position:relative;"></div>map
-	</div>
+		<div class="column1">
+			<h3>{L_USERMAP_TITLE}</h3>
+			<!-- IF DISTANCE -->
+			<dl class="usermap details">
+				<dt>{L_DISTANCE}{L_COLON}</dt>
+				<dd> {DISTANCE}</dd>
+			</dl>
+			<!-- ENDIF -->
+			<dl class="usermap details">
+				<dt>{L_LON}{L_COLON}</dt>
+				<dd> {USERMAP_LON}</dd>
+			</dl>
+			<dl class="usermap details">
+				<dt>{L_LAT}{L_COLON}</dt>
+				<dd> {USERMAP_LAT}</dd>
+			</dl>
+		</div>
+		<div class="column2">
+			<div id="map" class="ucp_map"></div>
+		</div>
 	</div>
 </div>
+<!-- ENDIF -->

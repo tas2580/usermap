@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
 * Event listener
 */
-class listener_acp implements EventSubscriberInterface
+class listener_acp extends \tas2580\usermap\includes\class_usermap implements EventSubscriberInterface
 {	/** @var string */
 	protected $phpbb_extension_manager;
 
@@ -70,6 +70,7 @@ class listener_acp implements EventSubscriberInterface
 			'core.acp_manage_group_display_form'				=> 'acp_manage_group_display_form',
 			'core.acp_manage_group_request_data'				=> 'acp_manage_group_request_data',
 			'core.acp_manage_group_initialise_data'				=> 'acp_manage_group_initialise_data',
+			'core.acp_board_config_edit_add'					=> 'acp_board_config_edit_add',
 		);
 	}
 	/**
@@ -82,11 +83,15 @@ class listener_acp implements EventSubscriberInterface
 	public function acp_profile_modify_profile_info($event)
 	{
 		$row = $event['user_row'];
+		$lon = substr($this->request->variable('usermap_lon', $row['user_usermap_lon']), 0, 10);
+		$lat = substr($this->request->variable('usermap_lat', $row['user_usermap_lat']), 0, 10);
+
 		$event['user_row'] = array_merge($event['user_row'], array(
-			'user_usermap_lon'	=> substr($this->request->variable('usermap_lon', $row['user_usermap_lon']), 0, 10),
-			'user_usermap_lat'	=> substr($this->request->variable('usermap_lat', $row['user_usermap_lat']), 0, 10),
+			'user_usermap_lon'		=> empty($lon) ? '' : $lon,
+			'user_usermap_lat'		=> empty($lat) ? '' : $lat,
+			'user_usermap_hide'		=> (int) $this->request->variable('usermap_hide', $row['user_usermap_hide']),
 		));
-		$this->add_field($event['user_row']['user_usermap_lon'], $event['user_row']['user_usermap_lat']);
+		$this->add_field($event['user_row']['user_usermap_lon'], $event['user_row']['user_usermap_lat'], $event['user_row']['user_usermap_hide']);
 	}
 
 	/**
@@ -99,8 +104,9 @@ class listener_acp implements EventSubscriberInterface
 	public function acp_profile_info_modify_sql_ary($event)
 	{
 		$event['sql_ary'] = array_merge($event['sql_ary'], array(
-			'user_usermap_lon'	=> $event['user_row']['user_usermap_lon'],
-			'user_usermap_lat'	=> $event['user_row']['user_usermap_lat'],
+			'user_usermap_lon'		=> $event['user_row']['user_usermap_lon'],
+			'user_usermap_lat'		=> $event['user_row']['user_usermap_lat'],
+			'user_usermap_hide'		=> $event['user_row']['user_usermap_hide'],
 		));
 	}
 
@@ -119,19 +125,22 @@ class listener_acp implements EventSubscriberInterface
 				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 			$validate_array = array(
-				'user_usermap_lon'	=> array('string', false, 0, 12),
-				'user_usermap_lat'	=> array('string', false, 0, 12),
+				'user_usermap_lon'		=> array('match', false, self::REGEX_LON),
+				'user_usermap_lat'		=> array('match', false, self::REGEX_LAT),
 			);
 
 			$error = validate_data($event['data'], $validate_array);
 			$event['error'] = array_merge($array, $error);
 	}
 
-//evtl weg
+	/**
+	 * evtl weg
+	 */
 	public function acp_manage_group_initialise_data($event)
 	{
 		$test_variables = $event['test_variables'];
 		$test_variables['usermap_marker']  = 'string';
+		$test_variables['usermap_legend']  = 'bool';
 		$event['test_variables'] = $test_variables;
 	}
 
@@ -143,6 +152,7 @@ class listener_acp implements EventSubscriberInterface
 
 		$submit_ary = $event['submit_ary'];
 		$submit_ary['usermap_marker'] = $this->request->variable('usermap_marker', '');
+		$submit_ary['usermap_legend'] = $this->request->variable('usermap_legend', 0);
 		$event['submit_ary'] = $submit_ary;
 	}
 
@@ -154,9 +164,50 @@ class listener_acp implements EventSubscriberInterface
 			'USERMAP_MARKER'				=> (!empty($data['group_usermap_marker'])) ? $path. $data['group_usermap_marker'] : $this->path_helper->update_web_root_path($this->phpbb_root_path . '/images/'). 'spacer.gif',
 			'USERMAP_MARKER_PATH'		=> $path,
 			'USERMAP_OPTIONS'				=> $this->marker_image_select($data['group_usermap_marker']),
+			'USERMAP_LEGEND'				=> $data['group_usermap_legend'],
 		));
 	}
 
+	/**
+	* Add field to acp_board load settings page
+	*
+	* @param	object	$event	The event object
+	* @return	null
+	* @access	public
+	*/
+	public function acp_board_config_edit_add($event)
+	{
+		if ($event['mode'] == 'load')
+		{
+			$display_vars = $event['display_vars'];
+			$insert = array('tas2580_usermap_map_in_viewprofile' => array(
+				'lang'		=> 'ACP_MAP_IN_VIEWPROFILE',
+				'validate'	=> 'bool',
+				'type'	=> 'radio:yes_no',
+				'explain'	=> true
+			));
+			$display_vars['vars'] = $this->array_insert($display_vars['vars'], 'legend3', $insert);
+			$event['display_vars'] = $display_vars;
+		}
+	}
+
+	private function array_insert(&$array, $position, $insert)
+	{
+		if (is_int($position))
+		{
+			array_splice($array, $position, 0, $insert);
+		}
+		else
+		{
+			$pos   = array_search($position, array_keys($array));
+			$array = array_merge(
+				array_slice($array, 0, $pos),
+				$insert,
+				array_slice($array, $pos)
+			);
+		}
+		return $array;
+	}
 
 	private function marker_image_select($marker)
 	{
@@ -198,11 +249,12 @@ class listener_acp implements EventSubscriberInterface
 	/**
 	 * Add the field to user profile
 	 */
-	private function add_field($lon, $lat)
+	private function add_field($lon, $lat, $hide)
 	{
 		$this->template->assign_vars(array(
 			'USERMAP_LON'	=> $lon,
 			'USERMAP_LAT'		=> $lat,
+			'USERMAP_HIDE'	=> $hide,
 		));
 	}
 }

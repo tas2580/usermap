@@ -4,7 +4,11 @@
 			<dd><select id="usermap_marker" name="usermap_marker" onchange="update_image(this.options[selectedIndex].value);">>{USERMAP_OPTIONS}</select></dd>
 			<dd><img src="{USERMAP_MARKER}" id="image" alt="" /></dd>
 		</dl>
-
+		<dl>
+			<dt><label for="usermap_legend">{L_ACP_USERMAP_LEGEND}{L_COLON}</label><br />
+				<span>{L_ACP_USERMAP_LEGEND_DESCRIPTION}</span></dt>
+				<dd><input name="usermap_legend" type="checkbox" value="1" class="radio" id="usermap_legend"<!-- IF USERMAP_LEGEND -->checked="checked"<!-- ENDIF -->></dd>
+		</dl>
 		<script type="text/javascript">
 			// <![CDATA[
 			function update_image(newimage)

@@ -1,0 +1,44 @@
+<!-- INCLUDE overall_header.html -->
+<h2>{L_USERMAP_SEARCH}</h2>
+<p>{L_SEARCH_EXPLAIN}</p>
+<div class="forumbg forumbg-table">
+	<div class="inner">
+
+	<table class="table1">
+	<thead>
+	<tr>
+		<th class="name">{L_MEMBERS}</th>
+		<th class="posts">{L_POSTS}</th>
+		<th class="joined">{L_JOINED}</th>
+		<th class="joined">{L_DISTANCE}</th>
+	</tr>
+	</thead>
+	<tbody>
+<!-- BEGIN memberrow -->
+	<tr class="<!-- IF memberrow.S_ROW_COUNT is even -->bg1<!-- ELSE -->bg2<!-- ENDIF -->">
+		<td>{memberrow.USERNAME}</td>
+		<td>{memberrow.POSTS}</td>
+		<td>{memberrow.JOINED}</td>
+		<td>{memberrow.DISTANCE}</td>
+	</tr>
+		<!-- BEGINELSE -->
+	<tr class="bg1">
+		<td colspan="4">{L_NO_MEMBERS}</td>
+	</tr>
+<!-- END memberrow -->
+	</tbody>
+	</table>
+
+	</div>
+</div>
+<!-- IF .pagination or TOTAL_USERS -->
+	<div class="pagination">
+		{TOTAL_USERS}
+		<!-- IF .pagination -->
+			<!-- INCLUDE pagination.html -->
+		<!-- ELSE -->
+			&bull; {PAGE_NUMBER}
+		<!-- ENDIF -->
+	</div>
+<!-- ENDIF -->
+<!-- INCLUDE overall_footer.html -->

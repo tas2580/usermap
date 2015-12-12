@@ -33,7 +33,8 @@ if (empty($lang) || !is_array($lang))
 //
 $lang = array_merge($lang, array(
 	'ACP_USERMAP_TITLE'					=> 'Benutzer Karte',
-	'ACP_SETTINGS'						=> 'Karten Einstellungen',
+	'ACP_MAP_SETTINGS'					=> 'Karten Einstellungen',
+	'ACP_SETTINGS'						=> 'Weitere Einstellungen',
 	'ACP_USERMAP_ZOOM'					=> 'Zoom',
 	'ACP_USERMAP_ZOOM_EXPLAIN'			=> 'Standard Zoom beim aufrufen der Karte.',
 	'ACP_COORDINATES'						=> 'Standard Koordinaten',
@@ -53,5 +54,19 @@ $lang = array_merge($lang, array(
 	'ACP_GOOGLE_API_KEY_EXPLAIN'			=> 'Trage deinen Google Maps <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">API Key</a> ein un Google Maps als Karte verwenden zu können.',
 	'ACP_MAP_OSM'						=> 'Open Streat Maps',
 	'ACP_MAP_GOOGLE'						=> 'Google Maps',
-
+	'ACP_KM'								=> 'Kilometer',
+	'ACP_SEARCH_DISTANCE'					=> 'Such Distanz',
+	'ACP_SEARCH_DISTANCE_EXPLAIN'			=> 'Umkreis in dem Benutzer gesucht werden sollen wenn nichts anderes angegeben ist.',
+	'ACP_MAP_IN_VIEWPROFILE'				=> 'Karte im Profil anzeigen',
+	'ACP_MAP_IN_VIEWPROFILE_EXPLAIN'		=> 'Zeigt eine Karte mit dem Standort des Benutzers im Profil an. Zusätzlich wird berechnet wie weit man selber von dem Benutzer entfernt ist.',
+	'ACP_DISTANCE_IN_VIEWTOPIC'				=> 'Distanz in Themenansicht',
+	'DISTANCE_IN_VIEWTOPIC_EXPLAIN'			=> 'Zeigt die Distanz zu einem Benutzer neben seinen Beiträgen an. Dazu müssen der jeweilige Benutzer und der angemeldete Benutzer auf der Karte eingetragen sein.',
+	'ACP_DISTANCE_FORMAT'					=> 'Distanzen Format',
+	'DISTANCE_FORMAT_EXPLAIN'				=> 'Distanzen in Kilometern oder Meilen anzeigen',
+	'ACP_KM'								=> 'Kilometer',
+	'ACP_MILES'							=> 'Meilen',
+	'ACP_MAX_MARKER'						=> 'Max. Marker',
+	'ACP_MAX_MARKER_EXPLAIN'				=> 'Anzahl der maximal angezeigten Marker pro Karten Ausschnitt und Zoom Stufe. Beachte das zu viele Marker die Karte langsam machen können.',
+	'ACP_USERMAP_LEGEND'					=> 'In der Legende verbergen',
+	'ACP_USERMAP_LEGEND_DESCRIPTION'		=> 'Wenn gesetzt wird der Marker der Gruppe in der Legende ausgeblendet.',
 ));

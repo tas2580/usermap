@@ -4,12 +4,15 @@
 <form method="post" action="{U_ACTION}">
 
 <fieldset>
-	<legend>{L_ACP_SETTINGS}</legend>
+	<legend>{L_ACP_MAP_SETTINGS}</legend>
+	<dl>
+		<dt><label for="max_marker">{L_ACP_MAX_MARKER}{L_COLON}</label><br /><span>{L_ACP_MAX_MARKER_EXPLAIN}</span></dt>
+		<dd><input id="max_marker" type="number" name="max_marker" value="{MAX_MARKER}" /></dd>
+	</dl>
 	<dl>
 		<dt><label for="usermap_zoom">{L_ACP_USERMAP_ZOOM}{L_COLON}</label><br /><span>{L_ACP_USERMAP_ZOOM_EXPLAIN}</span></dt>
 		<dd><input id="usermap_zoom" type="number" min="3" max="18" name="usermap_zoom" value="{USERMAP_ZOOM}" /></dd>
 	</dl>
-
 	<dl>
 		<dt><label for="usermap_lon">{L_ACP_COORDINATES}{L_COLON}</label><br /><span>{L_ACP_COORDINATES_EXPLAIN}</span></dt>
 		<dd>
@@ -23,10 +26,45 @@
 		<dd><select id="map_type" name="map_type">{MAP_TYPE_SELECT}</select></dd>
 	</dl>
 	<dl>
-		<dt><label for="google_api_key">{L_ACP_GOOGLE_API_KEY}{L_COLON}</label><br /><span>{L_ACP_GOOGLE_API_KEY_EXPLAIN}</span></dt>
+		<dt><label for="google_api_key">{L_ACP_GOOGLE_API_KEY}{L_COLON}</label><br />
+			<span>{L_ACP_GOOGLE_API_KEY_EXPLAIN}</span>
+		</dt>
 		<dd><input id="google_api_key" type="text" name="google_api_key" value="{GOOGLE_API_KEY}" /></dd>
 	</dl>
 </fieldset>
+
+<fieldset>
+<legend>{L_ACP_SETTINGS}</legend>
+	<dl>
+		<dt><label for="search_distance">{L_ACP_SEARCH_DISTANCE}{L_COLON}</label><br />
+			<span>{L_ACP_SEARCH_DISTANCE_EXPLAIN}</span>
+		</dt>
+		<dd><input id="search_distance" type="number" name="search_distance" value="{SEARCH_DISTANCE}" /> {L_ACP_KM}</dd>
+	</dl>
+	<dl>
+		<dt><label for="map_in_viewprofile">{L_ACP_MAP_IN_VIEWPROFILE}{L_COLON}</label><br /><span>{L_ACP_MAP_IN_VIEWPROFILE_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="map_in_viewprofile" name="map_in_viewprofile" value="1"<!-- IF MAP_IN_VIEWPROFILE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="map_in_viewprofile" value="0"<!-- IF not MAP_IN_VIEWPROFILE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="distance_in_viewtopic">{L_ACP_DISTANCE_IN_VIEWTOPIC}{L_COLON}</label><br /><span>{L_DISTANCE_IN_VIEWTOPIC_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="distance_in_viewtopic" name="distance_in_viewtopic" value="1"<!-- IF DISTANCE_IN_VIEWTOPIC --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="distance_in_viewtopic" value="0"<!-- IF not DISTANCE_IN_VIEWTOPIC --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+
+	<dl>
+		<dt><label for="distance_format">{L_ACP_DISTANCE_FORMAT}{L_COLON}</label><br /><span>{L_DISTANCE_FORMAT_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="distance_format" name="distance_format" value="1"<!-- IF DISTANCE_FORMAT --> checked="checked"<!-- ENDIF --> class="radio" /> {L_ACP_KM}</label>
+			<label><input type="radio" name="distance_format" value="0"<!-- IF not DISTANCE_FORMAT --> checked="checked"<!-- ENDIF --> class="radio" /> {L_ACP_MILES}</label>
+		</dd>
+	</dl>
+</fieldset>
+
 <script>
 	function get_coordinates() {
 		navigator.geolocation.getCurrentPosition(success, error, options);
