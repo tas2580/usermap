@@ -58,6 +58,27 @@
 				icon: marker_{user_list.GROUP_ID}
 			});
 		<!-- END user_list -->
+
+		map.addListener('bounds_changed', function() {
+			var ne = map.getBounds().getNorthEast();
+			var sw = map.getBounds().getSouthWest();
+			$.get('{U_GET_MARKER}?alon='+sw.lng()+'&alat='+ne.lat()+'&blon='+ne.lng()+'&blat='+sw.lat(), function(returndata){
+				if($.isArray(returndata)){
+					returndata.forEach(function(element, index, array) {
+						var marker = new google.maps.Marker({
+							position: {lat: parseFloat(element.lat), lng: parseFloat(element.lon)},
+							map: map,
+							title: 'TODO',
+							icon: '{MARKER_PATH}/'+element.marker
+						  });
+					});
+				} else {
+					phpbb.alert('{L_ERROR}', returndata);
+				}
+			});
+		});
+
+
 	}
 	</script>
 	<script async defer

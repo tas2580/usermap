@@ -39,4 +39,5 @@ $lang = array_merge($lang, array(
 	'UCP_USERMAP_GET_COORDINATES'		=> 'Meine Koordinaten eintragen',
 	'UCP_USERMAP_HIDE'					=> 'Auf Karte verbergen',
 	'UCP_USERMAP_HIDE_DESCRIPTION'			=> 'Stelle die Option auf Ja um deinen Marker auf der Karte auszublenden.',
+	'ERROR_GET_COORDINATES'				=> 'Deine Koordinaten konnten nicht vom Browser ausgelesen werden.'
 ));
