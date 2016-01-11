@@ -125,8 +125,8 @@ class listener_acp extends \tas2580\usermap\includes\class_usermap implements Ev
 				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 			$validate_array = array(
-				'user_usermap_lon'		=> array('match', false, self::REGEX_LON),
-				'user_usermap_lat'		=> array('match', false, self::REGEX_LAT),
+				'user_usermap_lon'		=> array('match', true, self::REGEX_LON),
+				'user_usermap_lat'		=> array('match', true, self::REGEX_LAT),
 			);
 
 			$error = validate_data($event['data'], $validate_array);
