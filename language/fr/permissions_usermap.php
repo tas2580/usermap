@@ -35,4 +35,6 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'ACL_U_USERMAP_VIEW'		=> 'Peut voir la carte des utilisateurs',
 	'ACL_U_USERMAP_ADD'		=> 'Peut s\'inscrire sur la carte',
-));
+	'ACL_U_USERMAP_SEARCH'	=> 'Peut rechercher des utilisateurs',
+	'ACL_U_USERMAP_HIDE'		=> 'Peut masquer sa localisation sur la carte des utilisateurs',
+	));
