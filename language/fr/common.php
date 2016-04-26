@@ -7,6 +7,9 @@
 *
 */
 
+/**
+* DO NOT CHANGE
+*/
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -29,16 +32,9 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 //
 // Some characters you may want to copy&paste:
-// ’ » “ ” …
+// â€™ Â» â€œ â€ â€¦
 //
 $lang = array_merge($lang, array(
-	'UCP_USERMAP_COORDINATES'			=> 'Coordonnées pour la carte des utilisateurs',
-	'UCP_USERMAP_COORDINATES_EXPLAIN'		=> 'Indiquez vos coordonnées pour l\'inscription sur le carte des utilisateurs.',
-	'UCP_USERMAP_LON'					=> 'Longitude',
-	'UCP_USERMAP_LAT'						=> 'Latitude',
-	'UCP_USERMAP_GET_COORDINATES'		=> 'Inscription de mes coordonnées',
-	'UCP_USERMAP_HIDE'					=> 'Afficher sur la carte',
-	'UCP_USERMAP_MAIL'					=> 'Emailadresse die auf der Karte angezeigt wird',
-	'UCP_USERMAP_PHONE'						=> 'Telefonnummer die auf der Karte angezeigt wird',
-	'UCP_USERMAP_HIDE_DESCRIPTION'			=> 'Votre localisation doit-elle être affichée sur la carte ?',
+	'USERMAP_MAIL'					=> 'E-Mail',
+	'USERMAP_PHONE'					=> 'Telefon',
 ));

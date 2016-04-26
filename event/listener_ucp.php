@@ -88,13 +88,17 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 			$hide = $this->auth->acl_get('u_usermap_hide') ? $this->request->variable('usermap_hide', $this->user->data['user_usermap_hide']) : 0;
 			$lon = substr($this->request->variable('usermap_lon', $this->user->data['user_usermap_lon']), 0, 10);
 			$lat = substr($this->request->variable('usermap_lat', $this->user->data['user_usermap_lat']), 0, 10);
+			$mapmail = $this->request->variable('usermap_mail', $this->user->data['user_usermap_mail']);
+			$mapphone = $this->request->variable('usermap_phone', $this->user->data['user_usermap_phone']);
 			$event['data'] = array_merge($event['data'], array(
 				'user_usermap_lon'		=> empty($lon) ? '' : $lon,
 				'user_usermap_lat'		=> empty($lat) ? '' : $lat,
+				'user_usermap_mail'		=> empty($mapmail) ? '' : $mapmail,
+				'user_usermap_phone'	=> empty($mapphone) ? '' : $mapphone,
 				'user_usermap_hide'		=> (int) $hide,
 			));
 
-			$this->add_field($event['data']['user_usermap_lon'], $event['data']['user_usermap_lat'], $event['data']['user_usermap_hide']);
+			$this->add_field($event['data']['user_usermap_lon'], $event['data']['user_usermap_lat'], $event['data']['user_usermap_hide'], $event['data']['user_usermap_mail'], $event['data']['user_usermap_phone']);
 		}
 	}
 
@@ -140,6 +144,8 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 			$event['sql_ary'] = array_merge($event['sql_ary'], array(
 				'user_usermap_lon'		=> $event['data']['user_usermap_lon'],
 				'user_usermap_lat'		=> $event['data']['user_usermap_lat'],
+				'user_usermap_mail'		=> $event['data']['user_usermap_mail'],
+				'user_usermap_phone'	=> $event['data']['user_usermap_phone'],
 				'user_usermap_hide'		=> $event['data']['user_usermap_hide'],
 			));
 		}
@@ -149,15 +155,17 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 	/**
 	 * Add the field to user profile
 	 */
-	private function add_field($lon, $lat, $hide)
+	private function add_field($lon, $lat, $hide, $mapmail, $mapphone)
 	{
 		$this->template->assign_vars(array(
 			'USERMAP_LON'						=> $lon,
-			'USERMAP_LAT'							=> $lat,
+			'USERMAP_LAT'						=> $lat,
+			'USERMAP_MAIL'						=> $mapmail,
+			'USERMAP_PHONE'						=> $mapphone,
 			'S_ADD_USERMAP'						=> true,
 			'USERMAP_HIDE'						=> $hide,
-			'A_USERMAP_HIDE'						=> $this->auth->acl_get('u_usermap_hide') ? true : false,
-			'UCP_USERMAP_COORDINATES_EXPLAIN'		=> $this->user->lang('UCP_USERMAP_COORDINATES_EXPLAIN', $this->helper->route('tas2580_usermap_index', array())),
+			'A_USERMAP_HIDE'					=> $this->auth->acl_get('u_usermap_hide') ? true : false,
+			'UCP_USERMAP_COORDINATES_EXPLAIN'	=> $this->user->lang('UCP_USERMAP_COORDINATES_EXPLAIN', $this->helper->route('tas2580_usermap_index', array())),
 		));
 	}
 }

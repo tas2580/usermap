@@ -128,6 +128,8 @@ class main extends \tas2580\usermap\includes\class_usermap
 			'U_SET_POSITON'		=> $this->helper->route('tas2580_usermap_position', array()),
 			'U_GET_MARKER'		=> $this->helper->route('tas2580_usermap_get_marker', array()),
 			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
+			'USERMAP_MAIL'			=> $this->config['tas2580_usermap_mail'],
+			'USERMAP_PHONE'			=> $this->config['tas2580_usermap_phone'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
 			'U_USERMAP_SEARCH'	=> $this->helper->route('tas2580_usermap_search', array()),
 			'L_MENU_SEARCH'		=> $this->user->lang('MENU_SEARCH', $this->config['tas2580_usermap_search_distance'])
@@ -174,7 +176,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 
 		$return = array();
 		$sql_array['FROM'][USERS_TABLE] = 'u';
-		$sql_array['SELECT'] = 'u.user_id, u.username, u.user_colour, u.user_regdate, u.user_posts, u.group_id, u.user_usermap_lon, u.user_usermap_lat, g.group_usermap_marker';
+		$sql_array['SELECT'] = 'u.user_id, u.username, u.user_colour, u.user_regdate, u.user_posts, u.group_id, u.user_usermap_lon, u.user_usermap_lat, u.user_usermap_mail, u.user_usermap_phone, g.group_usermap_marker';
 		$sql_array['LEFT_JOIN'][] = array(
 			'FROM'	=> array(GROUPS_TABLE => 'g'),
 			'ON'		=> 'u.group_id = g.group_id'
@@ -185,11 +187,18 @@ class main extends \tas2580\usermap\includes\class_usermap
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $row['user_usermap_lon'], $row['user_usermap_lat']);
+			$usermaptitle = get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
+			if ($row['user_usermap_mail']){
+				$usermaptitle .= '<br>Email: <b>' . $row['user_usermap_mail'] . '</b>';
+			}
+			if ($row['user_usermap_phone']){
+				$usermaptitle .= '<br>Phone: <b>' . $row['user_usermap_phone'] . '</b>';
+			}
 			$return[] = array(
 				'marker'		=> $row['group_usermap_marker'],
 				'lon'			=> $row['user_usermap_lon'],
 				'lat'			=> $row['user_usermap_lat'],
-				'title'			=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+				'title'			=> $usermaptitle,
 				'distance'		=> $distance,
 			);
 		}

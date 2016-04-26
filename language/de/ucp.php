@@ -36,6 +36,8 @@ $lang = array_merge($lang, array(
 	'UCP_USERMAP_COORDINATES_EXPLAIN'		=> 'Gib hier deine Koordinaten an um dich auf der <a href="%s">Benutzer Karte</a> einzutragen.',
 	'UCP_USERMAP_LON'					=> 'Längengrad',
 	'UCP_USERMAP_LAT'						=> 'Breitengrad',
+	'UCP_USERMAP_MAIL'					=> 'Emailadresse die auf der Karte angezeigt wird',
+	'UCP_USERMAP_PHONE'						=> 'Telefonnummer die auf der Karte angezeigt wird',
 	'UCP_USERMAP_GET_COORDINATES'		=> 'Meine Koordinaten eintragen',
 	'UCP_USERMAP_HIDE'					=> 'Auf Karte verbergen',
 	'UCP_USERMAP_HIDE_DESCRIPTION'			=> 'Stelle die Option auf Ja um deinen Marker auf der Karte auszublenden.',
