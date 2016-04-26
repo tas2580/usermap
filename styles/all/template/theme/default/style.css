@@ -1,0 +1,46 @@
+
+#map{
+
+}
+.user_map {
+  height: 600px;
+  width: 100%;
+  padding: 0; margin: 0;
+}
+
+.ucp_map{
+  height: 200px;
+  width: 100%;
+
+}
+
+
+#map_menu{
+	z-index: 60;
+	position: absolute;
+	display: none;
+	font-size: 10px;
+	width: 150px;
+	background-color:#fff;
+	border-radius:6px;
+	border:1px #ccc solid;
+	padding:4px;
+	box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+}
+#map_menu li{
+	list-style: none;
+}
+#map_menu li a{
+	padding:2px 0;
+	display:block;
+}
+#map_menu li a:hover{
+	background-color:#CADCEB
+}
+li.menu_close{
+	margin-top: 5px;
+	border-top: 1px #ccc solid;
+}
+
+
+.icon-usermap { background-image: url("./images/icon_usermap.gif"); }
