@@ -7,6 +7,9 @@
 *
 */
 
+/**
+* DO NOT CHANGE
+*/
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -29,9 +32,9 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 //
 // Some characters you may want to copy&paste:
-// ’ » “ ” …
+// â€™ Â» â€œ â€ â€¦
 //
 $lang = array_merge($lang, array(
-	'USERMAP'					=> 'Benutzer Karte',
-
+	'USERMAP_MAIL'					=> 'E-Mail',
+	'USERMAP_PHONE'					=> 'Telefon',
 ));

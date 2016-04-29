@@ -9,24 +9,16 @@
 
 namespace tas2580\usermap\migrations;
 
-class update_0_1_2 extends \phpbb\db\migration\migration
+class update_0_1_3_mod extends \phpbb\db\migration\migration
 {
 
-	public function update_data()
-	{
-		return array(
-			array('permission.add', array('u_usermap_hide', true, 'u_')),
-		);
-	}
 	public function update_schema()
 	{
 		return array(
 			'add_columns'	=> array(
 				$this->table_prefix . 'users'	=> array(
-					'user_usermap_hide'	=> array('BOOL', 0),
-				),
-				$this->table_prefix . 'groups'	=> array(
-					'group_usermap_legend'	=> array('BOOL', 1),
+					'user_usermap_mail'	=> array('VCHAR:100', ''),
+					'user_usermap_phone'	=> array('VCHAR:50', ''),
 				),
 			),
 		);
@@ -36,10 +28,8 @@ class update_0_1_2 extends \phpbb\db\migration\migration
 		return array(
 			'drop_columns' => array(
 				$this->table_prefix . 'users'	=> array(
-					'user_usermap_hide',
-				),
-				$this->table_prefix . 'groups'	=> array(
-					'group_usermap_legend',
+					'user_usermap_mail',
+					'user_usermap_phone',
 				),
 			),
 		);

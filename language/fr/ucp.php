@@ -3,7 +3,7 @@
 *
 * @package phpBB Extension - Wiki
  * @copyright (c) 2015 tas2580 (https://tas2580.net)
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* @license https://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
 
@@ -38,5 +38,7 @@ $lang = array_merge($lang, array(
 	'UCP_USERMAP_LAT'						=> 'Latitude',
 	'UCP_USERMAP_GET_COORDINATES'		=> 'Inscription de mes coordonnées',
 	'UCP_USERMAP_HIDE'					=> 'Afficher sur la carte',
+	'UCP_USERMAP_MAIL'					=> 'Emailadresse die auf der Karte angezeigt wird',
+	'UCP_USERMAP_PHONE'						=> 'Telefonnummer die auf der Karte angezeigt wird',
 	'UCP_USERMAP_HIDE_DESCRIPTION'			=> 'Votre localisation doit-elle être affichée sur la carte ?',
 ));

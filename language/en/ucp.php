@@ -3,7 +3,7 @@
 *
 * @package phpBB Extension - Wiki
  * @copyright (c) 2015 tas2580 (https://tas2580.net)
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* @license https://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
 
@@ -39,5 +39,7 @@ $lang = array_merge($lang, array(
 	'UCP_USERMAP_COORDINATES_EXPLAIN'		=> 'Enter your coordinates for the <a href="%s">User Map</a>.',
 	'UCP_USERMAP_LON'				=> 'Longitude',
 	'UCP_USERMAP_LAT'				=> 'Latitude',
+	'UCP_USERMAP_MAIL'					=> 'Email Address for User Map',
+	'UCP_USERMAP_PHONE'						=> 'Phone number for User Map',
 	'UCP_USERMAP_GET_COORDINATES'		=> 'Add My Coordinates',
 ));

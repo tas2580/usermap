@@ -3,7 +3,7 @@
 *
 * @package phpBB Extension - Wiki
  * @copyright (c) 2015 tas2580 (https://tas2580.net)
-* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+* @license https://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
 namespace tas2580\usermap\event;
@@ -145,7 +145,9 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 			'USERMAP_CONTROLS'	=> 'false',
 			'USERNAME'			=> get_username_string('full', $data['user_id'], $data['username'], $data['user_colour']),
 			'USERMAP_LON'		=> $data['user_usermap_lon'],
-			'USERMAP_LAT'			=> $data['user_usermap_lat'],
+			'USERMAP_LAT'		=> $data['user_usermap_lat'],
+			'USERMAP_MAIL'		=> $data['user_usermap_mail'],
+			'USERMAP_PHONE'		=> $data['user_usermap_phone'],
 			'USERMAP_ZOOM'		=> (int) 10,
 			'DISTANCE'			=> $distance,
 			'MARKER_PATH'		=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker'),
