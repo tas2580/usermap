@@ -141,7 +141,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 
 		// Center the map to user
 		$this->template->assign_vars(array(
-			'S_IN_USERMAP'		=> true,
+			'S_IN_USERMAP'		=> !empty($data['user_usermap_lon']) ? true : false,
 			'USERMAP_CONTROLS'	=> 'false',
 			'USERNAME'			=> get_username_string('full', $data['user_id'], $data['username'], $data['user_colour']),
 			'USERMAP_LON'		=> $data['user_usermap_lon'],
