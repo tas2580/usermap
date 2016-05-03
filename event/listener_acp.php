@@ -15,7 +15,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 * Event listener
 */
 class listener_acp extends \tas2580\usermap\includes\class_usermap implements EventSubscriberInterface
-{	/** @var string */
+{
+
+	/** @var \phpbb_extension_manager */
 	protected $phpbb_extension_manager;
 
 	/** @var \phpbb\path_helper */
@@ -36,11 +38,12 @@ class listener_acp extends \tas2580\usermap\includes\class_usermap implements Ev
 	/**
 	* Constructor
 	*
-	* @param \phpbb\request\request			$request			Request object
-	* @param \phpbb\user					$user			User Object
-	* @param \phpbb\template\template		$template			Template Object
-	* @param Container					$phpbb_container
-	* @param string						$phpbb_root_path	phpbb_root_path
+	* @param \phpbb_extension_manager		$phpbb_extension_manager
+	* @param \phpbb\path_helper				$path_helper
+	* @param \phpbb\request\request			$request						Request object
+	* @param \phpbb\user					$user						User Object
+	* @param \phpbb\template\template		$template						Template Object
+	* @param string						$phpbb_root_path				phpbb_root_path
 	* @access public
 	*/
 	public function __construct($phpbb_extension_manager, \phpbb\path_helper $path_helper, \phpbb\request\request $request, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path)
@@ -62,7 +65,7 @@ class listener_acp extends \tas2580\usermap\includes\class_usermap implements Ev
 	* @static
 	* @access public
 	*/
-	static public function getSubscribedEvents()
+	public static function getSubscribedEvents()
 	{
 		return array(
 			'core.acp_users_modify_profile'						=> 'acp_profile_modify_profile_info',

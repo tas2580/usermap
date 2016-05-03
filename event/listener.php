@@ -18,7 +18,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 */
 class listener extends \tas2580\usermap\includes\class_usermap implements EventSubscriberInterface
 {
-	static public function getSubscribedEvents()
+	public static function getSubscribedEvents()
 	{
 		return array(
 			'core.page_header'						=> 'page_header',
@@ -35,7 +35,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	/** @var \phpbb\config\config */
 	protected $config;
 
-	/** @var \phpbb\db\driver\driver */
+	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
 	/** @var \phpbb\controller\helper */
@@ -44,7 +44,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	/** @var \phpbb\path_helper */
 	protected $path_helper;
 
-	/** @var string */
+	/** @var \phpbb_extension_manager */
 	protected $phpbb_extension_manager;
 
 	/** @var \phpbb\template\template */
@@ -56,9 +56,14 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	/**
 	* Constructor
 	*
-	* @param \phpbb\controller\helper		$helper		Controller helper object
-	* @param \phpbb\template			$template		Template object
-	* @param \phpbb\user				$user		User object
+	* @param \phpbb\auth\auth				$auth
+	* @param \phpbb\config\config			$config
+	* @param \phpbb\db\driver\driver_interface	$db
+	* @param \phpbb\controller\helper			$helper						Controller helper object
+	* @param \phpbb\path_helper				$path_helper
+	* @param \phpbb_extension_manager		$phpbb_extension_manager		Controller helper object
+	* @param \phpbb\template				$template						Template object
+	* @param \phpbb\user					$user						User object
 	*/
 	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\path_helper $path_helper, $phpbb_extension_manager, \phpbb\template\template $template, \phpbb\user $user)
 	{

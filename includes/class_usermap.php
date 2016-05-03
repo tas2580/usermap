@@ -4,6 +4,12 @@ namespace tas2580\usermap\includes;
 
 class class_usermap
 {
+	/** @var \phpbb\user */
+	protected $user;
+
+	/** @var \phpbb\config\config */
+	protected $config;
+
 	const REGEX_LON =  '#^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$#';
 	const REGEX_LAT =  '#^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$#';
 
@@ -17,10 +23,8 @@ class class_usermap
 	 */
 	protected function get_distance($x1, $y1, $x2, $y2)
 	{
-		$distance = 0;
 		if (empty($x1) || empty($y1) || empty($x2) || empty($y2))
 		{
-
 			return '';
 		}
 

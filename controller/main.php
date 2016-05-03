@@ -17,23 +17,23 @@ class main extends \tas2580\usermap\includes\class_usermap
 	/** @var \phpbb\config\config */
 	protected $config;
 
-	/** @var \phpbb\db\driver\driver */
+	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
 	/** @var \phpbb\controller\helper */
 	protected $helper;
 
 	/** @var \phpbb\paginationr */
-	protected $paginationr;
+	protected $pagination;
 
 	/** @var \phpbb\path_helper */
 	protected $path_helper;
 
-	/** @var string */
-	protected $phpbb_extension_manager;
-
 	/** @var \phpbb\request\request */
 	protected $request;
+
+	/** @var \phpbb_extension_manager */
+	protected $phpbb_extension_manager;
 
 	/** @var \phpbb\user */
 	protected $user;
@@ -50,9 +50,18 @@ class main extends \tas2580\usermap\includes\class_usermap
 	/**
 	* Constructor
 	*
-	* @param \phpbb\auth\auth			$auth		Auth object
-	* @param \phpbb\controller\helper	$helper
-	* @param \phpbb\template\template	$template
+	* @param \phpbb\auth\auth				$auth						Auth object
+	* @param \phpbb\config\config			$config						Config object
+	* @param \phpbb\db\driver\driver_interface	$db
+	* @param \phpbb\controller\helper			$helper
+	* @param \phpbb\pagination				$pagination
+	* @param \phpbb\path_helper				$path_helper
+	* @param \phpbb\request\request			$request
+	* @param \phpbb_extension_manager		$phpbb_extension_manager
+	* @param \phpbb\user					$user						User Object
+	* @param \phpbb\template\template		$template
+	* @param string						$phpbb_root_path				phpbb_root_path
+	* @param string						$php_ext						php_ext
 	*/
 	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext)
 	{
@@ -62,8 +71,8 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$this->helper = $helper;
 		$this->pagination = $pagination;
 		$this->path_helper = $path_helper;
-		$this->phpbb_extension_manager = $phpbb_extension_manager;
 		$this->request = $request;
+		$this->phpbb_extension_manager = $phpbb_extension_manager;
 		$this->user = $user;
 		$this->template = $template;
 		$this->phpbb_root_path = $phpbb_root_path;
@@ -165,7 +174,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 		}
 
 		$error = validate_data($data, $validate_array);
-		if(sizeof($error))
+		if (sizeof($error))
 		{
 			$error = array_map(array($this->user, 'lang'), $error);
 			$json_response = new \phpbb\json_response;

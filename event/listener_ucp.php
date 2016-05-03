@@ -37,10 +37,11 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 	/**
 	* Constructor
 	*
+	* @param \phpbb\auth\auth				$auth
+	* @param \phpbb\controller\helper			$helper			Controller helper object
 	* @param \phpbb\request\request			$request			Request object
 	* @param \phpbb\user					$user			User Object
 	* @param \phpbb\template\template		$template			Template Object
-	* @param Container					$phpbb_container
 	* @param string						$phpbb_root_path	phpbb_root_path
 	* @access public
 	*/
@@ -63,7 +64,7 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 	* @static
 	* @access public
 	*/
-	static public function getSubscribedEvents()
+	public static function getSubscribedEvents()
 	{
 		return array(
 			'core.ucp_profile_modify_profile_info'					=> 'ucp_profile_modify_profile_info',
