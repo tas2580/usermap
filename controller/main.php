@@ -23,7 +23,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 	/** @var \phpbb\controller\helper */
 	protected $helper;
 
-	/** @var \phpbb\paginationr */
+	/** @var \phpbb\pagination */
 	protected $pagination;
 
 	/** @var \phpbb\path_helper */
