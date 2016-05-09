@@ -162,10 +162,12 @@ class listener_acp extends \tas2580\usermap\includes\class_usermap implements Ev
 	public function acp_manage_group_display_form($event)
 	{
 		$data = $event['group_row'];
+		$data['group_usermap_marker'] = isset($data['group_usermap_marker']) ? $data['group_usermap_marker'] : '';
+		$data['group_usermap_legend'] = isset($data['group_usermap_legend']) ? $data['group_usermap_legend'] : '';
 		$path = $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker/');
 		$this->template->assign_vars(array(
 			'USERMAP_MARKER'				=> (!empty($data['group_usermap_marker'])) ? $path. $data['group_usermap_marker'] : $this->path_helper->update_web_root_path($this->phpbb_root_path . '/images/'). 'spacer.gif',
-			'USERMAP_MARKER_PATH'		=> $path,
+			'USERMAP_MARKER_PATH'			=> $path,
 			'USERMAP_OPTIONS'				=> $this->marker_image_select($data['group_usermap_marker']),
 			'USERMAP_LEGEND'				=> $data['group_usermap_legend'],
 		));

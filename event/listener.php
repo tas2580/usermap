@@ -218,7 +218,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		}
 
 		$post_row = $event['post_row'];
-		$post_row['DISTANCE'] = $event['user_poster_data']['distance'];
+		$post_row['DISTANCE'] = isset($event['user_poster_data']['distance']) ? $event['user_poster_data']['distance'] : '';
 		$event['post_row'] =$post_row;
 	}
 }
