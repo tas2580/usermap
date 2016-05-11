@@ -1,0 +1,66 @@
+<!-- INCLUDE overall_header.html -->
+<h1>{L_ACP_USERMAP_TITLE}</h1>
+
+<form method="post" action="{U_ACTION}">
+
+<fieldset>
+<legend>{L_SETTINGS}</legend>
+	<dl>
+		<dt><label for="thing_name">{L_ACP_THING_NAME}{L_COLON}</label><br />
+			<span>{L_ACP_THING_NAME_EXPLAIN}</span>
+		</dt>
+		<dd><input id="thing_name" type="text" name="thing_name" value="{THING_NAME}" /></dd>
+	</dl>
+</fieldset>
+	
+<fieldset>
+<legend>{L_SETTINGS}</legend>
+	<dl>
+		<dt><label for="allow_bbcode">{L_ACP_ALLOW_BBCODE}{L_COLON}</label></dt>
+		<dd>
+			<label><input type="radio" id="allow_bbcode" name="allow_bbcode" value="1"<!-- IF ALLOW_BBCODE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="allow_bbcode" value="0"<!-- IF not ALLOW_BBCODE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="allow_smilies">{L_ACP_ALLOW_SMILIES}{L_COLON}</label></dt>
+		<dd>
+			<label><input type="radio" id="allow_smilies" name="allow_smilies" value="1"<!-- IF ALLOW_SMILIES --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="allow_smilies" value="0"<!-- IF not ALLOW_SMILIES --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="allow_urls">{L_ACP_ALLOW_URL}{L_COLON}</label></dt>
+		<dd>
+			<label><input type="radio" id="allow_urls" name="allow_urls" value="1"<!-- IF ALLOW_URL --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="allow_urls" value="0"<!-- IF not ALLOW_URL --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="allow_img">{L_ACP_ALLOW_IMG}{L_COLON}</label></dt>
+		<dd>
+			<label><input type="radio" id="allow_img" name="allow_img" value="1"<!-- IF ALLOW_IMG --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="allow_img" value="0"<!-- IF not ALLOW_IMG --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="allow_flash">{L_ACP_ALLOW_FLASH}{L_COLON}</label></dt>
+		<dd>
+			<label><input type="radio" id="allow_flash" name="allow_flash" value="1"<!-- IF ALLOW_FLASH --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="allow_flash" value="0"<!-- IF not ALLOW_FLASH --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>{L_ACP_SUBMIT}</legend>
+	<p class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+	</p>
+	{S_FORM_TOKEN}
+</fieldset>
+
+
+</form>
+<!-- INCLUDE overall_footer.html -->

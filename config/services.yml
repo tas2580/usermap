@@ -1,3 +1,6 @@
+parameters:
+    tables.usermap.things: %core.table_prefix%usermap_things
+
 services:
     tas2580.usermap.main:
         class: tas2580\usermap\controller\main
@@ -5,6 +8,7 @@ services:
             - @auth
             - @config
             - @dbal.conn
+            - @dispatcher
             - @controller.helper
             - @pagination
             - @path_helper
@@ -14,6 +18,24 @@ services:
             - @template
             - %core.root_path%
             - %core.php_ext%
+            - %tables.usermap.things%
+    tas2580.usermap.thing:
+        class: tas2580\usermap\controller\thing
+        arguments:
+            - @auth
+            - @config
+            - @dbal.conn
+            - @dispatcher
+            - @controller.helper
+            - @pagination
+            - @path_helper
+            - @request
+            - @ext.manager
+            - @user
+            - @template
+            - %core.root_path%
+            - %core.php_ext%
+            - %tables.usermap.things%
     tas2580.usermap.listener:
         class: tas2580\usermap\event\listener
         arguments:
@@ -23,6 +45,7 @@ services:
             - @controller.helper
             - @path_helper
             - @ext.manager
+            - @request
             - @template
             - @user
         tags:
@@ -42,6 +65,7 @@ services:
         class: tas2580\usermap\event\listener_ucp
         arguments:
             - @auth
+            - @config
             - @controller.helper
             - @request
             - @user

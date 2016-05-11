@@ -1,8 +1,8 @@
 <?php
 /**
 *
-* @package phpBB Extension - Wiki
- * @copyright (c) 2015 tas2580 (https://tas2580.net)
+* @package phpBB Extension - tas2580 Usermap
+* @copyright (c) 2016 tas2580 (https://tas2580.net)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
@@ -11,6 +11,12 @@ namespace tas2580\usermap\migrations;
 
 class update_0_1_2 extends \phpbb\db\migration\migration
 {
+	public static function depends_on()
+	{
+		return array(
+			'\tas2580\usermap\migrations\initial_module',
+		);
+	}
 
 	public function update_data()
 	{
@@ -18,6 +24,7 @@ class update_0_1_2 extends \phpbb\db\migration\migration
 			array('permission.add', array('u_usermap_hide', true, 'u_')),
 		);
 	}
+
 	public function update_schema()
 	{
 		return array(

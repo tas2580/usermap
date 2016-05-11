@@ -1,8 +1,8 @@
 <?php
 /**
 *
-* @package phpBB Extension - tas2580 Mobile Notifier
-* @copyright (c) 2015 tas2580 (https://tas2580.net)
+* @package phpBB Extension - tas2580 Usermap
+* @copyright (c) 2016 tas2580 (https://tas2580.net)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
@@ -33,5 +33,7 @@ if (empty($lang) || !is_array($lang))
 // ’ » “ ” …
 //
 $lang = array_merge($lang, array(
-	'ACP_USERMAP_TITLE'	=> 'Benutzer Karte',
+	'ACP_USERMAP_TITLE'		=> 'Benutzer Karte',
+	'ACP_USERMAP_SETTINGS'	=> 'Einstellungen',
+	'ACP_USERMAP_THINGS'	=> 'Dinge',
 ));

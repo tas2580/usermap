@@ -1,0 +1,64 @@
+<!-- INCLUDE overall_header.html -->
+<form id="postform" method="post" action="{U_ACTION}#add">
+	<div class="panel">
+		<div class="inner">
+		<h3 id="add">{FORM_TITLE}</h3>
+
+			<fieldset>
+				<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+				<dl style="clear: left;">
+					<dt><label for="title">{L_TITLE}{L_COLON}</label></dt>
+					<dd><input type="text" name="title" id="title" size="45" tabindex="1" value="{TITLE}" class="inputbox autowidth" required /></dd>
+				</dl>
+
+				<!-- INCLUDE posting_buttons.html -->
+				<div id="smiley-box">
+				<!-- IF .smiley -->
+					<strong>{L_SMILIES}</strong><br />
+					<!-- BEGIN smiley -->
+						<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
+					<!-- END smiley -->
+				<!-- ENDIF -->
+				<!-- IF S_SHOW_SMILEY_LINK -->
+					<br /><a href="{U_MORE_SMILIES}" onclick="popup(this.href, 750, 350, '_phpbbsmilies'); return false;">{L_MORE_SMILIES}</a>
+				<!-- ENDIF -->
+					<div class="bbcode-status">
+						<!-- IF .smiley --><hr /><!-- ENDIF -->
+						{BBCODE_STATUS}<br />
+						<!-- IF S_BBCODE_ALLOWED -->
+							{IMG_STATUS}<br />
+							{FLASH_STATUS}<br />
+							{URL_STATUS}<br />
+						<!-- ENDIF -->
+						{SMILIES_STATUS}
+					</div>
+				</div>
+
+				<div id="message-box">
+					<textarea name="message" id="message" rows="15" cols="76" tabindex="2" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onfocus="initInsertions();" class="inputbox" required>{MESSAGE}</textarea>
+				</div>
+
+				<dl>
+					<dt><label for="marker">{L_THING_MARKER}{L_COLON}</label><br /><span>{L_THING_MARKER_EXPLAIN}</span></dt>
+					<dd><select id="marker" name="marker" tabindex="3" onchange="update_image(this.options[selectedIndex].value);">{MARKER_OPTIONS}</select></dd>
+					<dd><img src="{USERMAP_MARKER}" id="image" alt="" /></dd>
+				</dl>
+			</fieldset>
+			<fieldset class="submit-buttons">
+				{S_HIDDEN_FIELDS}<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp;
+				<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+				{S_FORM_TOKEN}
+			</fieldset>
+		</div>
+	</div>
+	{S_HIDDEN_FIELDS}
+</form>
+<script type="text/javascript">
+	// <![CDATA[
+	function update_image(newimage)
+	{
+		document.getElementById('image').src = (newimage) ? "{USERMAP_MARKER_PATH}/" + encodeURI(newimage) : "../../images/spacer.gif";
+	}
+	// ]]>
+</script>
+<!-- INCLUDE overall_footer.html -->

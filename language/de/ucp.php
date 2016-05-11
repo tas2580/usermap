@@ -1,8 +1,8 @@
 <?php
 /**
 *
-* @package phpBB Extension - Wiki
- * @copyright (c) 2015 tas2580 (https://tas2580.net)
+* @package phpBB Extension - tas2580 Usermap
+* @copyright (c) 2016 tas2580 (https://tas2580.net)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
@@ -32,12 +32,16 @@ if (empty($lang) || !is_array($lang))
 // ’ » “ ” …
 //
 $lang = array_merge($lang, array(
-	'UCP_USERMAP_COORDINATES'			=> 'Koordinaten für die Benutzer Karte',
+	'UCP_USERMAP_COORDINATES'				=> 'Koordinaten für die Benutzer Karte',
 	'UCP_USERMAP_COORDINATES_EXPLAIN'		=> 'Gib hier deine Koordinaten an um dich auf der <a href="%s">Benutzer Karte</a> einzutragen.',
-	'UCP_USERMAP_LON'					=> 'Längengrad',
+	'UCP_USERMAP_ZIP'						=> 'Postleitzahl für die Benutzer Karte',
+	'UCP_USERMAP_ZIP_EXPLAIN'				=> 'Gib hier deine Postleitzahl an um dich auf der <a href="%s">Benutzer Karte</a> einzutragen.',
+
+	'UCP_USERMAP_LON'						=> 'Längengrad',
 	'UCP_USERMAP_LAT'						=> 'Breitengrad',
-	'UCP_USERMAP_GET_COORDINATES'		=> 'Meine Koordinaten eintragen',
-	'UCP_USERMAP_HIDE'					=> 'Auf Karte verbergen',
+	'UCP_USERMAP_GET_COORDINATES'			=> 'Meine Koordinaten eintragen',
+	'UCP_USERMAP_HIDE'						=> 'Auf Karte verbergen',
 	'UCP_USERMAP_HIDE_DESCRIPTION'			=> 'Stelle die Option auf Ja um deinen Marker auf der Karte auszublenden.',
-	'ERROR_GET_COORDINATES'				=> 'Deine Koordinaten konnten nicht vom Browser ausgelesen werden.'
+	'ERROR_GET_COORDINATES'					=> 'Deine Koordinaten konnten nicht vom Browser ausgelesen werden.',
+	'NEED_REGISTER_ZIP'						=> 'Du musst eine gültige Postleitzahl eingeben.',
 ));

@@ -1,8 +1,8 @@
 <?php
 /**
 *
-* @package phpBB Extension - tas2580 Social Media Buttons
-* @copyright (c) 2014 tas2580 (https://tas2580.net)
+* @package phpBB Extension - tas2580 Usermap
+* @copyright (c) 2016 tas2580 (https://tas2580.net)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
@@ -19,6 +19,9 @@ class main extends \tas2580\usermap\includes\class_usermap
 
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
+
+	/** @var \phpbb\event\dispatcher_interface */
+	protected $phpbb_dispatcher;
 
 	/** @var \phpbb\controller\helper */
 	protected $helper;
@@ -50,24 +53,25 @@ class main extends \tas2580\usermap\includes\class_usermap
 	/**
 	* Constructor
 	*
-	* @param \phpbb\auth\auth				$auth						Auth object
-	* @param \phpbb\config\config			$config						Config object
+	* @param \phpbb\auth\auth					$auth							Auth object
+	* @param \phpbb\config\config				$config							Config object
 	* @param \phpbb\db\driver\driver_interface	$db
 	* @param \phpbb\controller\helper			$helper
-	* @param \phpbb\pagination				$pagination
-	* @param \phpbb\path_helper				$path_helper
-	* @param \phpbb\request\request			$request
-	* @param \phpbb_extension_manager		$phpbb_extension_manager
-	* @param \phpbb\user					$user						User Object
-	* @param \phpbb\template\template		$template
-	* @param string						$phpbb_root_path				phpbb_root_path
-	* @param string						$php_ext						php_ext
+	* @param \phpbb\pagination					$pagination
+	* @param \phpbb\path_helper					$path_helper
+	* @param \phpbb\request\request				$request
+	* @param \phpbb_extension_manager			$phpbb_extension_manager
+	* @param \phpbb\user						$user							User Object
+	* @param \phpbb\template\template			$template
+	* @param string								$phpbb_root_path				phpbb_root_path
+	* @param string								$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher,\phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
 		$this->db = $db;
+		$this->phpbb_dispatcher = $phpbb_dispatcher;
 		$this->helper = $helper;
 		$this->pagination = $pagination;
 		$this->path_helper = $path_helper;
@@ -77,6 +81,9 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$this->template = $template;
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $php_ext;
+
+		$this->things_table = $things_table;
+
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
 	}
 
@@ -117,30 +124,34 @@ class main extends \tas2580\usermap\includes\class_usermap
 				$legend = '<a' . $colour_text . ' href="' . append_sid("{$this->phpbb_root_path}memberlist.{$this->php_ext}", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_name . '</a>';
 			}
 			$this->template->assign_block_vars('group_list', array(
-				'GROUP_ID'		=> $row['group_id'],
+				'GROUP_ID'			=> $row['group_id'],
 				'GROUP_NAME'		=> $legend,
 				'ALT'				=> $group_name,
-				'MARKER'			=> $row['group_usermap_marker'],
+				'MARKER'			=> 'groups/' . $row['group_usermap_marker'],
 			));
 		}
 
 		$this->template->assign_vars(array(
-			'USERMAP_CONTROLS'	=> 'true',
-			'S_IN_USERMAP'		=> true,
-			'USERMAP_LON'		=> empty($this->config['tas2580_usermap_lon']) ? 0 : $this->config['tas2580_usermap_lon'],
+			'USERMAP_CONTROLS'		=> 'true',
+			'S_IN_USERMAP'			=> true,
+			'USERMAP_LON'			=> empty($this->config['tas2580_usermap_lon']) ? 0 : $this->config['tas2580_usermap_lon'],
 			'USERMAP_LAT'			=> empty($this->config['tas2580_usermap_lat']) ? 0 : $this->config['tas2580_usermap_lat'],
-			'USERMAP_ZOOM'		=> (int) $this->config['tas2580_usermap_zoom'],
-			'MARKER_PATH'		=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker'),
-			'A_USERMAP_ADD'		=> (($this->user->data['user_id'] <> ANONYMOUS) && $this->auth->acl_get('u_usermap_add')),
-			'A_USERMAP_SEARCH'	=> $this->auth->acl_get('u_usermap_search'),
-			'S_CAN_ADD'			=> (empty($this->user->data['user_usermap_lon']) || empty($this->user->data['user_usermap_lat'])),
-			'U_SET_POSITON'		=> $this->helper->route('tas2580_usermap_position', array()),
-			'U_GET_MARKER'		=> $this->helper->route('tas2580_usermap_get_marker', array()),
-			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
+			'USERMAP_ZOOM'			=> (int) $this->config['tas2580_usermap_zoom'],
+			'MARKER_PATH'			=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker'),
+			'A_USERMAP_ADD'			=> (($this->user->data['user_id'] <> ANONYMOUS) && $this->auth->acl_get('u_usermap_add')),
+			'A_USERMAP_ADD_THING'	=> $this->auth->acl_get('u_usermap_add_thing'),
+			'A_USERMAP_SEARCH'		=> $this->auth->acl_get('u_usermap_search'),
+			'S_CAN_ADD'				=> (empty($this->user->data['user_usermap_lon']) || empty($this->user->data['user_usermap_lat'])),
+			'U_SET_POSITON'			=> $this->helper->route('tas2580_usermap_position', array()),
+			'U_USERMAP_ADD_THING'	=> $this->helper->route('tas2580_usermap_add_thing', array()),
+			'U_GET_MARKER'			=> $this->helper->route('tas2580_usermap_get_marker', array()),
+			'MAP_TYPE'				=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
-			'U_USERMAP_SEARCH'	=> $this->helper->route('tas2580_usermap_search', array()),
-			'L_MENU_SEARCH'		=> $this->user->lang('MENU_SEARCH', $this->config['tas2580_usermap_search_distance'])
+			'U_USERMAP_SEARCH'		=> $this->helper->route('tas2580_usermap_search', array()),
+			'L_MENU_SEARCH'			=> $this->user->lang('MENU_SEARCH', $this->config['tas2580_usermap_search_distance']),
+			'L_MENU_ADD_THING'		=> $this->user->lang('MENU_ADD_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])),
 		));
+
 		return $this->helper->render('usermap_body.html', $this->user->lang('USERMAP_TITLE'));
 	}
 
@@ -182,25 +193,103 @@ class main extends \tas2580\usermap\includes\class_usermap
 		}
 
 		$return = array();
+
+		$sql = 'SELECT *
+			FROM ' . $this->things_table . "
+				WHERE (thing_lon * 1 >= {$data['min_lon']} AND thing_lon * 1 <= {$data['max_lon']}) AND (thing_lat * 1 >= {$data['min_lat']} AND thing_lat * 1 <= {$data['max_lat']})";
+		$result = $this->db->sql_query_limit($sql, (int) $this->config['tas2580_usermap_max_marker']);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$text = '<a href="' . $this->helper->route('tas2580_usermap_thing', array('id' => $row['thing_id'])) . '">' . $row['thing_title'] . '</a>';
+			if (!empty($this->user->data['user_usermap_lon']))
+			{
+				$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $row['thing_lon'], $row['thing_lat']);
+				$text .= '<br>' . $this->user->lang('DISTANCE'). $this->user->lang('COLON') . ' ' . $distance;
+			}
+
+			if ($this->config['tas2580_usermap_display_coordinates'])
+			{
+				$text .= '<br>' . $this->user->lang('LON'). $this->user->lang('COLON') . ' ' . $row['thing_lon'];
+				$text .= '<br>' . $this->user->lang('LAT'). $this->user->lang('COLON') . ' ' . $row['thing_lat'];
+			}
+
+			$return_data = array(
+				'marker'		=> 'things/' . $row['thing_marker'],
+				'lon'			=> $row['thing_lon'],
+				'lat'			=> $row['thing_lat'],
+				'text'			=> $text,
+			);
+
+			/**
+			 * Modify data for thing marker
+			 *
+			 * @event tas2580.usermap_thing_marker_row_after
+			 * @var    array    row				User row
+			 * @var    array    return_data		Return data
+			 * @since 0.1.4
+			 */
+			$vars = array('row', 'return_data');
+			extract($this->phpbb_dispatcher->trigger_event('tas2580.usermap_thing_marker_row_after', compact($vars)));
+
+			$return[] = $return_data;
+		}
+
 		$sql_array['FROM'][USERS_TABLE] = 'u';
 		$sql_array['SELECT'] = 'u.user_id, u.username, u.user_colour, u.user_regdate, u.user_posts, u.group_id, u.user_usermap_lon, u.user_usermap_lat, g.group_usermap_marker';
 		$sql_array['LEFT_JOIN'][] = array(
 			'FROM'	=> array(GROUPS_TABLE => 'g'),
 			'ON'		=> 'u.group_id = g.group_id'
 		);
-		$sql_array['WHERE'] = "(u.user_usermap_lon >= {$data['min_lon']} AND u.user_usermap_lon <= {$data['max_lon']}) AND (u.user_usermap_lat >= {$data['min_lat']} AND u.user_usermap_lat<= {$data['max_lat']}) AND user_usermap_hide = 0";
+		$sql_array['WHERE'] = "(u.user_usermap_lon * 1 >= {$data['min_lon']} AND u.user_usermap_lon * 1 <= {$data['max_lon']}) AND (u.user_usermap_lat * 1 >= {$data['min_lat']} AND u.user_usermap_lat * 1 <= {$data['max_lat']}) AND user_usermap_hide = 0";
+
+		/**
+		 * Modify SQL array for user marker
+		 *
+		 * @event tas2580.usermap_modify_user_sql_array
+		 * @var    array    sql_array		SQL array
+		 * @since 0.1.4
+		 */
+		$vars = array('sql_array');
+		extract($this->phpbb_dispatcher->trigger_event('tas2580.usermap_modify_user_sql_array', compact($vars)));
+
+
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, (int) $this->config['tas2580_usermap_max_marker']);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $row['user_usermap_lon'], $row['user_usermap_lat']);
-			$return[] = array(
-				'marker'		=> $row['group_usermap_marker'],
+
+			$text = get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
+
+			if( !empty($this->user->data['user_usermap_lon']) && $row['user_id'] <> $this->user->data['user_id'])
+			{
+				$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $row['user_usermap_lon'], $row['user_usermap_lat']);
+				$text .= '<br>' . $this->user->lang('DISTANCE'). $this->user->lang('COLON') . ' ' . $distance;
+			}
+			if ($this->config['tas2580_usermap_display_coordinates'])
+			{
+				$text .= '<br>' . $this->user->lang('LON'). $this->user->lang('COLON') . ' ' . $row['user_usermap_lon'];
+				$text .= '<br>' . $this->user->lang('LAT'). $this->user->lang('COLON') . ' ' . $row['user_usermap_lat'];
+			}
+			
+			$return_data = array(
+				'marker'		=> 'groups/' . $row['group_usermap_marker'],
 				'lon'			=> $row['user_usermap_lon'],
 				'lat'			=> $row['user_usermap_lat'],
-				'title'			=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
-				'distance'		=> $distance,
+				'text'			=> $text,
 			);
+
+			/**
+			 * Modify data for user marker
+			 *
+			 * @event tas2580.usermap_user_marker_row_after
+			 * @var    array    row				User row
+			 * @var    array    return_data		Return data
+			 * @since 0.1.4
+			 */
+			$vars = array('row', 'return_data');
+			extract($this->phpbb_dispatcher->trigger_event('tas2580.usermap_user_marker_row_after', compact($vars)));
+
+			$return[] = $return_data;
 		}
 
 		$json_response = new \phpbb\json_response;
@@ -254,7 +343,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$min_lat = (float) ($data['lat'] - $alpha);
 		$max_lat = (float) ($data['lat'] + $alpha);
 
-		$where = " WHERE ( user_usermap_lon >= $min_lon AND user_usermap_lon <= $max_lon) AND ( user_usermap_lat >= $min_lat AND user_usermap_lat<= $max_lat)";
+		$where = " WHERE ( user_usermap_lon * 1 >= $min_lon AND user_usermap_lon * 1 <= $max_lon) AND ( user_usermap_lat * 1 >= $min_lat AND user_usermap_lat * 1 <= $max_lat)";
 		$limit = (int) $this->config['topics_per_page'];
 
 		$sql = 'SELECT COUNT(user_id) AS num_users

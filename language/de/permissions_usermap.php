@@ -1,8 +1,8 @@
 <?php
 /**
 *
-* @package phpBB Extension - Wiki
- * @copyright (c) 2015 tas2580 (https://tas2580.net)
+* @package phpBB Extension - tas2580 Usermap
+* @copyright (c) 2016 tas2580 (https://tas2580.net)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
@@ -33,8 +33,12 @@ if (empty($lang) || !is_array($lang))
 // ’ » “ ” …
 //
 $lang = array_merge($lang, array(
-	'ACL_U_USERMAP_VIEW'		=> 'Kann die Benutzer Karte anschauen',
-	'ACL_U_USERMAP_ADD'		=> 'Kann sich in die Benutzer Karte eintragen',
-	'ACL_U_USERMAP_SEARCH'	=> 'Kann Benutzer im Umkreis suchen',
-	'ACL_U_USERMAP_HIDE'		=> 'Kann seinen Standort auf der Benutzer Karte ausblenden',
+	'ACL_CAT_USERMAP'				=> 'Benutzer Karte',
+	'ACL_U_USERMAP_VIEW'			=> 'Kann die Benutzer Karte anschauen',
+	'ACL_U_USERMAP_ADD'				=> 'Kann sich in die Benutzer Karte eintragen',
+	'ACL_U_USERMAP_SEARCH'			=> 'Kann Benutzer im Umkreis suchen',
+	'ACL_U_USERMAP_HIDE'			=> 'Kann seinen Standort auf der Benutzer Karte ausblenden',
+	'ACL_U_USERMAP_ADD_THING'		=> 'Kann Ding auf die Benutzer Karte eintragen',
+	'ACL_U_USERMAP_DELETE_THING'	=> 'Kann Ding von der Benutzer Karte löschen',
+	'ACL_U_USERMAP_EDIT_THING'		=> 'Kann Ding auf der Benutzer Karte bearbeiten'
 ));

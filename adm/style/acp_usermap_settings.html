@@ -14,7 +14,7 @@
 		<dd><input id="usermap_zoom" type="number" min="3" max="18" name="usermap_zoom" value="{USERMAP_ZOOM}" /></dd>
 	</dl>
 	<dl>
-		<dt><label for="usermap_lon">{L_ACP_COORDINATES}{L_COLON}</label><br /><span>{L_ACP_COORDINATES_EXPLAIN}</span></dt>
+		<dt><label for="usermap_lon">{L_ACP_DEFAULT_COORDINATES}{L_COLON}</label><br /><span>{L_ACP_DEFAULT_COORDINATES_EXPLAIN}</span></dt>
 		<dd>
 			<input id="usermap_lon" type="text" size="10" maxlength="10" name="usermap_lon" value="{USERMAP_LON}" style="width:62px;"> {L_ACP_USERMAP_LON}<br>
 			<input id="usermap_lat" type="text" size="10" maxlength="10" name="usermap_lat" value="{USERMAP_LAT}" style="width:62px;"> {L_ACP_USERMAP_LAT}<br>
@@ -31,8 +31,42 @@
 		</dt>
 		<dd><input id="google_api_key" type="text" name="google_api_key" value="{GOOGLE_API_KEY}" /></dd>
 	</dl>
+	<dl>
+		<dt><label for="display_coordinates">{L_ACP_DISPLAY_COORDINATES}{L_COLON}</label><br /><span>{L_ACP_DISPLAY_COORDINATES_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="display_coordinates" name="display_coordinates" value="1"<!-- IF DISPLAY_COORDINATES --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="display_coordinates" value="0"<!-- IF not DISPLAY_COORDINATES --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
 </fieldset>
 
+<fieldset>
+	<legend>{L_ACP_USER_INPUT_SETTINGS}</legend>
+	<dl>
+		<dt><label for="input_method">{L_ACP_INPUT_METHOD}{L_COLON}</label><br /><span>{L_ACP_INPUT_METHOD_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="input_method" name="input_method" value="zip"<!-- IF INPUT_METHOD == 'zip' --> checked="checked"<!-- ENDIF --> class="radio" /> {L_ACP_ZIP}</label>
+			<label><input type="radio" name="input_method" value="cord"<!-- IF INPUT_METHOD == 'cord' --> checked="checked"<!-- ENDIF --> class="radio" /> {L_ACP_COORDINATES}</label>
+		</dd>
+	</dl>
+
+	<dl>
+		<dt><label for="show_on_register">{L_ACP_SHOW_ON_REGISTER}{L_COLON}</label><br /><span>{L_ACP_SHOW_ON_REGISTER_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="show_on_register" name="show_on_register" value="1"<!-- IF SHOW_ON_REGISTER --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="show_on_register" value="0"<!-- IF not SHOW_ON_REGISTER --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+
+	<dl>
+		<dt><label for="force_on_register">{L_ACP_FORCE_ON_REGISTER}{L_COLON}</label><br /><span>{L_ACP_FORCE_ON_REGISTER_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="force_on_register" name="force_on_register" value="1"<!-- IF FORCE_ON_REGISTER --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="force_on_register" value="0"<!-- IF not FORCE_ON_REGISTER --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+
+</fieldset>
 <fieldset>
 <legend>{L_ACP_SETTINGS}</legend>
 	<dl>
@@ -64,6 +98,7 @@
 		</dd>
 	</dl>
 </fieldset>
+
 
 <script>
 	function get_coordinates() {

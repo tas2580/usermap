@@ -1,0 +1,40 @@
+<!-- INCLUDE overall_header.html -->
+<div>
+	<h2>{THING_TITLE}</h2>
+
+	<div class="post has-profile bg1">
+		<div class="inner">
+			<dl class="postprofile">
+				<dd><div id="map" class="ucp_map"></div></dd>
+
+				<dd><strong>{L_DISTANCE}{L_COLON}</strong> {DISTANCE}</dd>
+				<dd><strong>{L_LON}{L_COLON}</strong> {USERMAP_LON}</dd>
+				<dd><strong>{L_LAT}{L_COLON}</strong> {USERMAP_LAT}</dd>
+			</dl>
+			<div class="postbody">
+
+			<!-- IF S_EDIT or S_DELETE -->
+			<ul class="post-buttons">
+				<!-- IF S_EDIT -->
+				<li>
+					<a href="{U_EDIT}" title="{L_EDIT_WIKI}" class="button icon-button edit-icon"><span>{L_EDIT_WIKI}</span></a>
+				</li>
+				<!-- ENDIF -->
+				<!-- IF S_DELETE -->
+				<li>
+					<a href="{U_DELETE}" title="{L_DELETE_ARTICLE}" class="button icon-button delete-icon"><span>{L_DELETE_ARTICLE}</span></a>
+				</li>
+				<!-- ENDIF -->
+			</ul>
+			<!-- ENDIF -->
+
+			<div class="content">
+			{THING_TEXT}
+			</div>
+			</div>
+		</div>
+	</div>
+</div>
+<p class="jumpbox-return"><a href="{U_USERMAP}" class="left-box arrow-left" accesskey="r">{L_BACK_TO_USERMAP}</a></p>
+<br>
+<!-- INCLUDE overall_footer.html -->

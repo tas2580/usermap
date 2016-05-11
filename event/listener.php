@@ -1,8 +1,8 @@
 <?php
 /**
 *
-* @package phpBB Extension - Wiki
- * @copyright (c) 2015 tas2580 (https://tas2580.net)
+* @package phpBB Extension - tas2580 Usermap
+* @copyright (c) 2016 tas2580 (https://tas2580.net)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
@@ -21,11 +21,14 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	public static function getSubscribedEvents()
 	{
 		return array(
-			'core.page_header'						=> 'page_header',
-			'core.permissions'						=> 'permissions',
+			'core.page_header'							=> 'page_header',
+			'core.permissions'							=> 'permissions',
 			'core.memberlist_view_profile'				=> 'memberlist_view_profile',
 			'core.viewtopic_cache_user_data'			=> 'viewtopic_cache_user_data',
 			'core.viewtopic_modify_post_row'			=> 'viewtopic_modify_post_row',
+			'core.ucp_register_data_before'				=> 'ucp_register_data_before',
+			'core.ucp_register_data_after'				=> 'ucp_register_data_after',
+			'core.ucp_register_user_row_after'			=> 'ucp_register_user_row_after',
 		);
 	}
 
@@ -47,25 +50,32 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	/** @var \phpbb_extension_manager */
 	protected $phpbb_extension_manager;
 
+	/** @var \phpbb\request\request */
+	protected $request;
+
 	/** @var \phpbb\template\template */
 	protected $template;
 
 	/** @var \phpbb\user */
 	protected $user;
 
+	private $info;
+
 	/**
-	* Constructor
-	*
-	* @param \phpbb\auth\auth				$auth
-	* @param \phpbb\config\config			$config
-	* @param \phpbb\db\driver\driver_interface	$db
-	* @param \phpbb\controller\helper			$helper						Controller helper object
-	* @param \phpbb\path_helper				$path_helper
-	* @param \phpbb_extension_manager		$phpbb_extension_manager		Controller helper object
-	* @param \phpbb\template				$template						Template object
-	* @param \phpbb\user					$user						User object
-	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\path_helper $path_helper, $phpbb_extension_manager, \phpbb\template\template $template, \phpbb\user $user)
+	 * Constructor
+	 *
+	 * @param \phpbb\auth\auth						$auth
+	 * @param \phpbb\config\config					$config
+	 * @param \phpbb\db\driver\driver_interface		$db
+	 * @param \phpbb\file_downloader				$file_downloader
+	 * @param \phpbb\controller\helper				$helper							Controller helper object
+	 * @param \phpbb\path_helper					$path_helper
+	 * @param \phpbb_extension_manager				$phpbb_extension_manager		Controller helper object
+	 * @param \phpbb\request\request				$request						Request object
+	 * @param \phpbb\template						$template						Template object
+	 * @param \phpbb\user							$user							User object
+	 */
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\path_helper $path_helper, $phpbb_extension_manager, \phpbb\request\request $request,\phpbb\template\template $template, \phpbb\user $user)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -73,8 +83,11 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		$this->helper = $helper;
 		$this->path_helper = $path_helper;
 		$this->phpbb_extension_manager = $phpbb_extension_manager;
+		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
+
+		$this->info = array();
 	}
 
 	/**
@@ -90,21 +103,35 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		$permissions += array(
 			'u_usermap_view'	=> array(
 				'lang'		=> 'ACL_U_USERMAP_VIEW',
-				'cat'		=> 'profile'
+				'cat'		=> 'usermap'
 			),
 			'u_usermap_add'	=> array(
 				'lang'		=> 'ACL_U_USERMAP_ADD',
-				'cat'		=> 'profile'
+				'cat'		=> 'usermap'
 			),
 			'u_usermap_search'	=> array(
 				'lang'		=> 'ACL_U_USERMAP_SEARCH',
-				'cat'		=> 'profile'
+				'cat'		=> 'usermap'
 			),
 			'u_usermap_hide'	=> array(
 				'lang'		=> 'ACL_U_USERMAP_HIDE',
-				'cat'		=> 'profile'
+				'cat'		=> 'usermap'
+			),
+			'u_usermap_add_thing'	=> array(
+				'lang'		=> 'ACL_U_USERMAP_ADD_THING',
+				'cat'		=> 'usermap'
+			),
+			'u_usermap_edit_thing'	=> array(
+				'lang'		=> 'ACL_U_USERMAP_EDIT_THING',
+				'cat'		=> 'usermap'
+			),
+			'u_usermap_delete_thing'	=> array(
+				'lang'		=> 'ACL_U_USERMAP_DELETE_THING',
+				'cat'		=> 'usermap'
 			),
 		);
+		$categories['usermap'] = 'ACL_CAT_USERMAP';
+		$event['categories'] = array_merge($event['categories'], $categories);
 		$event['permissions'] = $permissions;
 	}
 
@@ -127,6 +154,82 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	}
 
 	/**
+	 * Display input fields on register
+	 *
+	 * @param	object	$event	The event object
+	 * @return	null
+	 * @access	public
+	 */
+	public function ucp_register_data_before($event)
+	{
+		if (!$this->config['tas2580_usermap_show_on_register'])
+		{
+			return;
+		}
+
+		$this->user->add_lang_ext('tas2580/usermap', 'ucp');
+		$this->template->assign_vars(array(
+			'S_USERMAP_ZIP'		=> ($this->config['tas2580_usermap_input_method'] == 'zip') ? true : false,
+			'S_USERMAP_CORDS'	=> ($this->config['tas2580_usermap_input_method'] == 'cord') ? true : false,
+		));
+	}
+
+	public function ucp_register_data_after($event)
+	{
+		if (!$this->config['tas2580_usermap_show_on_register'])
+		{
+			return;
+		}
+
+		$error = $event['error'];
+
+		if ($this->config['tas2580_usermap_input_method'] == 'zip')
+		{
+			$zip = $this->request->variable('usermap_zip', '');
+			$this->info = $this->get_cords_form_zip($zip, $error);
+			$this->info['zip'] = $zip;
+		}
+		else
+		{
+			$this->info['lng'] = substr($this->request->variable('usermap_lon', ''), 0, 10);
+			$this->info['lat'] = substr($this->request->variable('usermap_lat', ''), 0, 10);
+			$this->info['zip'] = '';
+
+			$validate_array = array(
+				'lng'		=> array('match', true, self::REGEX_LON),
+				'lat'		=> array('match', true, self::REGEX_LAT),
+			);
+			$error = array_merge($error, validate_data($this->info, $validate_array));
+		}
+
+		if ($this->config['tas2580_usermap_force_on_register'] && empty($this->info['lng']) && empty($this->info['lat']))
+		{
+			$this->user->add_lang_ext('tas2580/usermap', 'ucp');
+			$error[] = $this->user->lang('NEED_REGISTER_' . strtoupper($this->config['tas2580_usermap_input_method']));
+		}
+
+		if (sizeof($error))
+		{
+			$event['error'] = $error;
+		}
+	}
+
+
+	public function ucp_register_user_row_after($event)
+	{
+		if (!$this->config['tas2580_usermap_show_on_register'])
+		{
+			return;
+		}
+
+		$user_row['user_usermap_lon'] = $this->info['lng'];
+		$user_row['user_usermap_lat'] = $this->info['lat'];
+		$user_row['user_usermap_zip'] = $this->info['zip'];
+
+		$event['user_row'] = array_merge($event['user_row'], $user_row);
+	}
+
+	/**
 	* Add map to users profile
 	*
 	* @param	object	$event	The event object
@@ -141,8 +244,17 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		}
 
 		$data = $event['member'];
+		if (empty($data['user_usermap_lon']))
+		{
+			return false;
+		}
+
+		if ($this->user->data['user_usermap_lon'] && ($this->user->data['user_id'] <> $data['user_id']))
+		{
+			$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $data['user_usermap_lon'], $data['user_usermap_lat']);
+		}
+
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
-		$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $data['user_usermap_lon'], $data['user_usermap_lat']);
 
 		// Center the map to user
 		$this->template->assign_vars(array(
@@ -150,12 +262,12 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 			'USERMAP_CONTROLS'	=> 'false',
 			'USERNAME'			=> get_username_string('full', $data['user_id'], $data['username'], $data['user_colour']),
 			'USERMAP_LON'		=> $data['user_usermap_lon'],
-			'USERMAP_LAT'			=> $data['user_usermap_lat'],
+			'USERMAP_LAT'		=> $data['user_usermap_lat'],
 			'USERMAP_ZOOM'		=> (int) 10,
-			'DISTANCE'			=> $distance,
-			'MARKER_PATH'		=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker'),
+			'DISTANCE'			=> isset($distance) ? $distance : '',
+			'MARKER_PATH'		=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker/groups'),
 			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
-			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
+			'GOOGLE_API_KEY'	=> $this->config['tas2580_usermap_google_api_key'],
 		));
 
 		$sql = 'SELECT group_id, group_usermap_marker

@@ -13,3 +13,15 @@ tas2580_usermap_search:
 tas2580_usermap_search_page:
     pattern: /usermap/search/page-{start}.html
     defaults: { _controller: tas2580.usermap.main:search }
+tas2580_usermap_add_thing:
+    pattern: /usermap/add
+    defaults: { _controller: tas2580.usermap.thing:add_thing }
+tas2580_usermap_thing:
+    pattern: /usermap/thing/{id}
+    defaults: { _controller: tas2580.usermap.thing:view_thing }
+tas2580_usermap_thing_delete:
+    pattern: /usermap/thing/{id}/delete
+    defaults: { _controller: tas2580.usermap.thing:delete_thing }
+tas2580_usermap_thing_edit:
+    pattern: /usermap/thing/{id}/edit
+    defaults: { _controller: tas2580.usermap.thing:edit_thing }

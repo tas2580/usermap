@@ -20,7 +20,7 @@
 			if($.isArray(returndata)){
 				returndata.forEach(function(element, index, array) {
 					var marker = usermap.generateMarker('{MARKER_PATH}/'+element.marker);
-					usermap.addMarker(layer_markers, parseFloat(element.lon), parseFloat(element.lat), element.title+'<br>{L_DISTANCE}{L_COLON} '+element.distance, marker);
+					usermap.addMarker(layer_markers, parseFloat(element.lon), parseFloat(element.lat), element.text, marker);
 				});
 			} else {
 				phpbb.alert('{L_ERROR}', returndata);

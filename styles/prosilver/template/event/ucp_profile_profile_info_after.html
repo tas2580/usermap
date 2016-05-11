@@ -1,44 +1,54 @@
 <!-- IF S_ADD_USERMAP -->
-<dl>
-	<dt><label for="user_usermap_lon">{L_UCP_USERMAP_COORDINATES}{L_COLON}</label><br /><span>{UCP_USERMAP_COORDINATES_EXPLAIN}</span></dt>
-	<dd>
-		<input type="text" name="usermap_lon" class="inputbox" id="user_usermap_lon" value="{USERMAP_LON}" maxlength="10" style="width:62px;"> {L_UCP_USERMAP_LON}<br>
-		<input type="text" name="usermap_lat" class="inputbox" id="user_usermap_lat" value="{USERMAP_LAT}" maxlength="10" style="width:62px;"> {L_UCP_USERMAP_LAT}<br>
-		<a href="#" onclick="return get_coordinates()">{L_UCP_USERMAP_GET_COORDINATES}</a>
-	</dd>
-</dl>
-<!-- IF A_USERMAP_HIDE -->
-<dl>
-	<dt><label for="usermap_hide">{L_UCP_USERMAP_HIDE}{L_COLON}</label><br />
-		<span>{L_UCP_USERMAP_HIDE_DESCRIPTION}</span>
-	</dt>
-	<dd>
-		<label><input type="radio" id="usermap_hide" name="usermap_hide" value="1"<!-- IF USERMAP_HIDE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
-		<label><input type="radio" name="usermap_hide" value="0"<!-- IF not USERMAP_HIDE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
-	</dd>
-</dl>
-<!-- ENDIF -->
-<script>
-	function get_coordinates() {
-		navigator.geolocation.getCurrentPosition(success, error, options);
-		var options = {
-			enableHighAccuracy: true,
-			timeout: 300,
-			maximumAge: 0
-		  };
+	<!-- IF S_USERMAP_ZIP -->
+		<dl>
+			<dt><label for="usermap_zip">{L_UCP_USERMAP_ZIP}{L_COLON}</label><br /><span>{L_UCP_USERMAP_ZIP_EXPLAIN}</span></dt>
+			<dd><input type="text" name="usermap_zip" id="usermap_zip" size="5" value="{USERMAP_ZIP}" class="inputbox autowidth" title="{L_USERMAP_ZIP}"><br></dd>
+		</dl>
 
-		  function success(pos) {
-			var longitude = pos.coords.longitude;
-			var latitude = pos.coords.latitude;
-			document.getElementById('user_usermap_lon').value = longitude;
-			document.getElementById('user_usermap_lat').value = latitude;
-		  };
+	<!-- ENDIF -->
+	<!-- IF S_USERMAP_CORDS -->
+		<dl>
+			<dt><label for="user_usermap_lon">{L_UCP_USERMAP_COORDINATES}{L_COLON}</label><br /><span>{L_UCP_USERMAP_COORDINATES_EXPLAIN}</span></dt>
+			<dd>
+				<input type="text" name="usermap_lon" class="inputbox" id="user_usermap_lon" value="{USERMAP_LON}" maxlength="10" style="width:62px;"> {L_UCP_USERMAP_LON}<br>
+				<input type="text" name="usermap_lat" class="inputbox" id="user_usermap_lat" value="{USERMAP_LAT}" maxlength="10" style="width:62px;"> {L_UCP_USERMAP_LAT}<br>
+				<a href="#" onclick="return get_coordinates()">{L_UCP_USERMAP_GET_COORDINATES}</a>
+			</dd>
+		</dl>
 
-		  function error(err) {
-			phpbb.alert('{L_ERROR}', '{L_ERROR_GET_COORDINATES}');
-			console.warn('ERROR(' + err.code + '): ' + err.message);
-		  };
-		return false;
-	}
-</script>
+		<script>
+			function get_coordinates() {
+				navigator.geolocation.getCurrentPosition(success, error, options);
+				var options = {
+					enableHighAccuracy: true,
+					timeout: 300,
+					maximumAge: 0
+				  };
+
+				  function success(pos) {
+					var longitude = pos.coords.longitude;
+					var latitude = pos.coords.latitude;
+					document.getElementById('user_usermap_lon').value = longitude;
+					document.getElementById('user_usermap_lat').value = latitude;
+				  };
+
+				  function error(err) {
+					phpbb.alert('{L_ERROR}', '{L_ERROR_GET_COORDINATES}');
+					console.warn('ERROR(' + err.code + '): ' + err.message);
+				  };
+				return false;
+			}
+		</script>
+	<!-- ENDIF -->
+	<!-- IF A_USERMAP_HIDE -->
+	<dl>
+		<dt><label for="usermap_hide">{L_UCP_USERMAP_HIDE}{L_COLON}</label><br />
+			<span>{L_UCP_USERMAP_HIDE_DESCRIPTION}</span>
+		</dt>
+		<dd>
+			<label><input type="radio" id="usermap_hide" name="usermap_hide" value="1"<!-- IF USERMAP_HIDE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="usermap_hide" value="0"<!-- IF not USERMAP_HIDE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+	<!-- ENDIF -->
 <!-- ENDIF -->

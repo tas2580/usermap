@@ -1,8 +1,8 @@
 <?php
 /**
 *
-* @package phpBB Extension - tas2580 Mobile Notifier
-* @copyright (c) 2015 tas2580 (https://tas2580.net)
+* @package phpBB Extension - tas2580 Usermap
+* @copyright (c) 2016 tas2580 (https://tas2580.net)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
@@ -41,9 +41,9 @@ class listener_acp extends \tas2580\usermap\includes\class_usermap implements Ev
 	* @param \phpbb_extension_manager		$phpbb_extension_manager
 	* @param \phpbb\path_helper				$path_helper
 	* @param \phpbb\request\request			$request						Request object
-	* @param \phpbb\user					$user						User Object
+	* @param \phpbb\user					$user							User Object
 	* @param \phpbb\template\template		$template						Template Object
-	* @param string						$phpbb_root_path				phpbb_root_path
+	* @param string							$phpbb_root_path				phpbb_root_path
 	* @access public
 	*/
 	public function __construct($phpbb_extension_manager, \phpbb\path_helper $path_helper, \phpbb\request\request $request, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path)
@@ -164,11 +164,11 @@ class listener_acp extends \tas2580\usermap\includes\class_usermap implements Ev
 		$data = $event['group_row'];
 		$data['group_usermap_marker'] = isset($data['group_usermap_marker']) ? $data['group_usermap_marker'] : '';
 		$data['group_usermap_legend'] = isset($data['group_usermap_legend']) ? $data['group_usermap_legend'] : '';
-		$path = $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker/');
+		$path = $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker/groups/');
 		$this->template->assign_vars(array(
 			'USERMAP_MARKER'				=> (!empty($data['group_usermap_marker'])) ? $path. $data['group_usermap_marker'] : $this->path_helper->update_web_root_path($this->phpbb_root_path . '/images/'). 'spacer.gif',
 			'USERMAP_MARKER_PATH'			=> $path,
-			'USERMAP_OPTIONS'				=> $this->marker_image_select($data['group_usermap_marker']),
+			'USERMAP_OPTIONS'				=> $this->marker_image_select($data['group_usermap_marker'], 'marker/groups/'),
 			'USERMAP_LEGEND'				=> $data['group_usermap_legend'],
 		));
 	}
@@ -212,43 +212,6 @@ class listener_acp extends \tas2580\usermap\includes\class_usermap implements Ev
 			);
 		}
 		return $array;
-	}
-
-	private function marker_image_select($marker)
-	{
-		$path = $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker/');
-
-		$imglist = filelist($path);
-		$edit_img = $filename_list = '';
-
-		foreach ($imglist as $path => $img_ary)
-		{
-			sort($img_ary);
-
-			foreach ($img_ary as $img)
-			{
-				$img = $path . $img;
-
-				if ($img == $marker)
-				{
-					$selected = ' selected="selected"';
-					$edit_img = $img;
-				}
-				else
-				{
-					$selected = '';
-				}
-
-				if (strlen($img) > 255)
-				{
-					continue;
-				}
-
-				$filename_list .= '<option value="' . htmlspecialchars($img) . '"' . $selected . '>' . $img . '</option>';
-			}
-		}
-
-		return '<option value=""' . (($edit_img == '') ? ' selected="selected"' : '') . '>----------</option>' . $filename_list;
 	}
 
 	/**
