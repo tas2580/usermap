@@ -75,7 +75,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	 * @param \phpbb\template						$template						Template object
 	 * @param \phpbb\user							$user							User object
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\path_helper $path_helper, $phpbb_extension_manager, \phpbb\request\request $request,\phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\path_helper $path_helper, $phpbb_extension_manager, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
 	{
 		$this->auth = $auth;
 		$this->config = $config;

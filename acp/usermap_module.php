@@ -50,7 +50,6 @@ class usermap_module
 					$config->set('tas2580_usermap_show_on_register', $request->variable('show_on_register', 0));
 					$config->set('tas2580_usermap_display_coordinates', $request->variable('display_coordinates', 0));
 
-
 					trigger_error($user->lang('ACP_SAVED') . adm_back_link($this->u_action));
 				}
 
@@ -106,14 +105,7 @@ class usermap_module
 					'ALLOW_FLASH'				=> $config['tas2580_usermap_allow_flash'],
 				));
 				break;
-
-
 		}
-
-
-
-
-
 	}
 
 	private function map_select($sel)

@@ -66,7 +66,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 	* @param string						$phpbb_root_path				phpbb_root_path
 	* @param string						$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher,\phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -326,7 +326,6 @@ class thing extends \tas2580\usermap\includes\class_usermap
 				include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
 			}
 			$error = validate_data($data, $validate_array);
-
 
 			if (utf8_clean_string($title) === '')
 			{

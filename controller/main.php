@@ -66,7 +66,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 	* @param string								$phpbb_root_path				phpbb_root_path
 	* @param string								$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher,\phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -252,7 +252,6 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$vars = array('sql_array');
 		extract($this->phpbb_dispatcher->trigger_event('tas2580.usermap_modify_user_sql_array', compact($vars)));
 
-
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, (int) $this->config['tas2580_usermap_max_marker']);
 		while ($row = $this->db->sql_fetchrow($result))
@@ -260,7 +259,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 
 			$text = get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
 
-			if( !empty($this->user->data['user_usermap_lon']) && $row['user_id'] <> $this->user->data['user_id'])
+			if (!empty($this->user->data['user_usermap_lon']) && $row['user_id'] <> $this->user->data['user_id'])
 			{
 				$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $row['user_usermap_lon'], $row['user_usermap_lat']);
 				$text .= '<br>' . $this->user->lang('DISTANCE'). $this->user->lang('COLON') . ' ' . $distance;
@@ -270,7 +269,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 				$text .= '<br>' . $this->user->lang('LON'). $this->user->lang('COLON') . ' ' . $row['user_usermap_lon'];
 				$text .= '<br>' . $this->user->lang('LAT'). $this->user->lang('COLON') . ' ' . $row['user_usermap_lat'];
 			}
-			
+
 			$return_data = array(
 				'marker'		=> 'groups/' . $row['group_usermap_marker'],
 				'lon'			=> $row['user_usermap_lon'],
