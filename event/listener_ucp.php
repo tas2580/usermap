@@ -109,7 +109,6 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 				}
 				else if (empty($usermap_zip) || $usermap_zip == 0)
 				{
-					$usermap_zip = $default_country = '';
 					$lon = 0;
 					$lat = 0;
 				}
@@ -121,6 +120,7 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 			}
 			else
 			{
+				$usermap_zip = $default_country = '';
 				$lon = substr($this->request->variable('usermap_lon', $this->user->data['user_usermap_lon']), 0, 10);
 				$lat = substr($this->request->variable('usermap_lat', $this->user->data['user_usermap_lat']), 0, 10);
 			}
