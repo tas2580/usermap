@@ -109,7 +109,7 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 				}
 				else if (empty($usermap_zip) || $usermap_zip == 0)
 				{
-					$usermap_zip = '';
+					$usermap_zip = $default_country = '';
 					$lon = 0;
 					$lat = 0;
 				}
