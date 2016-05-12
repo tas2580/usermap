@@ -9,14 +9,18 @@
 
 namespace tas2580\usermap\acp;
 
-class usermap_module
+class usermap_module extends \tas2580\usermap\includes\class_usermap
 {
 	public $u_action;
+
+	protected $user;
 
 	public function main($id, $mode)
 	{
 		global $config, $user, $template, $request;
 		$user->add_lang_ext('tas2580/usermap', 'acp');
+		$user->add_lang_ext('tas2580/usermap', 'country_codes');
+		$this->user = $user;
 
 		add_form_key('acp_usermap');
 
@@ -49,6 +53,7 @@ class usermap_module
 					$config->set('tas2580_usermap_force_on_register', $request->variable('force_on_register', 0));
 					$config->set('tas2580_usermap_show_on_register', $request->variable('show_on_register', 0));
 					$config->set('tas2580_usermap_display_coordinates', $request->variable('display_coordinates', 0));
+					$config->set('tas2580_usermap_default_country', $request->variable('default_country', ''));
 
 					trigger_error($user->lang('ACP_SAVED') . adm_back_link($this->u_action));
 				}
@@ -70,6 +75,7 @@ class usermap_module
 					'SHOW_ON_REGISTER'			=> $config['tas2580_usermap_show_on_register'],
 					'FORCE_ON_REGISTER'			=> $config['tas2580_usermap_force_on_register'],
 					'DISPLAY_COORDINATES'		=> $config['tas2580_usermap_display_coordinates'],
+					'COUNTRY_SELECT'			=> $this->country_code_select($config['tas2580_usermap_default_country']),
 				));
 				break;
 

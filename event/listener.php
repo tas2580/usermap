@@ -167,8 +167,10 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 			return;
 		}
 
+		$this->user->add_lang_ext('tas2580/usermap', 'country_codes');
 		$this->user->add_lang_ext('tas2580/usermap', 'ucp');
 		$this->template->assign_vars(array(
+			'COUNTRY_SELECT'	=> $this->country_code_select($this->config['tas2580_usermap_default_country']),
 			'S_USERMAP_ZIP'		=> ($this->config['tas2580_usermap_input_method'] == 'zip') ? true : false,
 			'S_USERMAP_CORDS'	=> ($this->config['tas2580_usermap_input_method'] == 'cord') ? true : false,
 		));
@@ -185,15 +187,18 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 
 		if ($this->config['tas2580_usermap_input_method'] == 'zip')
 		{
+			$default_country = $this->request->variable('default_country', '');
 			$zip = $this->request->variable('usermap_zip', '');
-			$this->info = $this->get_cords_form_zip($zip, $error);
+			$this->info = $this->get_cords_form_zip($zip, $default_country, $error);
 			$this->info['zip'] = $zip;
+			$this->info['default_country'] = $default_country;
 		}
 		else
 		{
 			$this->info['lng'] = substr($this->request->variable('usermap_lon', ''), 0, 10);
 			$this->info['lat'] = substr($this->request->variable('usermap_lat', ''), 0, 10);
 			$this->info['zip'] = '';
+			$this->info['default_country'] = '';
 
 			$validate_array = array(
 				'lng'		=> array('match', true, self::REGEX_LON),
@@ -225,6 +230,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		$user_row['user_usermap_lon'] = $this->info['lng'];
 		$user_row['user_usermap_lat'] = $this->info['lat'];
 		$user_row['user_usermap_zip'] = $this->info['zip'];
+		$user_row['user_usermap_default_country'] = $this->info['default_country'];
 
 		$event['user_row'] = array_merge($event['user_row'], $user_row);
 	}

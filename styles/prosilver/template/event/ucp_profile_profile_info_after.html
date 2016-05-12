@@ -2,7 +2,10 @@
 	<!-- IF S_USERMAP_ZIP -->
 		<dl>
 			<dt><label for="usermap_zip">{L_UCP_USERMAP_ZIP}{L_COLON}</label><br /><span>{L_UCP_USERMAP_ZIP_EXPLAIN}</span></dt>
-			<dd><input type="text" name="usermap_zip" id="usermap_zip" size="5" value="{USERMAP_ZIP}" class="inputbox autowidth" title="{L_USERMAP_ZIP}"><br></dd>
+			<dd>
+				<input type="text" name="usermap_zip" id="usermap_zip" size="5" value="{USERMAP_ZIP}" class="inputbox autowidth" title="{L_USERMAP_ZIP}">
+				<select name="default_country" id="default_country">{COUNTRY_SELECT}</select>
+			</dd>
 		</dl>
 
 	<!-- ENDIF -->

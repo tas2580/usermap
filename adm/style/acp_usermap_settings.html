@@ -65,7 +65,10 @@
 			<label><input type="radio" name="force_on_register" value="0"<!-- IF not FORCE_ON_REGISTER --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
 		</dd>
 	</dl>
-
+	<dl>
+		<dt><label for="default_country">{L_ACP_COUNTRY_SELECT}</label><br /><span>{L_ACP_COUNTRY_SELECT_EXPLAIN}</span></dt>
+		<dd><select name="default_country" id="default_country">{COUNTRY_SELECT}</select></dd>
+	</dl>
 </fieldset>
 <fieldset>
 <legend>{L_ACP_SETTINGS}</legend>

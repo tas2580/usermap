@@ -60,6 +60,7 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 		$this->phpbb_root_path = $phpbb_root_path;
 
 		$user->add_lang_ext('tas2580/usermap', 'ucp');
+		$user->add_lang_ext('tas2580/usermap', 'country_codes');
 	}
 
 	/**
@@ -95,12 +96,14 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 
 			if ($this->config['tas2580_usermap_input_method'] == 'zip')
 			{
+				$this->user->data['user_usermap_default_country'] = empty($this->user->data['user_usermap_default_country']) ? $this->config['tas2580_usermap_default_country'] : $this->user->data['user_usermap_default_country'];
 				$usermap_zip = $this->request->variable('usermap_zip', $this->user->data['user_usermap_zip']);
+				$default_country = $this->request->variable('default_country', $this->user->data['user_usermap_default_country']);
 
 				// Query only if zip code has changed
 				if (($usermap_zip <> $this->user->data['user_usermap_zip']) && ($usermap_zip <> 0))
 				{
-					$data = $this->get_cords_form_zip($usermap_zip, $error);
+					$data = $this->get_cords_form_zip($usermap_zip, $default_country, $error);
 					$lon = $data['lng'];
 					$lat = $data['lat'];
 				}
@@ -123,13 +126,14 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 			}
 
 			$event['data'] = array_merge($event['data'], array(
-				'user_usermap_lon'		=> empty($lon) ? '' : $lon,
-				'user_usermap_lat'		=> empty($lat) ? '' : $lat,
-				'user_usermap_hide'		=> (int) $hide,
-				'user_usermap_zip'		=> $usermap_zip,
+				'user_usermap_lon'				=> empty($lon) ? '' : $lon,
+				'user_usermap_lat'				=> empty($lat) ? '' : $lat,
+				'user_usermap_hide'				=> (int) $hide,
+				'user_usermap_zip'				=> $usermap_zip,
+				'user_usermap_default_country'	=> $default_country,
 			));
 
-			$this->add_field($event['data']['user_usermap_lon'], $event['data']['user_usermap_lat'], $event['data']['user_usermap_hide'], $event['data']['user_usermap_zip']);
+			$this->add_field($event['data']['user_usermap_lon'], $event['data']['user_usermap_lat'], $event['data']['user_usermap_hide'], $event['data']['user_usermap_zip'], $event['data']['user_usermap_default_country']);
 		}
 	}
 
@@ -153,7 +157,6 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 			$validate_array = array(
 				'user_usermap_lon'		=> array('match', true, self::REGEX_LON),
 				'user_usermap_lat'		=> array('match', true, self::REGEX_LAT),
-				'user_usermap_zip'		=> array('string', true, 3, 8),
 			);
 
 			$error = validate_data($event['data'], $validate_array);
@@ -174,10 +177,11 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 		if ($this->auth->acl_get('u_usermap_add'))
 		{
 			$event['sql_ary'] = array_merge($event['sql_ary'], array(
-				'user_usermap_lon'		=> $event['data']['user_usermap_lon'],
-				'user_usermap_lat'		=> $event['data']['user_usermap_lat'],
-				'user_usermap_hide'		=> $event['data']['user_usermap_hide'],
-				'user_usermap_zip'		=> $event['data']['user_usermap_zip'],
+				'user_usermap_lon'					=> $event['data']['user_usermap_lon'],
+				'user_usermap_lat'					=> $event['data']['user_usermap_lat'],
+				'user_usermap_hide'					=> $event['data']['user_usermap_hide'],
+				'user_usermap_zip'					=> $event['data']['user_usermap_zip'],
+				'user_usermap_default_country'		=> $event['data']['user_usermap_default_country'],
 			));
 		}
 	}
@@ -185,7 +189,7 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 	/**
 	 * Add the field to user profile
 	 */
-	private function add_field($lon, $lat, $hide, $zip)
+	private function add_field($lon, $lat, $hide, $zip, $default_country)
 	{
 		$this->template->assign_vars(array(
 			'S_USERMAP_ZIP'							=> ($this->config['tas2580_usermap_input_method'] == 'zip') ? true : false,
@@ -193,6 +197,7 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 			'USERMAP_LON'							=> $lon,
 			'USERMAP_LAT'							=> $lat,
 			'USERMAP_ZIP'							=> $zip,
+			'COUNTRY_SELECT'						=> $this->country_code_select($default_country),
 			'S_ADD_USERMAP'							=> true,
 			'USERMAP_HIDE'							=> $hide,
 			'A_USERMAP_HIDE'						=> $this->auth->acl_get('u_usermap_hide') ? true : false,
