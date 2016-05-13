@@ -19,6 +19,19 @@ services:
             - %core.root_path%
             - %core.php_ext%
             - %tables.usermap.things%
+    tas2580.usermap.ajax:
+        class: tas2580\usermap\controller\ajax
+        arguments:
+            - @auth
+            - @config
+            - @dbal.conn
+            - @dispatcher
+            - @controller.helper
+            - @request
+            - @user
+            - %core.root_path%
+            - %core.php_ext%
+            - %tables.usermap.things%
     tas2580.usermap.thing:
         class: tas2580\usermap\controller\thing
         arguments:

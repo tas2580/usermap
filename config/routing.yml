@@ -3,10 +3,10 @@ tas2580_usermap_index:
     defaults: { _controller: tas2580.usermap.main:index }
 tas2580_usermap_position:
     pattern: /usermap/position
-    defaults: { _controller: tas2580.usermap.main:position }
+    defaults: { _controller: tas2580.usermap.ajax:position }
 tas2580_usermap_get_marker:
     pattern: /usermap/marker
-    defaults: { _controller: tas2580.usermap.main:marker }
+    defaults: { _controller: tas2580.usermap.ajax:marker }
 tas2580_usermap_search:
     pattern: /usermap/search
     defaults: { _controller: tas2580.usermap.main:search }
