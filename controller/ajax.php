@@ -153,7 +153,7 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 		$sql_array['FROM'][USERS_TABLE] = 'u';
 		$sql_array['SELECT'] = 'u.user_id, u.username, u.user_colour, u.user_regdate, u.user_posts, u.group_id, u.user_usermap_lon, u.user_usermap_lat, g.group_usermap_marker';
 		$sql_array['LEFT_JOIN'][] = array(
-			'FROM'	=> array(GROUPS_TABLE => 'g'),
+			'FROM'		=> array(GROUPS_TABLE => 'g'),
 			'ON'		=> 'u.group_id = g.group_id'
 		);
 		$sql_array['WHERE'] = "(u.user_usermap_lon * 1 >= {$data['min_lon']} AND u.user_usermap_lon * 1 <= {$data['max_lon']}) AND (u.user_usermap_lat * 1 >= {$data['min_lat']} AND u.user_usermap_lat * 1 <= {$data['max_lat']}) AND user_usermap_hide = 0";
@@ -172,7 +172,6 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 		$result = $this->db->sql_query_limit($sql, (int) $this->config['tas2580_usermap_max_marker']);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-
 			$text = get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']);
 
 			if (!empty($this->user->data['user_usermap_lon']) && $row['user_id'] <> $this->user->data['user_id'])
