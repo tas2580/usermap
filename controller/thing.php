@@ -279,8 +279,9 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			'USERMAP_LAT'			=> $row['thing_lat'],
 			'USERMAP_ZOOM'			=> (int) 10,
 			'MARKER_PATH'			=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker/things'),
-			'MAP_TYPE'				=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
+			'BING_API_KEY'			=> $this->config['tas2580_usermap_bing_api_key'],
+			'DEFAULT_MAP'			=> $this->config['tas2580_usermap_map_type'],
 		));
 
 		return $this->helper->render('usermap_thing_view.html', $row['thing_title']);

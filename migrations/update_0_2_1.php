@@ -9,20 +9,18 @@
 
 namespace tas2580\usermap\migrations;
 
-class update_0_1_4 extends \phpbb\db\migration\migration
+class update_0_2_1 extends \phpbb\db\migration\migration
 {
 	public static function depends_on()
 	{
 		return array(
-			'\tas2580\usermap\migrations\update_0_1_2',
+			'\tas2580\usermap\migrations\update_0_1_4',
 		);
 	}
 
 	public function update_data()
 	{
 		return array(
-
-
 			// Add config values
 			array('config.add', array('tas2580_usermap_default_country', '')),
 		);

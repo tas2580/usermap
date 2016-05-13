@@ -104,7 +104,7 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 				if (($usermap_zip <> $this->user->data['user_usermap_zip']) && ($usermap_zip <> 0))
 				{
 					$data = $this->get_cords_form_zip($usermap_zip, $default_country, $error);
-					$lon = $data['lng'];
+					$lon = $data['lon'];
 					$lat = $data['lat'];
 				}
 				else if (empty($usermap_zip) || $usermap_zip == 0)

@@ -1,11 +1,39 @@
 <!-- IF S_IN_USERMAP -->
-<!-- IF MAP_TYPE == 'osm' -->
-	<!-- INCLUDEJS @tas2580_usermap/osmscript.js -->
+<!-- INCLUDEJS @tas2580_usermap/usermap.js -->
 	<script type="text/javascript">
-	// <![CDATA[
+	var map;
 	function display_map() {
-		OpenLayers.Lang.setCode('{S_USER_LANG}');
-		usermap.drawmap({USERMAP_LON}, {USERMAP_LAT}, {USERMAP_ZOOM}, {USERMAP_CONTROLS});
+		usermap.load();
+		<!-- IF GOOGLE_API_KEY or BING_API_KEY -->
+			map.addControl(new OpenLayers.Control.LayerSwitcher({'dataLayersDiv':false}));
+			layerSwitcher = map.getControlsByClass("OpenLayers.Control.LayerSwitcher")[0];
+			$('#OpenLayers_Control_MaximizeDiv').html('+');
+			layerSwitcher.baseLbl.innerText = "{L_SELECT_MAP}";
+		<!-- ENDIF -->
+		layer_markers = new OpenLayers.Layer.Markers("{L_MARKER}", {
+			projection: new OpenLayers.Projection("EPSG:4326"),
+			visibility: true,
+			displayInLayerSwitcher: false
+		});
+
+		var osm_mapnik = new OpenLayers.Layer.OSM.Mapnik("{L_OSM_MACKNICK}");
+		map.addLayers([layer_markers, osm_mapnik]);
+		<!-- IF GOOGLE_API_KEY -->
+			var google_terrain = new OpenLayers.Layer.Google("{L_GOOGLE_TERRAIN}", {type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 20});
+			var google_roadmap = new OpenLayers.Layer.Google("{L_GOOGLE_ROADMAP}", {type: google.maps.MapTypeId.ROADMAP, numZoomLevels: 20});
+			var google_hybrid = new OpenLayers.Layer.Google("{L_GOOGLE_HYBRID}", {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
+			var google_satellite = new OpenLayers.Layer.Google("{L_GOOGLE_SATELLITE}", {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 20});
+			map.addLayers([google_terrain, google_roadmap, google_hybrid, google_satellite]);
+		<!-- ENDIF -->
+		<!-- IF BING_API_KEY -->
+			var bing_road = new OpenLayers.Layer.Bing({name: "{L_BING_ROAD}", key: '{BING_API_KEY}', type: "Road"});
+			var bing_hybrid = new OpenLayers.Layer.Bing({name: "{L_BING_HYBRID}", key: '{BING_API_KEY}', type: "AerialWithLabels"});
+			var bing_aerial = new OpenLayers.Layer.Bing({name: "{L_BING_AERIAL}", key: '{BING_API_KEY}', type: "Aerial"});
+			map.addLayers([bing_road, bing_hybrid, bing_aerial]);
+		<!-- ENDIF -->
+		map.setBaseLayer({DEFAULT_MAP});
+		usermap.jumpTo({USERMAP_LON}, {USERMAP_LAT}, {USERMAP_ZOOM});
+
 		<!-- IF A_USERMAP_ADD or A_USERMAP_SEARCH -->
 			$('#map').css('cursor', 'crosshair');
 			map.addControl(click);
@@ -31,58 +59,10 @@
 		usermap.addMarker(layer_markers, {USERMAP_LON}, {USERMAP_LAT}, '{USERNAME}', marker);
 		<!-- ENDIF -->
 	}
-
 	$('document').ready(display_map);
-// ]]>
 	</script>
-<!-- ENDIF -->
-
-<!-- IF MAP_TYPE == 'google' -->
-<!-- INCLUDEJS @tas2580_usermap/osmscript.js -->
-	<script type="text/javascript">
-
-	function initMap() {
-		map = new google.maps.Map(document.getElementById('map'), {
-			center: {lat: {USERMAP_LAT}, lng: {USERMAP_LON}},
-			zoom: {USERMAP_ZOOM}
-		});
-		  // Generate markers
-		<!-- BEGIN group_list -->
-			var marker_{group_list.GROUP_ID} = '{MARKER_PATH}/{group_list.MARKER}';
-		<!-- END group_list -->
-		<!-- BEGIN user_list -->
-			var marker = new google.maps.Marker({
-				position: {lat: {user_list.LAT}, lng: {user_list.LON}},
-				map: map,
-				title: '{user_list.USERNAME_SIMPLE}',
-				icon: marker_{user_list.GROUP_ID}
-			});
-		<!-- END user_list -->
-
-		map.addListener('bounds_changed', function() {
-			var ne = map.getBounds().getNorthEast();
-			var sw = map.getBounds().getSouthWest();
-			$.get('{U_GET_MARKER}?alon='+sw.lng()+'&alat='+ne.lat()+'&blon='+ne.lng()+'&blat='+sw.lat(), function(returndata){
-				if($.isArray(returndata)){
-					returndata.forEach(function(element, index, array) {
-						var marker = new google.maps.Marker({
-							position: {lat: parseFloat(element.lat), lng: parseFloat(element.lon)},
-							map: map,
-							title: 'TODO',
-							icon: '{MARKER_PATH}/'+element.marker
-						  });
-					});
-				} else {
-					phpbb.alert('{L_ERROR}', returndata);
-				}
-			});
-		});
-
-
-	}
-	</script>
-	<script async defer
-		src="https://maps.googleapis.com/maps/api/js?key={GOOGLE_API_KEY}&callback=initMap">
-	</script>
-<!-- ENDIF -->
+	<script type="text/javascript" src="//www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+	<!-- IF GOOGLE_API_KEY -->
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.5&key={GOOGLE_API_KEY}"></script>
+	<!-- ENDIF -->
 <!-- ENDIF -->

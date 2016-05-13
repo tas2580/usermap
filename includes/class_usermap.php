@@ -76,7 +76,23 @@ class class_usermap
 		}
 
 		$info = json_decode($info, true);
-		return isset($info['results']['0']['geometry']['location']) ? $info['results']['0']['geometry']['location'] : '';
+		if( isset($info['results']['0']['geometry']['location']))
+		{
+			return array(
+				'lon'		=> $this->_randomize_coordinate($info['results']['0']['geometry']['location']['lng']),
+				'lat'		=> $this->_randomize_coordinate($info['results']['0']['geometry']['location']['lat']),
+			);
+		}
+		else
+		{
+			$error[] = $this->user->lang('ERROR_GET_COORDINATES');
+		}
+	}
+
+	private function _randomize_coordinate($coordinate)
+	{
+		$rand = rand(11111, 99999);
+		return number_format($coordinate, 2) . $rand;
 	}
 
 	protected function marker_image_select($marker, $path)

@@ -2,38 +2,12 @@ var usermap = {};
 var click, map, layer_markers;
 
 (function($) {
-
 var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
 var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
 
-usermap.drawmap = function(lon, lat, zoom, controls) {
-	var cntrposition = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
-
-	if(controls === true) {
-		map = new OpenLayers.Map('map', {
-			controls: [
-				new OpenLayers.Control.Navigation(),
-				new OpenLayers.Control.PanZoomBar()],
-			numZoomLevels: 18,
-			maxResolution: 156543,
-			units: 'meters'
-		});
-	} else {
-		map = new OpenLayers.Map('map', {
-			numZoomLevels: 18,
-			maxResolution: 156543,
-			units: 'meters'
-		});
-	}
-	map.events.register("moveend", map, function(e) {
-		usermap.reload();
-	});
-
-	var layer_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-	layer_markers = new OpenLayers.Layer.Markers("Address", { projection: new OpenLayers.Projection("EPSG:4326"), visibility: true});
-	map.addLayers([layer_mapnik, layer_markers]);
-
-	usermap.jumpTo(lon, lat, zoom);
+usermap.load = function() {
+	map = new OpenLayers.Map('map',{projection: 'EPSG:3857'});
+	map.events.register("moveend",map,function(e){usermap.reload();});
 };
 
 // A control class for capturing click events...
@@ -60,7 +34,6 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
 	CLASS_NAME: "OpenLayers.Control.Click"
 });
 
-
 // Add an instance of the Click control that listens to various click events:
 click = new OpenLayers.Control.Click({eventMethods:{
 	'rightclick': function(e) {
@@ -72,8 +45,6 @@ click = new OpenLayers.Control.Click({eventMethods:{
 		usermap.hide_menu(true);
 	}
 }});
-
-
 
 // Get control of the right-click event:
 document.getElementById('map').oncontextmenu = function(e){

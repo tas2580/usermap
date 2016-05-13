@@ -147,6 +147,8 @@ class main extends \tas2580\usermap\includes\class_usermap
 			'U_GET_MARKER'			=> $this->helper->route('tas2580_usermap_get_marker', array()),
 			'MAP_TYPE'				=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
+			'BING_API_KEY'			=> $this->config['tas2580_usermap_bing_api_key'],
+			'DEFAULT_MAP'			=> $this->config['tas2580_usermap_map_type'],
 			'U_USERMAP_SEARCH'		=> $this->helper->route('tas2580_usermap_search', array()),
 			'L_MENU_SEARCH'			=> $this->user->lang('MENU_SEARCH', $this->config['tas2580_usermap_search_distance']),
 			'L_MENU_ADD_THING'		=> $this->user->lang('MENU_ADD_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])),

@@ -195,13 +195,13 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		}
 		else
 		{
-			$this->info['lng'] = substr($this->request->variable('usermap_lon', ''), 0, 10);
+			$this->info['lon'] = substr($this->request->variable('usermap_lon', ''), 0, 10);
 			$this->info['lat'] = substr($this->request->variable('usermap_lat', ''), 0, 10);
 			$this->info['zip'] = '';
 			$this->info['default_country'] = '';
 
 			$validate_array = array(
-				'lng'		=> array('match', true, self::REGEX_LON),
+				'lon'		=> array('match', true, self::REGEX_LON),
 				'lat'		=> array('match', true, self::REGEX_LAT),
 			);
 			$error = array_merge($error, validate_data($this->info, $validate_array));
@@ -227,7 +227,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 			return;
 		}
 
-		$user_row['user_usermap_lon'] = $this->info['lng'];
+		$user_row['user_usermap_lon'] = $this->info['lon'];
 		$user_row['user_usermap_lat'] = $this->info['lat'];
 		$user_row['user_usermap_zip'] = $this->info['zip'];
 		$user_row['user_usermap_default_country'] = $this->info['default_country'];
@@ -272,8 +272,9 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 			'USERMAP_ZOOM'		=> (int) 10,
 			'DISTANCE'			=> isset($distance) ? $distance : '',
 			'MARKER_PATH'		=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker/groups'),
-			'MAP_TYPE'			=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'	=> $this->config['tas2580_usermap_google_api_key'],
+			'BING_API_KEY'		=> $this->config['tas2580_usermap_bing_api_key'],
+			'DEFAULT_MAP'		=> $this->config['tas2580_usermap_map_type'],
 		));
 
 		$sql = 'SELECT group_id, group_usermap_marker

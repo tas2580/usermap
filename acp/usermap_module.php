@@ -44,6 +44,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 					$config->set('tas2580_usermap_zoom', $request->variable('usermap_zoom', 0));
 					$config->set('tas2580_usermap_map_type', $request->variable('map_type', ''));
 					$config->set('tas2580_usermap_google_api_key', $request->variable('google_api_key', ''));
+					$config->set('tas2580_usermap_bing_api_key', $request->variable('bing_api_key', ''));
 					$config->set('tas2580_usermap_search_distance', $request->variable('search_distance', 0));
 					$config->set('tas2580_usermap_map_in_viewprofile', $request->variable('map_in_viewprofile', 0));
 					$config->set('tas2580_usermap_distance_in_viewtopic', $request->variable('distance_in_viewtopic', 0));
@@ -66,6 +67,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 					'USERMAP_ZOOM'				=> $config['tas2580_usermap_zoom'],
 					'MAP_TYPE_SELECT'			=> $this->map_select($config['tas2580_usermap_map_type']),
 					'GOOGLE_API_KEY'			=> $config['tas2580_usermap_google_api_key'],
+					'BING_API_KEY'				=> $config['tas2580_usermap_bing_api_key'],
 					'SEARCH_DISTANCE'			=> $config['tas2580_usermap_search_distance'],
 					'MAP_IN_VIEWPROFILE'		=> $config['tas2580_usermap_map_in_viewprofile'],
 					'DISTANCE_IN_VIEWTOPIC'		=> $config['tas2580_usermap_distance_in_viewtopic'],
@@ -118,8 +120,14 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 	{
 		global $user;
 		$maps = array(
-			'osm'	=> $user->lang('ACP_MAP_OSM'),
-			'google'	=> $user->lang('ACP_MAP_GOOGLE'),
+			'osm_mapnik'		=> $user->lang('ACP_OSM_MACKNICK'),
+			'google_terrain'	=> $user->lang('ACP_GOOGLE_TERRAIN'),
+			'google_roadmap'	=> $user->lang('ACP_GOOGLE_ROADMAP'),
+			'google_hybrid'		=> $user->lang('ACP_GOOGLE_HYBRID'),
+			'google_satellite'	=> $user->lang('ACP_GOOGLE_SATELLITE'),
+			'bing_road'			=> $user->lang('ACP_BING_ROAD'),
+			'bing_hybrid'		=> $user->lang('ACP_BING_HYBRID'),
+			'bing_aerial'		=> $user->lang('ACP_BING_AERIAL'),
 		);
 
 		$return = '';
