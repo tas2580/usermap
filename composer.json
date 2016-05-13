@@ -3,7 +3,7 @@
 	"type": "phpbb-extension",
 	"description": "Adds a map to the forum where users can enter her position",
 	"homepage": "https://tas2580.net/downloads/phpbb-usermap/",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"keywords": ["phpbb", "extension", "user", "map"],
 	"license": "GPL-2.0",
 	"authors": [{
