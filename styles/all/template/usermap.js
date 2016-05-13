@@ -1,5 +1,6 @@
 var usermap = {};
 var click, map, layer_markers;
+var s_touch = false;
 
 (function($) {
 var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
@@ -8,6 +9,26 @@ var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical M
 usermap.load = function() {
 	map = new OpenLayers.Map('map',{projection: 'EPSG:3857'});
 	map.events.register("moveend",map,function(e){usermap.reload();});
+
+	// Handle touch events
+	var timeout;
+	map.events.register('touchstart', map, function(e) {
+		if(e.touches.length > 1) {return;}
+		usermap.hide_menu(true);
+        s_touch = true;
+        timeout = setTimeout(function() {
+			var lonlat = map.getLonLatFromPixel(e.xy);
+			pos= new OpenLayers.LonLat(lonlat.lon,lonlat.lat).transform(toProjection,fromProjection);
+			$('#map_menu').css({'display':'block'});
+			$('#map_menu').find('a').each(function() {
+				var href = $(this).attr('href');
+				$(this).attr('href', href.replace('LONLAT', 'lon='+pos.lon+'&lat='+pos.lat));
+			});
+         }, 1000);
+     }, true);
+
+    map.events.register('touchmove', map, function(e) {setTimeout(function(){clearTimeout(timeout);},1000);});
+	map.events.register('touchend',map,function(e){clearTimeout(timeout);});
 };
 
 // A control class for capturing click events...
@@ -42,6 +63,7 @@ click = new OpenLayers.Control.Click({eventMethods:{
 		usermap.display_menu(e, pos.lon,pos. lat);
 	},
 	'click': function(e) {
+		if(s_touch) return;
 		usermap.hide_menu(true);
 	}
 }});
