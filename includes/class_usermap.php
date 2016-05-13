@@ -76,7 +76,7 @@ class class_usermap
 		}
 
 		$info = json_decode($info, true);
-		if( isset($info['results']['0']['geometry']['location']))
+		if (isset($info['results']['0']['geometry']['location']))
 		{
 			return array(
 				'lon'		=> $this->_randomize_coordinate($info['results']['0']['geometry']['location']['lng']),
