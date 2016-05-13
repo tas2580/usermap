@@ -83,7 +83,8 @@ $lang = array_merge($lang, array(
 	'ACP_SHOW_ON_REGISTER_EXPLAIN'			=> 'Soll der Benutzer bei der Registrierung seinen Standort angeben können?',
 	'ACP_FORCE_ON_REGISTER'					=> 'Bei Registrierung erzwingen',
 	'ACP_FORCE_ON_REGISTER_EXPLAIN'			=> 'Soll die Eingabe des Standorts bei der Registrierung erzwungen werden?',
-
+	'ACP_COUNTRY_SELECT'					=> 'Standard Land',
+	'ACP_COUNTRY_SELECT_EXPLAIN'			=> 'Wähle ein Land das für den Benutzer vorausgewählt ist wenn er noch kein Land ausgewählt hat.',
 	'ACP_ALLOW_BBCODE'						=> 'BB Code erlauben',
 	'ACP_ALLOW_SMILIES'						=> 'Smilies erlauben',
 	'ACP_ALLOW_URL'							=> 'URL erlauben',
