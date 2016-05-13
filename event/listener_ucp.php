@@ -75,7 +75,7 @@ class listener_ucp extends \tas2580\usermap\includes\class_usermap implements Ev
 		return array(
 			'core.ucp_profile_modify_profile_info'					=> 'ucp_profile_modify_profile_info',
 			'core.ucp_profile_validate_profile_info'				=> 'ucp_profile_validate_profile_info',
-			'core.ucp_profile_info_modify_sql_ary'				=> 'ucp_profile_info_modify_sql_ary',
+			'core.ucp_profile_info_modify_sql_ary'					=> 'ucp_profile_info_modify_sql_ary',
 		);
 	}
 

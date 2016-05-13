@@ -189,16 +189,17 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		{
 			$default_country = $this->request->variable('default_country', '');
 			$zip = $this->request->variable('usermap_zip', '');
-			$this->info = $this->get_cords_form_zip($zip, $default_country, $error);
-			$this->info['zip'] = $zip;
-			$this->info['default_country'] = $default_country;
+			if (!empty($zip))
+			{
+				$this->info = $this->get_cords_form_zip($zip, $default_country, $error);
+				$this->info['zip'] = $zip;
+				$this->info['default_country'] = $default_country;
+			}
 		}
 		else
 		{
 			$this->info['lon'] = substr($this->request->variable('usermap_lon', ''), 0, 10);
 			$this->info['lat'] = substr($this->request->variable('usermap_lat', ''), 0, 10);
-			$this->info['zip'] = '';
-			$this->info['default_country'] = '';
 
 			$validate_array = array(
 				'lon'		=> array('match', true, self::REGEX_LON),
@@ -222,15 +223,10 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 
 	public function ucp_register_user_row_after($event)
 	{
-		if (!$this->config['tas2580_usermap_show_on_register'])
-		{
-			return;
-		}
-
-		$user_row['user_usermap_lon'] = $this->info['lon'];
-		$user_row['user_usermap_lat'] = $this->info['lat'];
-		$user_row['user_usermap_zip'] = $this->info['zip'];
-		$user_row['user_usermap_default_country'] = $this->info['default_country'];
+		$user_row['user_usermap_lon'] = isset($this->info['lon']) ? $this->info['lon'] : '';
+		$user_row['user_usermap_lat'] = isset($this->info['lat']) ? $this->info['lat'] : '';
+		$user_row['user_usermap_zip'] = isset($this->info['zip']) ? $this->info['zip'] : '';
+		$user_row['user_usermap_default_country'] = isset($this->info['default_country']) ? $this->info['default_country'] : '';
 
 		$event['user_row'] = array_merge($event['user_row'], $user_row);
 	}
