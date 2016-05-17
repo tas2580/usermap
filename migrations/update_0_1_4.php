@@ -44,7 +44,7 @@ class update_0_1_4 extends \phpbb\db\migration\migration
 			array('config.add', array('tas2580_usermap_allow_flash', '1')),
 
 			// Add permissions
-			array('permission.add', array('u_usermap_add_thing', true, 'u_')),
+			array('permission.add', array('u_usermap_add_thing', true, 'u_usermap_add')),
 			array('permission.add', array('u_usermap_edit_thing', true, 'm_')),
 			array('permission.add', array('u_usermap_delete_thing', true, 'm_')),
 		);
