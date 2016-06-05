@@ -34,7 +34,13 @@ if (empty($lang) || !is_array($lang))
 // â€™ Â» â€œ â€ â€¦
 //
 $lang = array_merge($lang, array(
-	'ACL_U_USERMAP_VIEW'		=> 'Can view the user map',
-	'ACL_U_USERMAP_ADD'		=> 'Can add themselves to the user map',
-	'ACL_U_USERMAP_SEARCH'	=> 'Can search the user map',
+    'ACL_CAT_USERMAP'				=> 'User Map',
+	'ACL_U_USERMAP_VIEW'		    => 'Can view the user map',
+	'ACL_U_USERMAP_ADD'		        => 'Can add themselves to the user map',
+	'ACL_U_USERMAP_SEARCH'	        => 'Can search the user map', 
+	'ACL_U_USERMAP_HIDE'			=> 'Can hide own location on user map',
+	'ACL_U_USERMAP_ADD_THING'		=> 'Can add point of interest to user map',
+	'ACL_U_USERMAP_DELETE_THING'	=> 'Can delete point of interest from user map',
+	'ACL_U_USERMAP_EDIT_THING'		=> 'Can edit point of interest on user map',
 ));
+
