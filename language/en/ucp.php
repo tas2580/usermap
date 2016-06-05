@@ -35,9 +35,18 @@ if (empty($lang) || !is_array($lang))
 // â€™ Â» â€œ â€ â€¦
 //
 $lang = array_merge($lang, array(
-	'UCP_USERMAP_COORDINATES'			=> 'Coordinates for user map',
+	'UCP_USERMAP_COORDINATES'			    => 'Coordinates for user map',
 	'UCP_USERMAP_COORDINATES_EXPLAIN'		=> 'Enter your coordinates for the <a href="%s">User Map</a>.',
-	'UCP_USERMAP_LON'				=> 'Longitude',
-	'UCP_USERMAP_LAT'				=> 'Latitude',
-	'UCP_USERMAP_GET_COORDINATES'		=> 'Add My Coordinates',
+    'UCP_USERMAP_ZIP'					    => 'Zip Code for the user map',
+	'UCP_USERMAP_ZIP_EXPLAIN'				=> 'Enter your zip code here to place your marker on the  <a href="%s">User Map</a>.',
+	'UCP_USERMAP_LON'				        => 'Longitude',
+	'UCP_USERMAP_LAT'				        => 'Latitude',
+	'UCP_USERMAP_GET_COORDINATES'		    => 'Add My Coordinates',
+    'UCP_USERMAP_HIDE'						=> 'Hide on map',
+	'UCP_USERMAP_HIDE_DESCRIPTION'			=> 'To hide your marker on the map, select "yes".',
+	'ERROR_GET_COORDINATES'					=> 'Unable to read your location from the browser.',
+	'NEED_REGISTER_ZIP'						=> 'You have to enter a valid zip code.',
 ));
+
+
+
