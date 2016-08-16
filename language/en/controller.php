@@ -36,7 +36,7 @@ $lang = array_merge($lang, array(
 	'SEARCH_EXPLAIN'					=> 'Users within %1$s Kilometer about %2$s, %3$s',
 	'USERMAP_SEARCH'					=> 'Search User Map',
 	'MEMBERS'						    => 'Members',
-    'KLICK_TO_ADD'						=> 'Right click to add yourself to the map!',
+	'KLICK_TO_ADD'						=> 'Right click to add yourself to the map!',
 	'POSITION_SET'						=> 'Your location on the map was changed!',
 	'JAVASCRIPT_ERROR'					=> 'JavaScript is deactivated or an error occurred. You have to activate JavaScript to see the user map!',
 	'NEED_MARKER'						=> 'You have to choose a marker',
@@ -61,6 +61,3 @@ $lang = array_merge($lang, array(
 	'BING_AERIAL'						=> 'Bing! Satellite',
 	'OSM_MACKNICK'						=> 'OSM Macknick',
 ));
-
-	
-	
