@@ -1,5 +1,5 @@
 <!-- INCLUDE overall_header.html -->
-<h2>{L_USERMAP_TITLE}</h2>
+<h2 class="column1">{L_USERMAP_TITLE}</h2>
 <!-- IF  S_CAN_ADD and A_USERMAP_ADD -->
  <div id="information" class="rules">
 	<div class="inner">
@@ -7,6 +7,13 @@
 	</div>
 </div>
 <!-- ENDIF -->
+<div class="column2" style="position: relative;">
+	<form id="mapsearchform">
+		{L_SEARCH}{L_COLON} <input type="text" id="mapsearch">
+	</form>
+	<div id="searchresult"></div>
+</div>
+<br class="clear">
 <div class="panel bg1">
 	<div class="inner">
 		<div class="content">

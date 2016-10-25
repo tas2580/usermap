@@ -1,5 +1,5 @@
 var usermap = {};
-var click, map, layer_markers;
+var click, map, layer_markers, layer_position_markers;
 var s_touch = false;
 
 (function($) {
@@ -8,7 +8,7 @@ var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical M
 
 usermap.load = function() {
 	map = new OpenLayers.Map('map',{projection: 'EPSG:3857'});
-	map.events.register("moveend",map,function(e){usermap.reload();});
+	map.events.register("moveend",map,function(e){usermap.reload();$('#searchresult').hide();});
 
 	// Handle touch events
 	var timeout;
@@ -61,10 +61,12 @@ click = new OpenLayers.Control.Click({eventMethods:{
 		var lonlat = map.getLonLatFromPixel(e.xy);
 		pos= new OpenLayers.LonLat(lonlat.lon,lonlat.lat).transform(toProjection,fromProjection);
 		usermap.display_menu(e, pos.lon,pos. lat);
+		$('#searchresult').hide();
 	},
 	'click': function(e) {
 		if(s_touch) return;
 		usermap.hide_menu(true);
+		$('#searchresult').hide();
 	}
 }});
 
@@ -156,4 +158,52 @@ usermap.addMarker=function(layer, lon, lat, popupContentHTML, marker) {
 	marker.events.register("touchstart", feature, markerClick);
 	layer.addMarker(marker);
 };
+
+usermap.jump=function(lon, lat, text)
+{
+	layer_position_markers.clearMarkers();
+	usermap.jumpTo(lon, lat, 13);
+	usermap.addMarker(layer_position_markers, parseFloat(lon), parseFloat(lat), text, usermap.position_marker);
+	return false;
+};
+
+$.event.special.inputchange = {
+    setup: function() {
+        var self = this, val;
+        $.data(this, 'timer', window.setInterval(function() {
+            val = self.value;
+            if ( $.data( self, 'cache') != val ) {
+                $.data( self, 'cache', val );
+                $( self ).trigger( 'inputchange' );
+            }
+        }, 2000));
+    },
+    teardown: function() {
+        window.clearInterval( $.data(this, 'timer') );
+    },
+    add: function() {
+        $.data(this, 'cache', this.value);
+    }
+};
+
+$('#mapsearch').on('inputchange', function() {
+	$.getJSON('https://maps.google.com/maps/api/geocode/json?address=' + $(this).val(), function(returndata){
+		$('#searchresult').html('');
+
+		$.each( returndata.results, function( i, item ) {
+			$('#searchresult').html($('#searchresult').html()+'<a href="#" onclick="return usermap.jump('+item.geometry.location.lng+','+item.geometry.location.lat+',\''+item.formatted_address+'\')">'+item.formatted_address+'</a><br>');
+		});
+		if($('#searchresult').html() !== '')
+		{
+			$('#searchresult').slideDown();
+		}
+	});
+});
+$('#mapsearch').click(function(){
+	if($('#searchresult').html() !== '')
+	{
+		$('#searchresult').slideDown();
+	}
+});
+
 })(jQuery);

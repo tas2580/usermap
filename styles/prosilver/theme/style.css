@@ -67,6 +67,28 @@ li.menu_close{
 
 }
 
+#searchresult{
+	position: absolute;
+	right:0;
+	top:40px;
+	clear: both;
+	border:1px solid #ccc;
+	border-radius: 6px;
+	padding:10px;
+	z-index: 9999;
+	background: #fff;
+	line-height: 1.5em;
+	font-size: 1.2em;
+	display: none;
+	float:right;
+}
+#mapsearchform{
+	float:right;
+	font-size: 1.1em;
+	margin-top:20px;
+
+}
+
 @media (max-width: 700px) {
 	#map_menu{
 		position: fixed;

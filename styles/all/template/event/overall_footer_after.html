@@ -2,8 +2,12 @@
 <!-- INCLUDEJS @tas2580_usermap/usermap.js -->
 	<script type="text/javascript">
 	var map;
+
+
 	function display_map() {
 		usermap.load();
+		usermap.position_marker = usermap.generateMarker('{MARKER_PATH}/position_marker.png');
+
 		<!-- IF GOOGLE_API_KEY or BING_API_KEY -->
 			map.addControl(new OpenLayers.Control.LayerSwitcher({'dataLayersDiv':false}));
 			layerSwitcher = map.getControlsByClass("OpenLayers.Control.LayerSwitcher")[0];
@@ -15,9 +19,13 @@
 			visibility: true,
 			displayInLayerSwitcher: false
 		});
-
+		layer_position_markers = new OpenLayers.Layer.Markers("{L_MARKER}", {
+			projection: new OpenLayers.Projection("EPSG:4326"),
+			visibility: true,
+			displayInLayerSwitcher: false
+		});
 		var osm_mapnik = new OpenLayers.Layer.OSM.Mapnik("{L_OSM_MACKNICK}");
-		map.addLayers([layer_markers, osm_mapnik]);
+		map.addLayers([layer_markers, layer_position_markers, osm_mapnik]);
 		<!-- IF GOOGLE_API_KEY -->
 			var google_terrain = new OpenLayers.Layer.Google("{L_GOOGLE_TERRAIN}", {type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 20});
 			var google_roadmap = new OpenLayers.Layer.Google("{L_GOOGLE_ROADMAP}", {type: google.maps.MapTypeId.ROADMAP, numZoomLevels: 20});
