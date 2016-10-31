@@ -148,7 +148,6 @@ class main extends \tas2580\usermap\includes\class_usermap
 			));
 		}
 
-
 		$this->template->assign_vars(array(
 			'USERMAP_CONTROLS'		=> 'true',
 			'S_IN_USERMAP'			=> true,

@@ -85,13 +85,11 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 				$action = $request->variable('action', '');
 				switch ($action)
 				{
-
 					/**
 					 * Add thing type
 					 */
 					case 'add':
 						$marker = '';
-
 
 						if ($request->is_set_post('add_type'))
 						{
