@@ -114,6 +114,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			$sql = 'DELETE FROM ' . $this->things_table . '
 				WHERE thing_id = ' . (int) $id;
 			$this->db->sql_query($sql);
+
 			trigger_error($this->user->lang['DELETE_THING_SUCCESS'] . '<br /><br /><a href="' . $this->helper->route('tas2580_usermap_index', array())  . '">' . $this->user->lang['BACK_TO_USERMAP'] . '</a>');
 		}
 		else
@@ -429,7 +430,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 				$thing_id = $this->db->sql_nextid();
 
 				trigger_error($this->user->lang['THING_ADDED'] . '<br /><br />'
-					. '<a href="' . $this->helper->route('tas2580_usermap_thing', array('id' => $thing_id)) . '">' . $this->user->lang['BACK_TO_THING'] . '</a><br /><br />'
+					. '<a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $thing_id)) . '">' . $this->user->lang['BACK_TO_THING'] . '</a><br /><br />'
 					. '<a href="' . $this->helper->route('tas2580_usermap_index', array()) . '">' . $this->user->lang['BACK_TO_USERMAP'] . '</a>');
 			}
 		}

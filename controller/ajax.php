@@ -111,7 +111,6 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 
 		$return = array();
 
-
 		$sql_array['FROM'][$this->things_table] = 't';
 		$sql_array['SELECT'] = 't.*, pt.*';
 		$sql_array['LEFT_JOIN'][] = array(
@@ -143,20 +142,9 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 				'lat'			=> $row['thing_lat'],
 				'text'			=> $text,
 			);
-
-			/**
-			 * Modify data for thing marker
-			 *
-			 * @event tas2580.usermap_thing_marker_row_after
-			 * @var    array    row				User row
-			 * @var    array    return_data		Return data
-			 * @since 0.1.4
-			 */
-			$vars = array('row', 'return_data');
-			extract($this->phpbb_dispatcher->trigger_event('tas2580.usermap_thing_marker_row_after', compact($vars)));
-
 			$return[] = $return_data;
 		}
+		unset($sql_array);
 
 		$sql_array['FROM'][USERS_TABLE] = 'u';
 		$sql_array['SELECT'] = 'u.user_id, u.username, u.user_colour, u.user_regdate, u.user_posts, u.group_id, u.user_usermap_lon, u.user_usermap_lat, g.group_usermap_marker';
