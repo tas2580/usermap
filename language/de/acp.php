@@ -103,6 +103,7 @@ $lang = array_merge($lang, array(
 	'ACP_USERMAP_EDIT_PLACE_TYPE'			=> 'Ort Typ bearbeiten',
 	'ACP_PLACE_TYPE_TITLE'					=> 'Name',
 	'ACP_PLACE_TYPE_TITLE_EXPLAIN'			=> 'Gib einen Namen für den Ort Typ an.',
+	'ACP_PLACE_TYPE_EDIT_SUCCESS'			=> 'Der Orts Typ wurde erfolgreich bearbeidet',
 	'ACP_PLACE_MARKER'						=> 'Marker',
 	'ACP_PLACE_MARKER_EXPLAIN'				=> 'Wähle einen Marker der für Orte des Typs verwendet werden soll.',
 	'ACP_PLACE_DISPLAY_LEGEND'				=> 'In Legende anzeigen',

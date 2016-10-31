@@ -233,7 +233,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 				'SMILIES_STATUS'				=> ($smilies_status) ? $this->user->lang['SMILIES_ARE_ON'] : $this->user->lang['SMILIES_ARE_OFF'],
 				'URL_STATUS'					=> ($bbcode_status && $url_status) ? $this->user->lang['URL_IS_ON'] : $this->user->lang['URL_IS_OFF'],
 				'S_HIDDEN_FIELDS'				=> '',
-				'FORM_TITLE'					=> $this->user->lang('EDIT_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])),
+				'FORM_TITLE'					=> $this->user->lang('EDIT_PLACE'),
 			));
 		}
 
@@ -461,7 +461,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			'SMILIES_STATUS'				=> ($smilies_status) ? $this->user->lang['SMILIES_ARE_ON'] : $this->user->lang['SMILIES_ARE_OFF'],
 			'URL_STATUS'					=> ($bbcode_status && $url_status) ? $this->user->lang['URL_IS_ON'] : $this->user->lang['URL_IS_OFF'],
 			'S_HIDDEN_FIELDS'				=> $s_hidden_fields,
-			'FORM_TITLE'					=> $this->user->lang('ADD_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])),
+			'FORM_TITLE'					=> $this->user->lang('ADD_PLACE'),
 		));
 
 		return $this->helper->render('usermap_places_form.html', $this->user->lang('ADD_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])));

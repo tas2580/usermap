@@ -206,7 +206,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 									' . $db->sql_build_array('UPDATE', $sql_data) . '
 										WHERE place_type_id = ' . (int) $place_type_id;
 								$db->sql_query($sql);
-								trigger_error($user->lang('ACP_THING_TYPE_EDIT_SUCCESS') . adm_back_link($this->u_action));
+								trigger_error($user->lang('ACP_PLACE_TYPE_EDIT_SUCCESS') . adm_back_link($this->u_action));
 							}
 						}
 
