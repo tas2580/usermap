@@ -4,15 +4,6 @@
 <form method="post" action="{U_ACTION}">
 
 <fieldset>
-<legend>{L_SETTINGS}</legend>
-	<dl>
-		<dt><label for="thing_name">{L_ACP_THING_NAME}{L_COLON}</label><br />
-			<span>{L_ACP_THING_NAME_EXPLAIN}</span>
-		</dt>
-		<dd><input id="thing_name" type="text" name="thing_name" value="{THING_NAME}" /></dd>
-	</dl>
-</fieldset>
-	
 <fieldset>
 <legend>{L_SETTINGS}</legend>
 	<dl>
@@ -61,6 +52,43 @@
 	{S_FORM_TOKEN}
 </fieldset>
 
-
 </form>
+
+
+<h2>{L_ACP_PLACE_TYPES}</h2>
+
+	<table class="table1 zebra-table">
+
+	<thead>
+	<tr>
+		<th>{L_ACP_PLACE_TYPE_TITLE}</th>
+		<th style="text-align: center; width: 20%;">{L_ACP_PLACE_MARKER}</th>
+		<th style="text-align: center; width: 20%;">{L_ACTION}</th>
+	</tr>
+	</thead>
+	<tbody>
+		<!-- IF .thing_types -->
+		<!-- BEGIN thing_types -->
+		<tr>
+			<td><strong>{thing_types.TITLE}</strong></td>
+			<td><img src="{thing_types.MARKER}" id="image" alt=""></td>
+			<td class="actions">
+				<a href="{thing_types.U_EDIT}">{ICON_EDIT}</a>
+				<a href="{thing_types.U_DELETE}" data-ajax="row_delete">{ICON_DELETE}</a>
+			</td>
+		</tr>
+		<!-- END thing_types -->
+		<!-- ELSE -->
+		<tr>
+			<td colspan="3">{L_NO_ITEMS}</td>
+		</tr>
+		<!-- ENDIF -->
+	</tbody>
+	</table>
+	<form method="post" action="{U_ADD_THING_TYPE}">
+	<fieldset class="quick">
+		{L_ACP_ADD_PLACE_TYPE} <input type="text" name="title" value="" /> <input class="button2" type="submit" name="add_type" value="{L_SUBMIT}" />
+	</fieldset>
+	{S_FORM_TOKEN}
+	</form>
 <!-- INCLUDE overall_footer.html -->

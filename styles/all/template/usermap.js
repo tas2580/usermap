@@ -81,6 +81,10 @@ phpbb.addAjaxCallback('usermap.set_position', function(response) {
 	usermap.reload();
 });
 
+phpbb.addAjaxCallback('usermap.get_distance', function(response) {
+	usermap.hide_menu(true);
+});
+
 usermap.reload = function() {
 	var tlLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(1,1));
 	var pos0= new OpenLayers.LonLat(tlLonLat.lon,tlLonLat.lat).transform(toProjection,fromProjection);

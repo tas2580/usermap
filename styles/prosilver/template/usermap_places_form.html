@@ -10,7 +10,10 @@
 					<dt><label for="title">{L_TITLE}{L_COLON}</label></dt>
 					<dd><input type="text" name="title" id="title" size="45" tabindex="1" value="{TITLE}" class="inputbox autowidth" required /></dd>
 				</dl>
-
+				<dl>
+					<dt><label for="marker">{L_THING_MARKER}{L_COLON}</label><br /><span>{L_THING_MARKER_EXPLAIN}</span></dt>
+					<dd><select id="marker" name="marker_type" tabindex="2">{MARKER}</select></dd>
+				</dl>
 				<!-- INCLUDE posting_buttons.html -->
 				<div id="smiley-box" class="smiley-box">
 				<!-- IF .smiley -->
@@ -35,14 +38,10 @@
 				</div>
 
 				<div id="message-box" class="message-box">
-					<textarea name="message" id="message" rows="15" cols="76" tabindex="2" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onfocus="initInsertions();" class="inputbox" required>{MESSAGE}</textarea>
+					<textarea name="message" id="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onfocus="initInsertions();" class="inputbox" required>{MESSAGE}</textarea>
 				</div>
 
 				<dl>
-					<dt><label for="marker">{L_THING_MARKER}{L_COLON}</label><br /><span>{L_THING_MARKER_EXPLAIN}</span></dt>
-					<dd><select id="marker" name="marker" tabindex="3" onchange="update_image(this.options[selectedIndex].value);">{MARKER_OPTIONS}</select></dd>
-					<dd><img src="{USERMAP_MARKER}" id="image" alt="" /></dd>
-				</dl>
 			</fieldset>
 			<fieldset class="submit-buttons">
 				{S_HIDDEN_FIELDS}<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp;
@@ -53,12 +52,4 @@
 	</div>
 	{S_HIDDEN_FIELDS}
 </form>
-<script type="text/javascript">
-	// <![CDATA[
-	function update_image(newimage)
-	{
-		document.getElementById('image').src = (newimage) ? "{USERMAP_MARKER_PATH}/" + encodeURI(newimage) : "../../images/spacer.gif";
-	}
-	// ]]>
-</script>
 <!-- INCLUDE overall_footer.html -->

@@ -66,7 +66,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 	* @param string								$phpbb_root_path				phpbb_root_path
 	* @param string								$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table, $place_type_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -83,6 +83,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$this->php_ext = $php_ext;
 
 		$this->things_table = $things_table;
+		$this->place_type_table = $place_type_table;
 
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
 	}
@@ -131,27 +132,44 @@ class main extends \tas2580\usermap\includes\class_usermap
 			));
 		}
 
+		$marker_path = $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker');
+
+		$sql = 'SELECT place_type_id, place_type_title, place_type_marker
+			FROM ' . $this->place_type_table . '
+			WHERE place_display_legend = 1
+			ORDER BY place_type_title';
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$this->template->assign_block_vars('thing_types', array(
+				'TITLE'			=> $row['place_type_title'],
+				'MARKER'		=> $marker_path . '/things/' . $row['place_type_marker'],
+				'U_MARKER'		=> $this->helper->route('tas2580_usermap_placelist', array('id' => $row['place_type_id'])),
+			));
+		}
+
+
 		$this->template->assign_vars(array(
 			'USERMAP_CONTROLS'		=> 'true',
 			'S_IN_USERMAP'			=> true,
 			'USERMAP_LON'			=> empty($this->config['tas2580_usermap_lon']) ? 0 : $this->config['tas2580_usermap_lon'],
 			'USERMAP_LAT'			=> empty($this->config['tas2580_usermap_lat']) ? 0 : $this->config['tas2580_usermap_lat'],
 			'USERMAP_ZOOM'			=> (int) $this->config['tas2580_usermap_zoom'],
-			'MARKER_PATH'			=> $this->path_helper->update_web_root_path($this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker'),
+			'MARKER_PATH'			=> $marker_path,
 			'A_USERMAP_ADD'			=> (($this->user->data['user_id'] <> ANONYMOUS) && $this->auth->acl_get('u_usermap_add')),
 			'A_USERMAP_ADD_THING'	=> $this->auth->acl_get('u_usermap_add_thing'),
 			'A_USERMAP_SEARCH'		=> $this->auth->acl_get('u_usermap_search'),
 			'S_CAN_ADD'				=> (empty($this->user->data['user_usermap_lon']) || empty($this->user->data['user_usermap_lat'])),
-			'U_SET_POSITON'			=> $this->helper->route('tas2580_usermap_position', array('p' => 'p')),
-			'U_USERMAP_ADD_THING'	=> $this->helper->route('tas2580_usermap_add_thing', array('p' => 'p')),
-			'U_GET_MARKER'			=> $this->helper->route('tas2580_usermap_get_marker', array('p' => 'p')),
+			'U_SET_POSITON'			=> $this->helper->route('tas2580_usermap_position'),
+			'U_USERMAP_ADD_THING'	=> $this->helper->route('tas2580_usermap_add_place'),
+			'U_GET_MARKER'			=> $this->helper->route('tas2580_usermap_get_marker'),
+			'U_GET_DISTANCE'		=> $this->helper->route('tas2580_usermap_get_distance'),
 			'MAP_TYPE'				=> $this->config['tas2580_usermap_map_type'],
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
 			'BING_API_KEY'			=> $this->config['tas2580_usermap_bing_api_key'],
 			'DEFAULT_MAP'			=> $this->config['tas2580_usermap_map_type'],
-			'U_USERMAP_SEARCH'		=> $this->helper->route('tas2580_usermap_search', array('p' => 'p')),
+			'U_USERMAP_SEARCH'		=> $this->helper->route('tas2580_usermap_search'),
 			'L_MENU_SEARCH'			=> $this->user->lang('MENU_SEARCH', $this->config['tas2580_usermap_search_distance']),
-			'L_MENU_ADD_THING'		=> $this->user->lang('MENU_ADD_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])),
 		));
 
 		return $this->helper->render('usermap_body.html', $this->user->lang('USERMAP_TITLE'));
@@ -220,9 +238,9 @@ class main extends \tas2580\usermap\includes\class_usermap
 		{
 			$distance = $this->get_distance($data['lon'], $data['lat'], $row['user_usermap_lon'], $row['user_usermap_lat']);
 			$this->template->assign_block_vars('memberrow', array(
-				'USER_ID'			=> $row['user_id'],
+				'USER_ID'		=> $row['user_id'],
 				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
-				'JOINED'			=> $this->user->format_date($row['user_regdate']),
+				'JOINED'		=> $this->user->format_date($row['user_regdate']),
 				'POSTS'			=> $row['user_posts'],
 				'GROUP_ID'		=> $row['group_id'],
 				'DISTANCE'		=> $distance,

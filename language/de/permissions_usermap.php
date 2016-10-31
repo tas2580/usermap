@@ -40,5 +40,6 @@ $lang = array_merge($lang, array(
 	'ACL_U_USERMAP_HIDE'			=> 'Kann seinen Standort auf der Benutzer Karte ausblenden',
 	'ACL_U_USERMAP_ADD_THING'		=> 'Kann Ding auf die Benutzer Karte eintragen',
 	'ACL_U_USERMAP_DELETE_THING'	=> 'Kann Ding von der Benutzer Karte löschen',
-	'ACL_U_USERMAP_EDIT_THING'		=> 'Kann Ding auf der Benutzer Karte bearbeiten'
+	'ACL_U_USERMAP_EDIT_THING'		=> 'Kann Ding auf der Benutzer Karte bearbeiten',
+	'ACL_U_USERMAP_COMMENT_PLACE'	=> 'Kann Kommentare zu Orten schreiben',
 ));

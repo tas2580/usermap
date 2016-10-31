@@ -17,12 +17,12 @@
 			<ul class="post-buttons">
 				<!-- IF S_EDIT -->
 				<li>
-					<a href="{U_EDIT}" title="{L_EDIT_WIKI}" class="button icon-button edit-icon"><span>{L_EDIT_WIKI}</span></a>
+					<a href="{U_EDIT}" title="{L_EDIT}" class="button icon-button edit-icon"><span>{L_EDIT}</span></a>
 				</li>
 				<!-- ENDIF -->
 				<!-- IF S_DELETE -->
 				<li>
-					<a href="{U_DELETE}" title="{L_DELETE_ARTICLE}" class="button icon-button delete-icon"><span>{L_DELETE_ARTICLE}</span></a>
+					<a href="{U_DELETE}" title="{L_DELETE}" class="button icon-button delete-icon"><span>{L_DELETE}</span></a>
 				</li>
 				<!-- ENDIF -->
 			</ul>
@@ -35,6 +35,11 @@
 		</div>
 	</div>
 </div>
+<!-- IF A_COMMENT -->
+<a href="{U_COMMENT}" class="button icon-button reply-icon" title="{L_COMMENT}">{L_COMMENT}</a>
+<!-- ENDIF -->
+
+
 <p class="jumpbox-return"><a href="{U_USERMAP}" class="left-box arrow-left" accesskey="r">{L_BACK_TO_USERMAP}</a></p>
 <br>
 <!-- INCLUDE overall_footer.html -->

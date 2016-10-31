@@ -66,7 +66,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 	* @param string						$phpbb_root_path				phpbb_root_path
 	* @param string						$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table, $place_type_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -83,13 +83,14 @@ class thing extends \tas2580\usermap\includes\class_usermap
 		$this->php_ext = $php_ext;
 
 		$this->things_table = $things_table;
+		$this->place_type_table = $place_type_table;
 
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
 
 		// Add breadcrumb
 		$this->template->assign_block_vars('navlinks', array(
 			'FORUM_NAME'		=> $this->user->lang('USERMAP_TITLE'),
-			'U_VIEW_FORUM'	=> $this->helper->route('tas2580_usermap_index', array()),
+			'U_VIEW_FORUM'		=> $this->helper->route('tas2580_usermap_index', array()),
 		));
 
 	}
@@ -101,7 +102,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 	 * @param int $id	The Thing ID
 	 * @return type
 	 */
-	public function delete_thing($id)
+	public function delete_place($id)
 	{
 		if (!$this->auth->acl_get('u_usermap_delete_thing'))
 		{
@@ -122,7 +123,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			));
 			confirm_box(false, $this->user->lang['CONFIRM_DELETE_THING'], $s_hidden_fields);
 		}
-		redirect($this->helper->route('tas2580_usermap_thing', array('id' => $id)));
+		redirect($this->helper->route('tas2580_usermap_place', array('id' => $id)));
 	}
 
 	/**
@@ -131,7 +132,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 	 * @param int $id	The Thing ID
 	 * @return type
 	 */
-	public function edit_thing($id)
+	public function edit_place($id)
 	{
 		if (!$this->auth->acl_get('u_usermap_edit_thing'))
 		{
@@ -156,7 +157,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 		{
 			$title = $this->request->variable('title', '', true);
 			$message = $this->request->variable('message', '', true);
-			$marker = $this->request->variable('marker', '', true);
+			$place_type_id = $this->request->variable('marker_type', 0);
 
 			$error = array();
 			if (utf8_clean_string($title) === '')
@@ -169,11 +170,6 @@ class thing extends \tas2580\usermap\includes\class_usermap
 				$error[] = $this->user->lang['TOO_FEW_CHARS'];
 			}
 
-			if (empty($marker))
-			{
-				$error[] = $this->user->lang['NEED_MARKER'];
-			}
-
 			if (sizeof($error))
 			{
 				generate_smilies('inline', 0);
@@ -183,7 +179,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 					'ERROR'					=> implode('<br />', $error),
 					'TITLE'					=> $title,
 					'MESSAGE'				=> $message,
-					'MARKER_OPTIONS'		=> $this->marker_image_select($row['thing_marker'], 'marker/things/'),
+					'MARKER'				=> $this->marker_type_select($place_type_id),
 					'USERMAP_MARKER_PATH'	=> $path,
 				));
 			}
@@ -196,14 +192,14 @@ class thing extends \tas2580\usermap\includes\class_usermap
 					'thing_text'			=> $message,
 					'bbcode_uid'			=> $uid,
 					'bbcode_bitfield'		=> $bitfield,
-					'thing_marker'			=> $marker,
+					'place_type_id'			=> $place_type_id,
 				);
 				$sql = 'UPDATE ' . $this->things_table . ' SET
 					' . $this->db->sql_build_array('UPDATE', $sql_data) . '
 						WHERE thing_id = ' . (int) $id;
 				$this->db->sql_query($sql);
 				trigger_error($this->user->lang['THING_UPDATED'] . '<br /><br />'
-					. '<a href="' . $this->helper->route('tas2580_usermap_thing', array('id' => $id)) . '">' . $this->user->lang['BACK_TO_THING'] . '</a><br /><br />'
+					. '<a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $id)) . '">' . $this->user->lang['BACK_TO_THING'] . '</a><br /><br />'
 					. '<a href="' . $this->helper->route('tas2580_usermap_index', array()) . '">' . $this->user->lang['BACK_TO_USERMAP'] . '</a>');
 
 			}
@@ -223,7 +219,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			$this->template->assign_vars(array(
 				'TITLE'							=> $row['thing_title'],
 				'MESSAGE'						=> $text['text'],
-				'MARKER_OPTIONS'				=> $this->marker_image_select($row['thing_marker'], 'marker/things/'),
+				'MARKER'						=> $this->marker_type_select($row['place_type_id']),
 				'USERMAP_MARKER_PATH'			=> $path,
 				'S_BBCODE_ALLOWED'				=> $bbcode_status,
 				'S_LINKS_ALLOWED'				=> $url_status,
@@ -240,8 +236,64 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			));
 		}
 
-		return $this->helper->render('usermap_thing_form.html', $this->user->lang('EDIT_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])));
+		return $this->helper->render('usermap_places_form.html', $this->user->lang('EDIT_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])));
+	}
 
+	/**
+	 * List all Things of an ID
+	 *
+	 * @param type $id
+	 */
+	public function list_places($id, $start = 1)
+	{
+		$sql = 'SELECT COUNT(place_type_id) AS num_things
+			FROM ' . $this->things_table . '
+				WHERE place_type_id = ' . (int) $id;
+		$result = $this->db->sql_query($sql);
+		$total_places = (int) $this->db->sql_fetchfield('num_things');
+		$this->db->sql_freeresult($result);
+
+		$limit = (int) $this->config['topics_per_page'];
+
+		$sql = 'SELECT *
+			FROM ' . $this->things_table . '
+				WHERE place_type_id = ' . (int) $id;
+		$result = $this->db->sql_query_limit($sql, $limit, ($start -1)  * $limit);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$this->template->assign_block_vars('placesrow', array(
+				'TITLE'			=> $row['thing_title'],
+				'U_PLACE'		=> $this->helper->route('tas2580_usermap_place', array('id' => $row['thing_id'])),
+				'LON'			=> $row['thing_lon'],
+				'LAT'			=> $row['thing_lat'],
+			));
+		}
+		$this->pagination->generate_template_pagination(array(
+			'routes' => array(
+				'tas2580_usermap_placelist',
+				'tas2580_usermap_placelist_page',
+			),
+			'params' => array(
+			),
+		), 'pagination', 'start', $total_places, $limit, ($start - 1)  * $limit);
+
+		$sql = 'SELECT *
+			FROM ' . $this->place_type_table . '
+			WHERE place_type_id = ' . (int) $id;
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+
+		$this->template->assign_vars(array(
+			'TOTAL_PLACES'			=> $this->user->lang('TOTAL_PLACES', (int) $total_places),
+			'TITLE'					=> $row['place_type_title'],
+		));
+
+		// Add breadcrumb
+		$this->template->assign_block_vars('navlinks', array(
+			'FORUM_NAME'		=> $row['place_type_title'],
+			'U_VIEW_FORUM'		=> $this->helper->route('tas2580_usermap_placelist', array('id' => $id)),
+		));
+		return $this->helper->render('usermap_places_list.html', $row['place_type_title']);
 	}
 
 	/**
@@ -250,11 +302,16 @@ class thing extends \tas2580\usermap\includes\class_usermap
 	 * @param int $id	The Thing ID
 	 * @return type
 	 */
-	public function view_thing($id)
+	public function view_place($id)
 	{
-		$sql = 'SELECT *
-			FROM ' . $this->things_table . '
-			WHERE thing_id = ' . (int) $id;
+		$sql_array['FROM'][$this->things_table] = 't';
+		$sql_array['SELECT'] = 't.*, pt.*';
+		$sql_array['LEFT_JOIN'][] = array(
+			'FROM'		=> array($this->place_type_table => 'pt'),
+			'ON'		=> 'pt.place_type_id = t.place_type_id'
+		);
+		$sql_array['WHERE'] = 'thing_id = ' . (int) $id;
+		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 
@@ -267,11 +324,11 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			'S_BBCODE_ALLOWED'		=> 1,
 			'THING_TITLE'			=> $row['thing_title'],
 			'THING_TEXT'			=> generate_text_for_display($row['thing_text'], $row['bbcode_uid'], $row['bbcode_bitfield'], 3, true),
+			'USERMAP_MARKER'		=> $row['place_type_marker'],
 			'S_DELETE'				=> $this->auth->acl_get('u_usermap_delete_thing'),
 			'S_EDIT'				=> $this->auth->acl_get('u_usermap_edit_thing'),
-			'U_DELETE'				=> $this->helper->route('tas2580_usermap_thing_delete', array('id' => $row['thing_id'])),
-			'U_EDIT'				=> $this->helper->route('tas2580_usermap_thing_edit', array('id' => $row['thing_id'])),
-			'USERMAP_MARKER'		=> $row['thing_marker'],
+			'U_DELETE'				=> $this->helper->route('tas2580_usermap_place_delete', array('id' => $row['thing_id'])),
+			'U_EDIT'				=> $this->helper->route('tas2580_usermap_place_edit', array('id' => $row['thing_id'])),
 			'S_IN_USERMAP'			=> true,
 			'DISTANCE'				=> isset($distance) ? $distance : '',
 			'USERMAP_CONTROLS'		=> 'false',
@@ -282,12 +339,19 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
 			'BING_API_KEY'			=> $this->config['tas2580_usermap_bing_api_key'],
 			'DEFAULT_MAP'			=> $this->config['tas2580_usermap_map_type'],
+			'A_COMMENT'				=> $this->auth->acl_get('u_usermap_comment') && false,
 		));
 
-		return $this->helper->render('usermap_thing_view.html', $row['thing_title']);
+		// Add breadcrumb
+		$this->template->assign_block_vars('navlinks', array(
+			'FORUM_NAME'		=> $row['thing_title'],
+			'U_VIEW_FORUM'		=> $this->helper->route('tas2580_usermap_place', array('id' => $id)),
+		));
+
+		return $this->helper->render('usermap_places_view.html', $row['thing_title']);
 	}
 
-	public function add_thing()
+	public function add_place()
 	{
 		if (!$this->auth->acl_get('u_usermap_add_thing'))
 		{
@@ -310,7 +374,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 		{
 			$title = $this->request->variable('title', '', true);
 			$message = $this->request->variable('message', '', true);
-			$marker = $this->request->variable('marker', '', true);
+			$place_type_id = $this->request->variable('marker_type', 0);
 
 			$data = array(
 				'lon'		=> (float) substr($this->request->variable('lon', ''), 0, 10),
@@ -338,11 +402,6 @@ class thing extends \tas2580\usermap\includes\class_usermap
 				$error[] = $this->user->lang['TOO_FEW_CHARS'];
 			}
 
-			if (empty($marker))
-			{
-				$error[] = $this->user->lang['NEED_MARKER'];
-			}
-
 			if (sizeof($error))
 			{
 				$this->template->assign_vars(array(
@@ -361,7 +420,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 					'bbcode_bitfield'		=> $bitfield,
 					'thing_lat'				=> $data['lat'],
 					'thing_lon'				=> $data['lon'],
-					'thing_marker'			=> $marker,
+					'place_type_id'			=> $place_type_id,
 					'thing_user_id'			=> $this->user->data['user_id'],
 				);
 				$sql = 'INSERT INTO ' . $this->things_table . '
@@ -388,7 +447,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 		$this->template->assign_vars(array(
 			'TITLE'							=> $this->request->variable('title', '', true),
 			'MESSAGE'						=> $this->request->variable('message', '', true),
-			'MARKER_OPTIONS'				=> $this->marker_image_select($marker, 'marker/things/'),
+			'MARKER'						=> $this->marker_type_select($this->request->variable('thing_type_id', 0)),
 			'USERMAP_MARKER_PATH'			=> $path,
 			'S_BBCODE_ALLOWED'				=> $bbcode_status,
 			'S_LINKS_ALLOWED'				=> $url_status,
@@ -404,6 +463,23 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			'FORM_TITLE'					=> $this->user->lang('ADD_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])),
 		));
 
-		return $this->helper->render('usermap_thing_form.html', $this->user->lang('ADD_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])));
+		return $this->helper->render('usermap_places_form.html', $this->user->lang('ADD_THING', $this->user->lang($this->config['tas2580_usermap_thing_name'])));
 	}
+
+	private function marker_type_select($sel = 0)
+	{
+		$options = '';
+		$sql = 'SELECT place_type_id, place_type_title, place_type_marker
+			FROM ' . $this->place_type_table . '
+			ORDER BY place_type_title';
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$selected = ($row['place_type_id'] == $sel) ? ' selected="selected"' : '';
+			$options .= '<option' . $selected . ' value="' . $row['place_type_id'] . '">' . $row['place_type_title'] . '</option>';
+		}
+		return $options;
+	}
+
+
 }

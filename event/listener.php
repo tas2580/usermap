@@ -129,6 +129,10 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 				'lang'		=> 'ACL_U_USERMAP_DELETE_THING',
 				'cat'		=> 'usermap'
 			),
+			'u_usermap_comment'	=> array(
+				'lang'		=> 'ACL_U_USERMAP_COMMENT_PLACE',
+				'cat'		=> 'usermap'
+			),
 		);
 		$categories['usermap'] = 'ACL_CAT_USERMAP';
 		$event['categories'] = array_merge($event['categories'], $categories);

@@ -1,0 +1,51 @@
+<!-- INCLUDE overall_header.html -->
+<h1>{PAGE_TITLE}</h1>
+
+<form method="post" action="{U_ACTION}">
+<!-- IF ERROR -->
+	<div class="errorbox">
+		<h3>{L_ERROR}</h3>
+		<p>{ERROR}</p>
+	</div>
+<!-- ENDIF -->
+<fieldset>
+<legend>{L_SETTINGS}</legend>
+	<dl>
+		<dt><label for="title">{L_ACP_PLACE_TYPE_TITLE}{L_COLON}</label><br />
+			<span>{L_ACP_PLACE_TYPE_TITLE_EXPLAIN}</span>
+		</dt>
+		<dd><input id="title" type="text" name="title" value="{TITLE}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="marker">{L_ACP_PLACE_MARKER}{L_COLON}</label><br /><span>{L_ACP_PLACE_MARKER_EXPLAIN}</span></dt>
+		<dd><select id="marker" name="marker" tabindex="3" onchange="update_image(this.options[selectedIndex].value);">{MARKER_OPTIONS}</select></dd>
+		<dd><img src="{USERMAP_MARKER}" id="image" alt="" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="display_legend">{L_ACP_PLACE_DISPLAY_LEGEND}{L_COLON}</label><br /><span>{L_ACP_PLACE_DISPLAY_LEGEND_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="display_legend" name="display_legend" value="1"<!-- IF DISPLAY_LEGEND --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="display_legend" value="0"<!-- IF not DISPLAY_LEGEND --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>{L_ACP_SUBMIT}</legend>
+	<p class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+	</p>
+	{S_FORM_TOKEN}
+</fieldset>
+
+</form>
+<script type="text/javascript">
+	// <![CDATA[
+	function update_image(newimage)
+	{
+		document.getElementById('image').src = (newimage) ? "{USERMAP_MARKER_PATH}/" + encodeURI(newimage) : "../../images/spacer.gif";
+	}
+	// ]]>
+</script>
+<!-- INCLUDE overall_footer.html -->

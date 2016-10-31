@@ -54,7 +54,7 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 	* @param string								$phpbb_root_path				phpbb_root_path
 	* @param string								$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user, $phpbb_root_path, $php_ext, $things_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user, $phpbb_root_path, $php_ext, $things_table, $place_type_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -67,6 +67,7 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 		$this->php_ext = $php_ext;
 
 		$this->things_table = $things_table;
+		$this->place_type_table = $place_type_table;
 
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
 	}
@@ -110,13 +111,20 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 
 		$return = array();
 
-		$sql = 'SELECT *
-			FROM ' . $this->things_table . "
-				WHERE (thing_lon * 1 >= {$data['min_lon']} AND thing_lon * 1 <= {$data['max_lon']}) AND (thing_lat * 1 >= {$data['min_lat']} AND thing_lat * 1 <= {$data['max_lat']})";
+
+		$sql_array['FROM'][$this->things_table] = 't';
+		$sql_array['SELECT'] = 't.*, pt.*';
+		$sql_array['LEFT_JOIN'][] = array(
+			'FROM'		=> array($this->place_type_table => 'pt'),
+			'ON'		=> 'pt.place_type_id = t.place_type_id'
+		);
+		$sql_array['WHERE'] = "(thing_lon * 1 >= {$data['min_lon']} AND thing_lon * 1 <= {$data['max_lon']}) AND (thing_lat * 1 >= {$data['min_lat']} AND thing_lat * 1 <= {$data['max_lat']})";
+		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, (int) $this->config['tas2580_usermap_max_marker']);
+
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$text = '<a href="' . $this->helper->route('tas2580_usermap_thing', array('id' => $row['thing_id'])) . '">' . $row['thing_title'] . '</a>';
+			$text = '<a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $row['thing_id'])) . '">' . $row['thing_title'] . '</a>';
 			if (!empty($this->user->data['user_usermap_lon']))
 			{
 				$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $row['thing_lon'], $row['thing_lat']);
@@ -130,7 +138,7 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 			}
 
 			$return_data = array(
-				'marker'		=> 'things/' . $row['thing_marker'],
+				'marker'		=> 'things/' . $row['place_type_marker'],
 				'lon'			=> $row['thing_lon'],
 				'lat'			=> $row['thing_lat'],
 				'text'			=> $text,
@@ -208,6 +216,36 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 
 		$json_response = new \phpbb\json_response;
 		$json_response->send($return);
+	}
+
+
+	public function distance()
+	{
+		$data = array(
+			'lon'		=> substr($this->request->variable('lon', ''), 0, 8),
+			'lat'		=> substr($this->request->variable('lat', ''), 0, 8),
+		);
+
+		if (!function_exists('validate_data'))
+		{
+			include($this->phpbb_root_path . 'includes/functions_user.' . $this->php_ext);
+		}
+
+		$error = validate_data($data, array(
+			'lon'		=> array('match', false, self::REGEX_LON),
+			'lat'		=> array('match', false, self::REGEX_LAT),
+		));
+
+		if (sizeof($error))
+		{
+			$error = array_map(array($this->user, 'lang'), $error);
+			trigger_error(implode('<br>', $error));
+		}
+
+		$distance = $this->get_distance($data['lon'], $data['lat'], $this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat']);
+
+		trigger_error($this->user->lang('DISTANCE_IS', $data['lat'], $data['lon'], $distance));
+		return $this->index();
 	}
 
 	/**
