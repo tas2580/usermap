@@ -147,6 +147,19 @@ class main extends \tas2580\usermap\includes\class_usermap
 				'U_MARKER'		=> $this->helper->route('tas2580_usermap_placelist', array('id' => $row['place_type_id'])),
 			));
 		}
+		$sql = 'SELECT COUNT(place_type_id) AS num_things
+			FROM ' . $this->things_table;
+		$result = $this->db->sql_query($sql);
+		$total_places = (int) $this->db->sql_fetchfield('num_things');
+		$this->db->sql_freeresult($result);
+
+		$sql = 'SELECT COUNT(user_id) AS num_user
+			FROM ' . USERS_TABLE . '
+				WHERE user_usermap_lon <> 0
+				AND user_usermap_lat <> 0';
+		$result = $this->db->sql_query($sql);
+		$total_users = (int) $this->db->sql_fetchfield('num_user');
+		$this->db->sql_freeresult($result);
 
 		$this->template->assign_vars(array(
 			'USERMAP_CONTROLS'		=> 'true',
@@ -169,6 +182,8 @@ class main extends \tas2580\usermap\includes\class_usermap
 			'DEFAULT_MAP'			=> $this->config['tas2580_usermap_map_type'],
 			'U_USERMAP_SEARCH'		=> $this->helper->route('tas2580_usermap_search'),
 			'L_MENU_SEARCH'			=> $this->user->lang('MENU_SEARCH', $this->config['tas2580_usermap_search_distance']),
+			'TOTAL_USER'			=> $total_users,
+			'TOTAL_PLACES'			=> $total_places,
 		));
 
 		return $this->helper->render('usermap_body.html', $this->user->lang('USERMAP_TITLE'));

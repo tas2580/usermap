@@ -64,5 +64,9 @@ $lang = array_merge($lang, array(
 	'TOTAL_PLACES'						=> 'Orte insgasammt %d',
 	'COORDINATES'						=> 'Koordinaten',
 	'NO_PLACES'							=> 'Es sind keine Orte vorhanden die angezeigt werden können.',
+	'COMMENT_ADDED'						=> 'Dein Kommentar wurde hinzugefügt.',
+	'ADD_COMMENT'						=> 'Kommentar schreiben',
+	'USER_TOTAL'						=> 'Benutzer insgesammt',
+	'PLACES_TOTAL'						=> 'Orte insgesammt',
 
 ));
