@@ -31,3 +31,12 @@ tas2580_usermap_place_delete:
 tas2580_usermap_place_edit:
     pattern: /usermap/place/{id}/edit
     defaults: { _controller: tas2580.usermap.thing:edit_place }
+tas2580_usermap_comment:
+    pattern: /usermap/comment/add/{id}
+    defaults: { _controller: tas2580.usermap.comment:add }
+tas2580_usermap_comment_edit:
+    pattern: /usermap/comment/edit/{id}
+    defaults: { _controller: tas2580.usermap.comment:edit }
+tas2580_usermap_comment_delete:
+    pattern: /usermap/comment/delete/{id}
+    defaults: { _controller: tas2580.usermap.comment:delete }

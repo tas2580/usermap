@@ -67,8 +67,8 @@ class update_0_2_2 extends \phpbb\db\migration\migration
 	{
 		return array(
 			'drop_tables'	=> array(
-				$this->table_prefix . 'usermap_thing_types',
-				$this->table_prefix . 'usermap_thing_comments',
+				$this->table_prefix . 'usermap_place_types',
+				$this->table_prefix . 'usermap_place_comments',
 			),
 		);
 	}

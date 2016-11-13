@@ -75,7 +75,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 	 * @param \phpbb\template						$template						Template object
 	 * @param \phpbb\user							$user							User object
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\path_helper $path_helper, $phpbb_extension_manager, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\path_helper $path_helper, $phpbb_extension_manager, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, $maps_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -86,6 +86,8 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		$this->request = $request;
 		$this->template = $template;
 		$this->user = $user;
+
+		$this->maps_table = $maps_table;
 
 		$this->info = array();
 	}
@@ -121,16 +123,24 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 				'lang'		=> 'ACL_U_USERMAP_ADD_THING',
 				'cat'		=> 'usermap'
 			),
-			'u_usermap_edit_thing'	=> array(
-				'lang'		=> 'ACL_U_USERMAP_EDIT_THING',
+			'm_usermap_place_edit'	=> array(
+				'lang'		=> 'ACL_M_USERMAP_EDIT_THING',
 				'cat'		=> 'usermap'
 			),
-			'u_usermap_delete_thing'	=> array(
-				'lang'		=> 'ACL_U_USERMAP_DELETE_THING',
+			'm_usermap_place_delete'	=> array(
+				'lang'		=> 'ACL_M_USERMAP_DELETE_THING',
 				'cat'		=> 'usermap'
 			),
 			'u_usermap_comment'	=> array(
 				'lang'		=> 'ACL_U_USERMAP_COMMENT_PLACE',
+				'cat'		=> 'usermap'
+			),
+			'm_usermap_comment_delete'	=> array(
+				'lang'		=> 'ACL_M_USERMAP_COMMENT_DELETE',
+				'cat'		=> 'usermap'
+			),
+			'm_usermap_comment_edit'	=> array(
+				'lang'		=> 'ACL_M_USERMAP_COMMENT_EDIT',
 				'cat'		=> 'usermap'
 			),
 		);
@@ -261,6 +271,20 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		}
 
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
+
+		$sql = 'SELECT *
+			FROM ' . $this->maps_table . '
+				WHERE map_active = 1
+			ORDER BY map_display_name';
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$this->template->assign_block_vars('mapsrow', array(
+				'NAME'			=> $row['map_name'],
+				'DISPLAY_NAME'	=> $row['map_display_name'],
+				'DEFAULT'		=> (int) $row['map_default'],
+			));
+		}
 
 		// Center the map to user
 		$this->template->assign_vars(array(

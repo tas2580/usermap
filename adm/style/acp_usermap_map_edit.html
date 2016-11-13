@@ -1,0 +1,69 @@
+<!-- INCLUDE overall_header.html -->
+<h1>{L_ACP_USERMAP_TITLE}</h1>
+<form method="post" action="{U_ACTION}">
+<!-- IF ERROR -->
+	<div class="errorbox">
+		<h3>{L_ERROR}</h3>
+		<p>{ERROR}</p>
+	</div>
+<!-- ENDIF -->
+<fieldset>
+	<legend>{L_ACP_MAP_SETTINGS}</legend>
+
+	<dl>
+		<dt><label for="map_display_name">{L_ACP_MAP_DISPLAY_NAME}{L_COLON}</label><br />
+			<span>{L_MAP_DISPLAY_NAME_EXPLAIN}</span>
+		</dt>
+		<dd><input id="map_display_name" type="text" name="map_display_name" value="{MAP_DISPLAY_NAME}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="map_active">{L_ACP_MAP_ACTIVE}{L_COLON}</label><br /><span>{L_ACP_MAP_ACTIVE_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="map_active" name="map_active" value="1"<!-- IF MAP_ACTIVE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="map_active" value="0"<!-- IF not MAP_ACTIVE --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="map_default">{L_ACP_MAP_DEFAULT}{L_COLON}</label><br /><span>{L_ACP_MAP_DEFAULT_EXPLAIN}</span></dt>
+		<dd>
+			<label><input type="radio" id="map_default" name="map_default" value="1"<!-- IF MAP_DEFAULT --> checked="checked"<!-- ENDIF --> class="radio" /> {L_YES}</label>
+			<label><input type="radio" name="map_default" value="0"<!-- IF not MAP_DEFAULT --> checked="checked"<!-- ENDIF --> class="radio" /> {L_NO}</label>
+		</dd>
+	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>{L_ACP_SUBMIT}</legend>
+	<p class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+	</p>
+	{S_FORM_TOKEN}
+</fieldset>
+</form>
+
+
+<h3>{L_PREVIEW}</h3>
+<div id="map" style="width:100%; height:400px; position:relative;">
+
+</div>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.5&amp;key={GOOGLE_API_KEY}"></script>
+<script type="text/javascript">
+var map;
+var BingAPIKey = '{BING_API_KEY}';
+
+function display_map() {
+	map = new OpenLayers.Map('map',{projection: 'EPSG:3857'});
+	usermap.add_layer('{MAP_NAME}', '{MAP_DISPLAY_NAME}', 1);
+	usermap.jumpTo(0.0, 0.0, 1);
+}
+document.addEventListener('DOMContentLoaded', display_map, false);
+
+</script>
+
+
+<!-- INCLUDEJS @tas2580_usermap/usermap.js -->
+<!-- INCLUDEJS @tas2580_usermap/OpenStreetMap.js -->
+<!-- INCLUDE overall_footer.html -->

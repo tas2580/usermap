@@ -10,6 +10,10 @@ div.thing{
   height: 200px;
   width: 100%;
 }
+
+.olControlAttribution{
+	bottom: 2px !important;
+}
 #map_menu{
 	z-index: 60;
 	position: absolute;

@@ -66,7 +66,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 	* @param string								$phpbb_root_path				phpbb_root_path
 	* @param string								$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table, $place_type_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table, $place_type_table, $maps_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -84,8 +84,12 @@ class main extends \tas2580\usermap\includes\class_usermap
 
 		$this->things_table = $things_table;
 		$this->place_type_table = $place_type_table;
+		$this->maps_table = $maps_table;
 
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
+
+		$translation_info = (!empty($this->user->lang['TRANSLATION_INFO'])) ? $this->user->lang['TRANSLATION_INFO'] : '';
+		$this->user->lang['TRANSLATION_INFO'] = $translation_info . '<br>Usermap Extension &copy; by <a href="https://tas2580.net">tas2580</a>';
 	}
 
 	/**
@@ -185,6 +189,20 @@ class main extends \tas2580\usermap\includes\class_usermap
 			'TOTAL_USER'			=> $total_users,
 			'TOTAL_PLACES'			=> $total_places,
 		));
+
+		$sql = 'SELECT *
+			FROM ' . $this->maps_table . '
+				WHERE map_active = 1
+			ORDER BY map_display_name';
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$this->template->assign_block_vars('mapsrow', array(
+				'NAME'			=> $row['map_name'],
+				'DISPLAY_NAME'	=> $row['map_display_name'],
+				'DEFAULT'		=> (int) $row['map_default'],
+			));
+		}
 
 		return $this->helper->render('usermap_body.html', $this->user->lang('USERMAP_TITLE'));
 	}

@@ -42,7 +42,6 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 					$config->set('tas2580_usermap_lon', substr($request->variable('usermap_lon', ''), 0, 10));
 					$config->set('tas2580_usermap_lat', substr($request->variable('usermap_lat', ''), 0, 10));
 					$config->set('tas2580_usermap_zoom', $request->variable('usermap_zoom', 0));
-					$config->set('tas2580_usermap_map_type', $request->variable('map_type', ''));
 					$config->set('tas2580_usermap_google_api_key', $request->variable('google_api_key', ''));
 					$config->set('tas2580_usermap_bing_api_key', $request->variable('bing_api_key', ''));
 					$config->set('tas2580_usermap_search_distance', $request->variable('search_distance', 0));
@@ -65,7 +64,6 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 					'USERMAP_LON'				=> $config['tas2580_usermap_lon'],
 					'USERMAP_LAT'				=> $config['tas2580_usermap_lat'],
 					'USERMAP_ZOOM'				=> $config['tas2580_usermap_zoom'],
-					'MAP_TYPE_SELECT'			=> $this->map_select($config['tas2580_usermap_map_type']),
 					'GOOGLE_API_KEY'			=> $config['tas2580_usermap_google_api_key'],
 					'BING_API_KEY'				=> $config['tas2580_usermap_bing_api_key'],
 					'SEARCH_DISTANCE'			=> $config['tas2580_usermap_search_distance'],
@@ -296,29 +294,119 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 						break;
 				}
 				break;
+
+			case 'maps':
+
+				$action = $request->variable('action', '');
+				switch ($action)
+				{
+					case 'edit':
+						$map_id = $request->variable('map_id', 0);
+
+						$this->tpl_name = 'acp_usermap_map_edit';
+						$this->page_title = $user->lang('ACP_USERMAP_TITLE');
+
+						$template->assign_vars(array(
+							'GOOGLE_API_KEY'		=> $config['tas2580_usermap_google_api_key'],
+							'BING_API_KEY'			=> $config['tas2580_usermap_bing_api_key'],
+						));
+
+						if ($request->is_set_post('submit'))
+						{
+							if (!check_form_key('acp_usermap'))
+							{
+								trigger_error($user->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+							}
+
+							$title = $request->variable('map_display_name', '', true);
+							$map_active = $request->variable('map_active', 0);
+							$map_default = $request->variable('map_default', 0);
+
+							$error = array();
+
+							if (utf8_clean_string($title) === '')
+							{
+								$error[] = $this->user->lang['EMPTY_MAP_TITLE'];
+							}
+							if(!$map_active && $map_default)
+							{
+								$error[] = $this->user->lang['DEFAULT_MAP_NOT_ACTIVE'];
+							}
+							if (sizeof($error))
+							{
+								$template->assign_vars(array(
+									'ERROR'				=> implode('<br />', $error),
+									'MAP_DISPLAY_NAME'	=> $title,
+									'MAP_ACTIVE'		=> $map_active,
+									'MAP_DEFAULT'		=> $map_default
+								));
+							}
+							else
+							{
+								$sql_data = array(
+									'map_display_name'		=> $title,
+									'map_active'			=> $map_active,
+								);
+								if($map_default == 1)
+								{
+									$this->set_map_default($map_id);
+								}
+
+								$sql = 'UPDATE ' . $table_prefix . 'usermap_maps SET
+									' . $db->sql_build_array('UPDATE', $sql_data) . '
+										WHERE map_id = ' . (int) $map_id;
+								$db->sql_query($sql);
+								trigger_error($user->lang('ACP_MAP_EDIT_SUCCESS') . adm_back_link($this->u_action));
+							}
+						}
+						else
+						{
+							$sql = 'SELECT *
+								FROM ' . $table_prefix . 'usermap_maps
+								WHERE map_id = ' . (int) $map_id;
+							$result = $db->sql_query($sql);
+							$row = $db->sql_fetchrow($result);
+							$template->assign_vars(array(
+								'MAP_DISPLAY_NAME'	=> $row['map_display_name'],
+								'MAP_ACTIVE'		=> $row['map_active'],
+								'MAP_DEFAULT'		=> $row['map_default'],
+								'MAP_NAME'			=> $row['map_name'],
+							));
+						}
+
+						break;
+
+					default:
+						$this->tpl_name = 'acp_usermap_maps';
+						$this->page_title = $user->lang('ACP_USERMAP_TITLE');
+						$sql = 'SELECT *
+							FROM ' . $table_prefix . 'usermap_maps
+							ORDER BY map_display_name';
+						$result = $db->sql_query($sql);
+						while ($row = $db->sql_fetchrow($result))
+						{
+							$tpl_row = ($row['map_active'] == 1) ? 'mapsrow_active' : 'mapsrow_inactive';
+							$template->assign_block_vars($tpl_row, array(
+								'TITLE'		=> $row['map_display_name'],
+								'U_EDIT'	=> $this->u_action . '&amp;action=edit&amp;map_id=' . $row['map_id'],
+								'DEFAULT'	=> $row['map_default'],
+							));
+						}
+						break;
+				}
+
+			break;
 		}
 	}
 
-	private function map_select($sel)
+	private function set_map_default($id)
 	{
-		global $user;
-		$maps = array(
-			'osm_mapnik'		=> $user->lang('ACP_OSM_MACKNICK'),
-			'google_terrain'	=> $user->lang('ACP_GOOGLE_TERRAIN'),
-			'google_roadmap'	=> $user->lang('ACP_GOOGLE_ROADMAP'),
-			'google_hybrid'		=> $user->lang('ACP_GOOGLE_HYBRID'),
-			'google_satellite'	=> $user->lang('ACP_GOOGLE_SATELLITE'),
-			'bing_road'			=> $user->lang('ACP_BING_ROAD'),
-			'bing_hybrid'		=> $user->lang('ACP_BING_HYBRID'),
-			'bing_aerial'		=> $user->lang('ACP_BING_AERIAL'),
-		);
+		global $db, $table_prefix;
 
-		$return = '';
-		foreach ($maps as $map => $name)
-		{
-			$selected = ($sel == $map) ? ' selected="selected"' : '';
-			$return .= '<option value="' . $map . '"' . $selected . '>' . $name . '</option>';
-		}
-		return $return;
+		$sql = 'UPDATE ' . $table_prefix . 'usermap_maps SET map_default = 0 WHERE map_id <> ' . (int) $id;
+		$db->sql_query($sql);
+
+		$sql = 'UPDATE ' . $table_prefix . 'usermap_maps SET map_default = 1 WHERE map_id = ' . (int) $id;
+		$db->sql_query($sql);
 	}
 }

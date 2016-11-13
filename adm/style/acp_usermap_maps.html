@@ -1,0 +1,43 @@
+<!-- INCLUDE overall_header.html -->
+<h1>{L_ACP_USERMAP_TITLE}</h1>
+<p>{L_ACP_MAPS_EXPLAIN}</p>
+<h2>{L_ACP_ACTIVE_MAPS}</h2>
+
+<table class="table1 zebra-table">
+<thead>
+<tr>
+	<th>{L_ACP_PLACE_TYPE_TITLE}</th>
+	<th style="text-align: center; width: 5%;">{L_ACTION}</th>
+</tr>
+</thead>
+<tbody>
+	<!-- BEGIN mapsrow_active -->
+	<tr>
+		<td><strong>{mapsrow_active.TITLE}</strong><!-- IF mapsrow_active.DEFAULT --> &nbsp; [{L_ACP_DEFAULT_MAP}]<!-- ENDIF --></td>
+		<td><a href="{mapsrow_active.U_EDIT}">{ICON_EDIT}</a></td>
+	</tr>
+	<!-- END mapsrow_active -->
+</tbody>
+</table>
+
+<h2>{L_ACP_INACTIVE_MAPS}</h2>
+
+<table class="table1 zebra-table">
+<thead>
+<tr>
+	<th>{L_ACP_PLACE_TYPE_TITLE}</th>
+	<th style="text-align: center; width: 5%;">{L_ACTION}</th>
+</tr>
+</thead>
+<tbody>
+	<!-- BEGIN mapsrow_inactive -->
+	<tr>
+		<td><strong>{mapsrow_inactive.TITLE}</strong></td>
+		<td>
+			<a href="{mapsrow_inactive.U_EDIT}">{ICON_EDIT}</a>
+		</td>
+	</tr>
+	<!-- END mapsrow_inactive -->
+</tbody>
+</table>
+<!-- INCLUDE overall_footer.html -->

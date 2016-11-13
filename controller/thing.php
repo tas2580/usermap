@@ -66,7 +66,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 	* @param string						$phpbb_root_path				phpbb_root_path
 	* @param string						$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table, $place_type_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table, $place_type_table, $comment_table, $maps_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -84,6 +84,8 @@ class thing extends \tas2580\usermap\includes\class_usermap
 
 		$this->things_table = $things_table;
 		$this->place_type_table = $place_type_table;
+		$this->comment_table = $comment_table;
+		$this->maps_table = $maps_table;
 
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
 
@@ -92,7 +94,8 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			'FORUM_NAME'		=> $this->user->lang('USERMAP_TITLE'),
 			'U_VIEW_FORUM'		=> $this->helper->route('tas2580_usermap_index', array()),
 		));
-
+		$translation_info = (!empty($this->user->lang['TRANSLATION_INFO'])) ? $this->user->lang['TRANSLATION_INFO'] : '';
+		$this->user->lang['TRANSLATION_INFO'] = $translation_info . '<br>Usermap Extension &copy; by <a href="https://tas2580.net">tas2580</a>';
 	}
 
 
@@ -104,7 +107,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 	 */
 	public function delete_place($id)
 	{
-		if (!$this->auth->acl_get('u_usermap_delete_thing'))
+		if (!$this->auth->acl_get('m_usermap_place_delete'))
 		{
 			trigger_error('NOT_AUTHORISED');
 		}
@@ -113,6 +116,10 @@ class thing extends \tas2580\usermap\includes\class_usermap
 		{
 			$sql = 'DELETE FROM ' . $this->things_table . '
 				WHERE thing_id = ' . (int) $id;
+			$this->db->sql_query($sql);
+
+			$sql = 'DELETE FROM ' . $this->comment_table . '
+				WHERE place_id = ' . (int) $id;
 			$this->db->sql_query($sql);
 
 			trigger_error($this->user->lang['DELETE_THING_SUCCESS'] . '<br /><br /><a href="' . $this->helper->route('tas2580_usermap_index', array())  . '">' . $this->user->lang['BACK_TO_USERMAP'] . '</a>');
@@ -135,7 +142,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 	 */
 	public function edit_place($id)
 	{
-		if (!$this->auth->acl_get('u_usermap_edit_thing'))
+		if (!$this->auth->acl_get('m_usermap_place_edit'))
 		{
 			trigger_error('NOT_AUTHORISED');
 		}
@@ -316,6 +323,8 @@ class thing extends \tas2580\usermap\includes\class_usermap
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 
+		$page_title = $row['thing_title'];
+
 		if ($this->user->data['user_usermap_lon'])
 		{
 			$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $row['thing_lon'], $row['thing_lat']);
@@ -326,8 +335,10 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			'THING_TITLE'			=> $row['thing_title'],
 			'THING_TEXT'			=> generate_text_for_display($row['thing_text'], $row['bbcode_uid'], $row['bbcode_bitfield'], 3, true),
 			'USERMAP_MARKER'		=> $row['place_type_marker'],
-			'S_DELETE'				=> $this->auth->acl_get('u_usermap_delete_thing'),
-			'S_EDIT'				=> $this->auth->acl_get('u_usermap_edit_thing'),
+			'S_DELETE'				=> $this->auth->acl_get('m_usermap_place_delete'),
+			'S_EDIT'				=> $this->auth->acl_get('m_usermap_place_edit'),
+			'S_DELETE_COMMENT'		=> $this->auth->acl_get('m_usermap_comment_delete'),
+			'S_EDIT_COMMENT'		=> $this->auth->acl_get('m_usermap_comment_edit'),
 			'U_DELETE'				=> $this->helper->route('tas2580_usermap_place_delete', array('id' => $row['thing_id'])),
 			'U_EDIT'				=> $this->helper->route('tas2580_usermap_place_edit', array('id' => $row['thing_id'])),
 			'S_IN_USERMAP'			=> true,
@@ -340,16 +351,64 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			'GOOGLE_API_KEY'		=> $this->config['tas2580_usermap_google_api_key'],
 			'BING_API_KEY'			=> $this->config['tas2580_usermap_bing_api_key'],
 			'DEFAULT_MAP'			=> $this->config['tas2580_usermap_map_type'],
-			'A_COMMENT'				=> $this->auth->acl_get('u_usermap_comment') && false,
+			'A_COMMENT'				=> $this->auth->acl_get('u_usermap_comment'),
+			'U_COMMENT'				=> $this->helper->route('tas2580_usermap_comment', array('id' => $row['thing_id'])),
 		));
 
 		// Add breadcrumb
 		$this->template->assign_block_vars('navlinks', array(
-			'FORUM_NAME'		=> $row['thing_title'],
+			'FORUM_NAME'		=> $page_title,
 			'U_VIEW_FORUM'		=> $this->helper->route('tas2580_usermap_place', array('id' => $id)),
 		));
 
-		return $this->helper->render('usermap_places_view.html', $row['thing_title']);
+
+		unset($sql_array);
+
+		if (!function_exists('phpbb_get_user_rank'))
+		{
+			include($this->phpbb_root_path . 'includes/functions_display.' . $this->php_ext);
+		}
+
+		$sql = 'SELECT *
+			FROM ' . $this->maps_table . '
+				WHERE map_active = 1
+			ORDER BY map_display_name';
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$this->template->assign_block_vars('mapsrow', array(
+				'NAME'			=> $row['map_name'],
+				'DISPLAY_NAME'	=> $row['map_display_name'],
+				'DEFAULT'		=> (int) $row['map_default'],
+			));
+		}
+
+		// Display comments
+		$sql_array['FROM'][$this->comment_table] = 'c';
+		$sql_array['SELECT'] = 'c.*, u.user_id, u.username, u.user_colour, u.user_regdate, u.user_posts, u.user_lastvisit, u.user_rank, u.user_avatar, u.user_avatar_type, u.user_avatar_width, u.user_avatar_height';
+		$sql_array['LEFT_JOIN'][] = array(
+			'FROM'		=> array(USERS_TABLE => 'u'),
+			'ON'		=> 'u.user_id = c.place_comment_user_id'
+		);
+		$sql_array['WHERE'] = 'place_id = ' . (int) $id;
+		$sql = $this->db->sql_build_query('SELECT', $sql_array);
+		$result = $this->db->sql_query($sql);
+		while($row = $this->db->sql_fetchrow($result))
+		{
+			$user_rank_data = phpbb_get_user_rank($row, $row['user_posts']);
+			$this->template->assign_block_vars('comments', array(
+				'COMMENT_TITLE'		=> $row['place_comment_title'],
+				'COMMENT_TEXT'		=> generate_text_for_display($row['place_comment_text'], $row['place_comment_bbcode_uid'], $row['place_comment_bbcode_bitfield'], 3, true),
+				'USERNAME'			=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+				'AVATAR'			=> ($this->user->optionget('viewavatars')) ? phpbb_get_user_avatar($row) : '',
+				'RANK'				=> empty($user_rank_data['title']) ? $this->user->lang('NA') : $user_rank_data['title'],
+				'U_EDIT'			=> $this->helper->route('tas2580_usermap_comment_edit', array('id' => $row['place_comment_id'])),
+				'U_DELETE'			=> $this->helper->route('tas2580_usermap_comment_delete', array('id' => $row['place_comment_id'])),
+			));
+		}
+
+
+		return $this->helper->render('usermap_places_view.html', $page_title);
 	}
 
 	public function add_place()
@@ -481,6 +540,4 @@ class thing extends \tas2580\usermap\includes\class_usermap
 		}
 		return $options;
 	}
-
-
 }

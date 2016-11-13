@@ -28,6 +28,11 @@ class usermap_info
 					'auth'	=> 'ext_tas2580/usermap&& acl_a_board',
 					'cat'		=> array('ACP_USERMAP_TITLE')
 				),
+				'maps'    => array(
+					'title'		=> 'ACP_USERMAP_MAPS',
+					'auth'	=> 'ext_tas2580/usermap&& acl_a_board',
+					'cat'		=> array('ACP_USERMAP_TITLE')
+				),
 			),
 		);
 	}

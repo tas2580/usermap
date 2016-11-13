@@ -36,4 +36,5 @@ $lang = array_merge($lang, array(
 	'ACP_USERMAP_TITLE'		=> 'Benutzer Karte',
 	'ACP_USERMAP_SETTINGS'	=> 'Einstellungen',
 	'ACP_USERMAP_THINGS'	=> 'Orte',
+	'ACP_USERMAP_MAPS'		=> 'Karten',
 ));

@@ -36,9 +36,49 @@
 	</div>
 </div>
 <!-- IF A_COMMENT -->
-<a href="{U_COMMENT}" class="button icon-button reply-icon" title="{L_COMMENT}">{L_COMMENT}</a>
+<a href="{U_COMMENT}" class="button icon-button reply-icon" title="{L_ADD_COMMENT}">{L_ADD_COMMENT}</a>
 <!-- ENDIF -->
 
+<!-- IF .comments -->
+<h2>{L_COMMENTS}</h2>
+<!-- BEGIN comments -->
+<div id="p143" class="post has-profile <!-- IF comments.S_ROW_COUNT is even -->bg1<!-- ELSE -->bg2<!-- ENDIF -->">
+	<div class="inner">
+		<dl class="postprofile">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">{comments.AVATAR}</div>
+				{comments.USERNAME}
+			</dt>
+			<dd class="profile-rank">{comments.RANK}</dd>
+		</dl>
+		<div class="postbody">
+			<h3>{comments.COMMENT_TITLE}</h3>
+			<!-- IF S_EDIT_COMMENT || S_DELETE_COMMENT -->
+			<ul class="post-buttons">
+				<!-- IF S_EDIT_COMMENT -->
+				<li>
+					<a href="{comments.U_EDIT}" title="{L_EDIT}" class="button icon-button edit-icon"><span>{L_EDIT}</span></a>
+				</li>
+				<!-- ENDIF -->
+				<!-- IF S_DELETE_COMMENT -->
+				<li>
+					<a href="{comments.U_DELETE}" title="{L_DELETE}" class="button icon-button delete-icon"><span>{L_DELETE}</span></a>
+				</li>
+				<!-- ENDIF -->
+			</ul>
+			<!-- ENDIF -->
+			<div class="content">
+				{comments.COMMENT_TEXT}
+			</div>
+		</div>
+
+	</div>
+</div>
+<!-- END comments -->
+<!-- IF A_COMMENT -->
+<a href="{U_COMMENT}" class="button icon-button reply-icon" title="{L_ADD_COMMENT}">{L_ADD_COMMENT}</a>
+<!-- ENDIF -->
+<!-- ENDIF -->
 
 <p class="jumpbox-return"><a href="{U_USERMAP}" class="left-box arrow-left" accesskey="r">{L_BACK_TO_USERMAP}</a></p>
 <br>

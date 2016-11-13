@@ -6,6 +6,107 @@ var s_touch = false;
 var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
 var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
 
+usermap.add_layer = function(layer, name, is_default){
+
+	switch(layer)
+	{
+		case 'osm_mapnik':
+			var layer = new OpenLayers.Layer.OSM.Mapnik(name);
+			break;
+		case 'osm_cyclemap':
+			var layer = new OpenLayers.Layer.OSM.CycleMap(name);
+			break;
+		case 'transportmap':
+			var layer = new OpenLayers.Layer.OSM.TransportMap(name);
+			break;
+		case 'Landscape':
+			var layer = new OpenLayers.Layer.OSM.Landscape(name);
+			break;
+		case 'Toner':
+			var layer = new OpenLayers.Layer.OSM.Toner(name);
+			break;
+		case 'Watercolor':
+			var layer = new OpenLayers.Layer.OSM.Watercolor(name);
+			break;
+		case 'Maptookit':
+			var layer = new OpenLayers.Layer.OSM.Maptookit(name);
+			break;
+		case 'OpenSnowMap':
+			var layer = new OpenLayers.Layer.OSM.OpenSnowMap(name);
+			break;
+		case 'Esri':
+			var layer = new OpenLayers.Layer.OSM.Esri(name);
+			break;
+		case 'EsriSatellite':
+			var layer = new OpenLayers.Layer.OSM.EsriSatellite(name);
+			break;
+		case 'EsriPhysical':
+			var layer = new OpenLayers.Layer.OSM.EsriPhysical(name);
+			break;
+		case 'EsriShadedRelief':
+			var layer = new OpenLayers.Layer.OSM.EsriShadedRelief(name);
+			break;
+		case 'EsriTerrain':
+			var layer = new OpenLayers.Layer.OSM.EsriTerrain(name);
+			break;
+		case 'EsriTopo':
+			var layer = new OpenLayers.Layer.OSM.EsriTopo(name);
+			break;
+		case 'EsriGray':
+			var layer = new OpenLayers.Layer.OSM.EsriGray(name);
+			break;
+		case 'EsriNationalGeographic':
+			var layer = new OpenLayers.Layer.OSM.EsriNationalGeographic(name);
+			break;
+		case 'EsriOcean':
+			var layer = new OpenLayers.Layer.OSM.EsriOcean(name);
+			break;
+		case 'Komoot':
+			var layer = new OpenLayers.Layer.OSM.Komoot(name);
+			break;
+		case 'CartoDBLight':
+			var layer = new OpenLayers.Layer.OSM.CartoDBLight(name);
+			break;
+		case 'CartoDBDark':
+			var layer = new OpenLayers.Layer.OSM.CartoDBDark(name);
+			break;
+		case 'Sputnik':
+			var layer = new OpenLayers.Layer.OSM.Sputnik(name);
+			break;
+		case 'Kosmosnimki':
+			var layer = new OpenLayers.Layer.OSM.Kosmosnimki(name);
+			break;
+
+		case 'google_terrain':
+			var layer = new OpenLayers.Layer.Google(name, {type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 20});
+			break;
+		case 'google_roadmap':
+			var layer = new OpenLayers.Layer.Google(name, {type: google.maps.MapTypeId.ROADMAP, numZoomLevels: 20});
+			break;
+		case 'google_hybrid':
+			var layer = new OpenLayers.Layer.Google(name, {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
+			break;
+		case 'google_satellite':
+			var layer = new OpenLayers.Layer.Google(name, {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 20});
+			break;
+
+		case 'bing_road':
+			var layer = new OpenLayers.Layer.Bing({name: name, key: BingAPIKey, type: "Road"});
+			break;
+		case 'bing_hybrid':
+			var layer = new OpenLayers.Layer.Bing({name: name, key: BingAPIKey, type: "AerialWithLabels"});
+			break;
+		case 'bing_aerial':
+			var layer = new OpenLayers.Layer.Bing({name: name, key: BingAPIKey, type: "Aerial"});
+			break;
+	}
+	map.addLayers([layer]);
+	if(is_default === 1)
+	{
+		map.setBaseLayer(layer);
+	}
+}
+
 usermap.load = function() {
 	map = new OpenLayers.Map('map',{projection: 'EPSG:3857'});
 	map.events.register("moveend",map,function(e){usermap.reload();$('#searchresult').hide();});
@@ -29,6 +130,18 @@ usermap.load = function() {
 
     map.events.register('touchmove', map, function(e) {setTimeout(function(){clearTimeout(timeout);},1000);});
 	map.events.register('touchend',map,function(e){clearTimeout(timeout);});
+
+	layer_markers = new OpenLayers.Layer.Markers("", {
+		projection: new OpenLayers.Projection("EPSG:4326"),
+		visibility: true,
+		displayInLayerSwitcher: false
+	});
+	layer_position_markers = new OpenLayers.Layer.Markers("", {
+		projection: new OpenLayers.Projection("EPSG:4326"),
+		visibility: true,
+		displayInLayerSwitcher: false
+	});
+	map.addLayers([layer_markers, layer_position_markers]);
 };
 
 // A control class for capturing click events...

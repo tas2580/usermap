@@ -2,44 +2,22 @@
 <!-- INCLUDEJS @tas2580_usermap/usermap.js -->
 	<script type="text/javascript">
 	var map;
-
+	var BingAPIKey = '{BING_API_KEY}';
 
 	function display_map() {
 		usermap.load();
 		usermap.position_marker = usermap.generateMarker('{MARKER_PATH}/position_marker.png');
 
-		<!-- IF GOOGLE_API_KEY or BING_API_KEY -->
-			map.addControl(new OpenLayers.Control.LayerSwitcher({'dataLayersDiv':false}));
-			layerSwitcher = map.getControlsByClass("OpenLayers.Control.LayerSwitcher")[0];
-			$('#OpenLayers_Control_MaximizeDiv').html('+');
-			layerSwitcher.baseLbl.innerText = "{L_SELECT_MAP}";
-		<!-- ENDIF -->
-		layer_markers = new OpenLayers.Layer.Markers("{L_MARKER}", {
-			projection: new OpenLayers.Projection("EPSG:4326"),
-			visibility: true,
-			displayInLayerSwitcher: false
-		});
-		layer_position_markers = new OpenLayers.Layer.Markers("{L_MARKER}", {
-			projection: new OpenLayers.Projection("EPSG:4326"),
-			visibility: true,
-			displayInLayerSwitcher: false
-		});
-		var osm_mapnik = new OpenLayers.Layer.OSM.Mapnik("{L_OSM_MACKNICK}");
-		map.addLayers([layer_markers, layer_position_markers, osm_mapnik]);
-		<!-- IF GOOGLE_API_KEY -->
-			var google_terrain = new OpenLayers.Layer.Google("{L_GOOGLE_TERRAIN}", {type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 20});
-			var google_roadmap = new OpenLayers.Layer.Google("{L_GOOGLE_ROADMAP}", {type: google.maps.MapTypeId.ROADMAP, numZoomLevels: 20});
-			var google_hybrid = new OpenLayers.Layer.Google("{L_GOOGLE_HYBRID}", {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
-			var google_satellite = new OpenLayers.Layer.Google("{L_GOOGLE_SATELLITE}", {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 20});
-			map.addLayers([google_terrain, google_roadmap, google_hybrid, google_satellite]);
-		<!-- ENDIF -->
-		<!-- IF BING_API_KEY -->
-			var bing_road = new OpenLayers.Layer.Bing({name: "{L_BING_ROAD}", key: '{BING_API_KEY}', type: "Road"});
-			var bing_hybrid = new OpenLayers.Layer.Bing({name: "{L_BING_HYBRID}", key: '{BING_API_KEY}', type: "AerialWithLabels"});
-			var bing_aerial = new OpenLayers.Layer.Bing({name: "{L_BING_AERIAL}", key: '{BING_API_KEY}', type: "Aerial"});
-			map.addLayers([bing_road, bing_hybrid, bing_aerial]);
-		<!-- ENDIF -->
-		map.setBaseLayer({DEFAULT_MAP});
+
+		map.addControl(new OpenLayers.Control.LayerSwitcher({'dataLayersDiv':false}));
+		layerSwitcher = map.getControlsByClass("OpenLayers.Control.LayerSwitcher")[0];
+		$('#OpenLayers_Control_MaximizeDiv').html('+');
+		layerSwitcher.baseLbl.innerText = "{L_SELECT_MAP}";
+
+		<!-- BEGIN mapsrow -->
+		usermap.add_layer('{mapsrow.NAME}', '{mapsrow.DISPLAY_NAME}', {mapsrow.DEFAULT});
+		<!-- END mapsrow -->
+
 		usermap.jumpTo({USERMAP_LON}, {USERMAP_LAT}, {USERMAP_ZOOM});
 
 		<!-- IF A_USERMAP_ADD or A_USERMAP_SEARCH -->
