@@ -60,7 +60,6 @@ class initial_module extends \phpbb\db\migration\migration
 			array('config.add', array('tas2580_usermap_input_method', 'cord')),
 			array('config.add', array('tas2580_usermap_force_on_register', '0')),
 			array('config.add', array('tas2580_usermap_show_on_register', '0')),
-			array('config.add', array('tas2580_usermap_thing_name', 'THING')),
 			array('config.add', array('tas2580_usermap_display_coordinates', '1')),
 			array('config.add', array('tas2580_usermap_allow_bbcode', '1')),
 			array('config.add', array('tas2580_usermap_allow_smilies', '1')),
@@ -80,7 +79,6 @@ class initial_module extends \phpbb\db\migration\migration
 			array('permission.add', array('m_usermap_comment_edit', true, 'm_')),
 			array('permission.add', array('m_usermap_place_edit', true, 'm_')),
 			array('permission.add', array('m_usermap_place_delete', true, 'm_')),
-
 
 			array('custom', array(array($this, 'insert_icons'))),
 			array('custom', array(array($this, 'install_maps'))),
