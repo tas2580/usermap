@@ -143,6 +143,7 @@ class initial_module extends \phpbb\db\migration\migration
 						'place_comment_text'			=> array('MTEXT_UNI', ''),
 						'place_comment_bbcode_uid'		=> array('VCHAR:10', ''),
 						'place_comment_bbcode_bitfield'	=> array('VCHAR:32', ''),
+						'place_comment_time'			=> array('TIMESTAMP', 0),
 						'place_comment_user_id'			=> array('UINT', 0),
 						'place_id'						=> array('UINT', 0),
 					),
