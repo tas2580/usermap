@@ -26,10 +26,10 @@ tas2580_usermap_placelist:
     pattern: /usermap/placelist/{id}
     defaults: { _controller: tas2580.usermap.thing:list_places }
 tas2580_usermap_place_delete:
-    pattern: /usermap/place/{id}/delete
+    pattern: /usermap/place/delete/{id}
     defaults: { _controller: tas2580.usermap.thing:delete_place }
 tas2580_usermap_place_edit:
-    pattern: /usermap/place/{id}/edit
+    pattern: /usermap/place/edit/{id}
     defaults: { _controller: tas2580.usermap.thing:edit_place }
 tas2580_usermap_comment:
     pattern: /usermap/comment/add/{id}
