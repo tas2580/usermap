@@ -1,6 +1,7 @@
 var usermap = {};
 var click, map, layer_markers, layer_position_markers;
 var s_touch = false;
+var marker_cache = {};
 
 (function($) {
 var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
@@ -251,7 +252,15 @@ usermap.generateMarker=function(image){
 	return i;
 };
 
-usermap.addMarker=function(layer, lon, lat, popupContentHTML, marker) {
+usermap.addMarker=function(id, layer, lon, lat, popupContentHTML, marker) {
+
+	if(marker_cache[id])
+	{
+		return;
+	}
+
+	marker_cache[id] = true;
+
 	var ll = new OpenLayers.LonLat(usermap.Lon2Merc(lon), usermap.Lat2Merc(lat));
 	var feature = new OpenLayers.Feature(layer, ll);
 	feature.closeBox = true;

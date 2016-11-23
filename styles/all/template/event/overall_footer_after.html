@@ -28,13 +28,13 @@
 	}
 
 	function reload_marker(Alon, Alat, Blon, Blat) {
-		layer_markers.clearMarkers();
 		<!-- IF U_GET_MARKER -->
 		$.get('{U_GET_MARKER}?alon='+Alon+'&alat='+Alat+'&blon='+Blon+'&blat='+Blat, function(returndata){
 			if($.isArray(returndata)){
+				/*layer_markers.clearMarkers();*/
 				returndata.forEach(function(element, index, array) {
 					var marker = usermap.generateMarker('{MARKER_PATH}/'+element.marker);
-					usermap.addMarker(layer_markers, parseFloat(element.lon), parseFloat(element.lat), element.text, marker);
+					usermap.addMarker(element.id, layer_markers, parseFloat(element.lon), parseFloat(element.lat), element.text, marker);
 				});
 			} else {
 				phpbb.alert('{L_ERROR}', returndata);

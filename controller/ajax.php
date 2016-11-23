@@ -141,6 +141,7 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 				'lon'			=> $row['thing_lon'],
 				'lat'			=> $row['thing_lat'],
 				'text'			=> $text,
+				'id'			=> 'p' . $row['place_type_id'],
 			);
 			$return[] = $return_data;
 		}
@@ -186,6 +187,7 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 				'lon'			=> $row['user_usermap_lon'],
 				'lat'			=> $row['user_usermap_lat'],
 				'text'			=> $text,
+				'id'			=> 'u' . $row['user_id'],
 			);
 
 			/**
