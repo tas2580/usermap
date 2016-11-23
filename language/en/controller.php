@@ -60,4 +60,5 @@ $lang = array_merge($lang, array(
 	'BING_HYBRID'						=> 'Bing! Hybrid',
 	'BING_AERIAL'						=> 'Bing! Satellite',
 	'OSM_MACKNICK'						=> 'OSM Macknick',
+	'COMMENT_ADDED'						=> 'Your comment was added',
 ));
