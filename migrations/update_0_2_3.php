@@ -193,6 +193,12 @@ class update_0_2_3 extends \phpbb\db\migration\migration
 		$sql = "INSERT INTO " . $this->table_prefix . "usermap_maps (map_name, map_display_name, map_active, map_default)
 			VALUES ('bing_aerial', 'Bing Satellite', 0, 0);";
 		$this->db->sql_query($sql);
+
+		// Add Marker
+		$sql = "INSERT INTO " . $this->table_prefix . "usermap_place_types (place_type_title, place_type_marker, place_display_legend)
+			VALUES ('Place', 'thing.png', 1);";
+		$this->db->sql_query($sql);
+
 	}
 
 }
