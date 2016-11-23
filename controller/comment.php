@@ -103,7 +103,7 @@ class comment extends \tas2580\usermap\includes\class_usermap
 		if ($submit)
 		{
 			$sql_data = $this->generate_sql_array($id, true);
-			if($sql_data)
+			if ($sql_data)
 			{
 				$sql = 'INSERT INTO ' . $this->comment_table . '
 					' . $this->db->sql_build_array('INSERT', $sql_data);
@@ -172,7 +172,7 @@ class comment extends \tas2580\usermap\includes\class_usermap
 			$title = $this->request->variable('title', '', true);
 			$text = $this->request->variable('message', '', true);
 			$sql_data = $this->generate_sql_array($id);
-			if($sql_data)
+			if ($sql_data)
 			{
 				$sql = 'SELECT place_id
 					FROM ' . $this->comment_table . '
@@ -211,11 +211,11 @@ class comment extends \tas2580\usermap\includes\class_usermap
 	{
 		$this->user->add_lang('posting');
 
-		if(!function_exists('generate_smilies'))
+		if (!function_exists('generate_smilies'))
 		{
 			include($this->phpbb_root_path . 'includes/functions_posting.' . $this->php_ext);
 		}
-		if(!function_exists('display_custom_bbcodes'))
+		if (!function_exists('display_custom_bbcodes'))
 		{
 			include($this->phpbb_root_path . 'includes/functions_display.' . $this->php_ext);
 		}
@@ -273,7 +273,7 @@ class comment extends \tas2580\usermap\includes\class_usermap
 				'place_comment_bbcode_uid'			=> $uid,
 				'place_comment_bbcode_bitfield'		=> $bitfield,
 			);
-			if($add)
+			if ($add)
 			{
 				$sql_data['place_comment_time'] = time();
 				$sql_data['place_comment_user_id'] = $this->user->data['user_id'];
