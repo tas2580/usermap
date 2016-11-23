@@ -255,12 +255,9 @@ usermap.generateMarker=function(image){
 };
 
 usermap.addMarker=function(id, layer, lon, lat, popupContentHTML, marker) {
-
-	if(marker_cache[id])
-	{
+	if(marker_cache[id]){
 		return;
 	}
-
 	marker_cache[id] = true;
 
 	var ll = new OpenLayers.LonLat(usermap.Lon2Merc(lon), usermap.Lat2Merc(lat));
@@ -291,7 +288,7 @@ usermap.jump=function(lon, lat, text)
 {
 	layer_position_markers.clearMarkers();
 	usermap.jumpTo(lon, lat, 13);
-	usermap.addMarker(layer_position_markers, parseFloat(lon), parseFloat(lat), text, usermap.position_marker);
+	usermap.addMarker('pos', layer_position_markers, parseFloat(lon), parseFloat(lat), text, usermap.position_marker);
 	return false;
 };
 

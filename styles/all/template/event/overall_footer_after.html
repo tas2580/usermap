@@ -42,7 +42,7 @@
 		});
 		<!-- ELSE -->
 		var marker = usermap.generateMarker('{MARKER_PATH}/{USERMAP_MARKER}');
-		usermap.addMarker(layer_markers, {USERMAP_LON}, {USERMAP_LAT}, '{USERNAME}', marker);
+		usermap.addMarker('marker', layer_markers, {USERMAP_LON}, {USERMAP_LAT}, '{USERNAME}', marker);
 		<!-- ENDIF -->
 	}
 	$('document').ready(display_map);
