@@ -31,13 +31,23 @@ class phpbb_functional_test extends \tas2580\usermap\tests\base\functional_test
 		));
 		$crawler = self::submit($form);
 
-
 		$crawler = $this->request('GET', 'app.php/usermap/place/1');
         $this->assertGreaterThan(0, $crawler->filter('.content')->count());
 	}
 
+	public function test_add_place_comment()
+	{
+		$crawler = $this->request('GET', 'app.php/usermap/comment/add/1');
 
+		$form = $crawler->selectButton('submit')->form();
+		$form->setValues(array(
+			'message'		=> 'Test comment',
+			'title'			=> 'Test Place comment'
+		));
+		$crawler = self::submit($form);
 
-
+		$crawler = $this->request('GET', 'app.php/usermap/place/1');
+        $this->assertGreaterThan(1, $crawler->filter('.content')->count());
+	}
 
 }
