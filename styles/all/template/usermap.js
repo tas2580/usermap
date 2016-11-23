@@ -192,6 +192,8 @@ document.getElementById('map').oncontextmenu = function(e){
 };
 
 phpbb.addAjaxCallback('usermap.set_position', function(response) {
+	layer_markers.clearMarkers();
+	marker_cache = {};
 	usermap.reload();
 });
 
