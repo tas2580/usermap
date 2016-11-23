@@ -26,7 +26,8 @@
 		"version-check": {
 			"host": "raw.githubusercontent.com",
 			"directory": "/tas2580/usermap/master",
-			"filename": "version-check.json"
+			"filename": "version-check.json",
+			"ssl": true
 		}
 	}
 }
