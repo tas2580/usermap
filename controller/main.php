@@ -66,7 +66,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 	* @param string								$phpbb_root_path				phpbb_root_path
 	* @param string								$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table, $place_type_table, $maps_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\path_helper $path_helper, \phpbb\request\request $request, $phpbb_extension_manager, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $places_table, $place_type_table, $maps_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -82,7 +82,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $php_ext;
 
-		$this->things_table = $things_table;
+		$this->places_table = $places_table;
 		$this->place_type_table = $place_type_table;
 		$this->maps_table = $maps_table;
 
@@ -145,16 +145,16 @@ class main extends \tas2580\usermap\includes\class_usermap
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$this->template->assign_block_vars('thing_types', array(
+			$this->template->assign_block_vars('place_types', array(
 				'TITLE'			=> $row['place_type_title'],
 				'MARKER'		=> $marker_path . '/things/' . $row['place_type_marker'],
 				'U_MARKER'		=> $this->helper->route('tas2580_usermap_placelist', array('id' => $row['place_type_id'])),
 			));
 		}
-		$sql = 'SELECT COUNT(place_type_id) AS num_things
-			FROM ' . $this->things_table;
+		$sql = 'SELECT COUNT(place_type_id) AS num_places
+			FROM ' . $this->places_table;
 		$result = $this->db->sql_query($sql);
-		$total_places = (int) $this->db->sql_fetchfield('num_things');
+		$total_places = (int) $this->db->sql_fetchfield('num_places');
 		$this->db->sql_freeresult($result);
 
 		$sql = 'SELECT COUNT(user_id) AS num_user
@@ -173,11 +173,11 @@ class main extends \tas2580\usermap\includes\class_usermap
 			'USERMAP_ZOOM'			=> (int) $this->config['tas2580_usermap_zoom'],
 			'MARKER_PATH'			=> $marker_path,
 			'A_USERMAP_ADD'			=> (($this->user->data['user_id'] <> ANONYMOUS) && $this->auth->acl_get('u_usermap_add')),
-			'A_USERMAP_ADD_THING'	=> $this->auth->acl_get('u_usermap_add_thing'),
+			'A_ADD_PLACE'			=> $this->auth->acl_get('u_usermap_add_thing'),
 			'A_USERMAP_SEARCH'		=> $this->auth->acl_get('u_usermap_search'),
 			'S_CAN_ADD'				=> (empty($this->user->data['user_usermap_lon']) || empty($this->user->data['user_usermap_lat'])),
 			'U_SET_POSITON'			=> $this->helper->route('tas2580_usermap_position'),
-			'U_USERMAP_ADD_THING'	=> $this->helper->route('tas2580_usermap_add_place'),
+			'U_ADD_PLACE'			=> $this->helper->route('tas2580_usermap_add_place'),
 			'U_GET_MARKER'			=> $this->helper->route('tas2580_usermap_get_marker'),
 			'U_GET_DISTANCE'		=> $this->helper->route('tas2580_usermap_get_distance'),
 			'MAP_TYPE'				=> $this->config['tas2580_usermap_map_type'],

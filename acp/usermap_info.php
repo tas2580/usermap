@@ -24,7 +24,7 @@ class usermap_info
 					'cat'		=> array('ACP_USERMAP_TITLE')
 				),
 				'things'    => array(
-					'title'		=> 'ACP_USERMAP_THINGS',
+					'title'		=> 'ACP_USERMAP_PLACES',
 					'auth'	=> 'ext_tas2580/usermap&& acl_a_board',
 					'cat'		=> array('ACP_USERMAP_TITLE')
 				),

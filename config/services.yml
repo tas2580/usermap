@@ -1,5 +1,5 @@
 parameters:
-    tables.usermap.things: %core.table_prefix%usermap_things
+    tables.usermap.places: %core.table_prefix%usermap_places
     tables.usermap.place_types: %core.table_prefix%usermap_place_types
     tables.usermap.comments: %core.table_prefix%usermap_place_comments
     tables.usermap.maps: %core.table_prefix%usermap_maps
@@ -20,7 +20,7 @@ services:
             - @template
             - %core.root_path%
             - %core.php_ext%
-            - %tables.usermap.things%
+            - %tables.usermap.places%
             - %tables.usermap.place_types%
             - %tables.usermap.maps%
     tas2580.usermap.ajax:
@@ -35,10 +35,10 @@ services:
             - @user
             - %core.root_path%
             - %core.php_ext%
-            - %tables.usermap.things%
+            - %tables.usermap.places%
             - %tables.usermap.place_types%
-    tas2580.usermap.thing:
-        class: tas2580\usermap\controller\thing
+    tas2580.usermap.place:
+        class: tas2580\usermap\controller\place
         arguments:
             - @auth
             - @config
@@ -53,7 +53,7 @@ services:
             - @template
             - %core.root_path%
             - %core.php_ext%
-            - %tables.usermap.things%
+            - %tables.usermap.places%
             - %tables.usermap.place_types%
             - %tables.usermap.comments%
             - %tables.usermap.maps%
@@ -69,7 +69,7 @@ services:
             - @template
             - %core.root_path%
             - %core.php_ext%
-            - %tables.usermap.things%
+            - %tables.usermap.places%
             - %tables.usermap.comments%
     tas2580.usermap.listener:
         class: tas2580\usermap\event\listener

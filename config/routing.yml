@@ -18,19 +18,19 @@ tas2580_usermap_get_distance:
     defaults: { _controller: tas2580.usermap.ajax:distance }
 tas2580_usermap_add_place:
     pattern: /usermap/add
-    defaults: { _controller: tas2580.usermap.thing:add_place }
+    defaults: { _controller: tas2580.usermap.place:add }
 tas2580_usermap_place:
     pattern: /usermap/place/{id}
-    defaults: { _controller: tas2580.usermap.thing:view_place }
+    defaults: { _controller: tas2580.usermap.place:view }
 tas2580_usermap_placelist:
     pattern: /usermap/placelist/{id}
-    defaults: { _controller: tas2580.usermap.thing:list_places }
+    defaults: { _controller: tas2580.usermap.place:list_all }
 tas2580_usermap_place_delete:
     pattern: /usermap/place/delete/{id}
-    defaults: { _controller: tas2580.usermap.thing:delete_place }
+    defaults: { _controller: tas2580.usermap.place:delete }
 tas2580_usermap_place_edit:
     pattern: /usermap/place/edit/{id}
-    defaults: { _controller: tas2580.usermap.thing:edit_place }
+    defaults: { _controller: tas2580.usermap.place:edit }
 tas2580_usermap_comment:
     pattern: /usermap/comment/add/{id}
     defaults: { _controller: tas2580.usermap.comment:add }

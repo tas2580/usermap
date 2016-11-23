@@ -36,5 +36,5 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'ACP_USERMAP_TITLE'	    => 'User Map',
 	'ACP_USERMAP_SETTINGS'	=> 'Settings',
-	'ACP_USERMAP_THINGS'	=> 'Point of Interest',
+	'ACP_USERMAP_PLACES'	=> 'Point of Interest',
 ));

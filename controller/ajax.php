@@ -54,7 +54,7 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 	* @param string								$phpbb_root_path				phpbb_root_path
 	* @param string								$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user, $phpbb_root_path, $php_ext, $things_table, $place_type_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\event\dispatcher_interface $phpbb_dispatcher, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user, $phpbb_root_path, $php_ext, $places_table, $place_type_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -66,7 +66,7 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $php_ext;
 
-		$this->things_table = $things_table;
+		$this->places_table = $places_table;
 		$this->place_type_table = $place_type_table;
 
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
@@ -111,35 +111,35 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 
 		$return = array();
 
-		$sql_array['FROM'][$this->things_table] = 't';
+		$sql_array['FROM'][$this->places_table] = 't';
 		$sql_array['SELECT'] = 't.*, pt.*';
 		$sql_array['LEFT_JOIN'][] = array(
 			'FROM'		=> array($this->place_type_table => 'pt'),
 			'ON'		=> 'pt.place_type_id = t.place_type_id'
 		);
-		$sql_array['WHERE'] = "(thing_lon * 1 >= {$data['min_lon']} AND thing_lon * 1 <= {$data['max_lon']}) AND (thing_lat * 1 >= {$data['min_lat']} AND thing_lat * 1 <= {$data['max_lat']})";
+		$sql_array['WHERE'] = "(place_lon * 1 >= {$data['min_lon']} AND place_lon * 1 <= {$data['max_lon']}) AND (place_lat * 1 >= {$data['min_lat']} AND place_lat * 1 <= {$data['max_lat']})";
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, (int) $this->config['tas2580_usermap_max_marker']);
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$text = '<a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $row['thing_id'])) . '">' . $row['thing_title'] . '</a>';
+			$text = '<a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $row['place_id'])) . '">' . $row['place_title'] . '</a>';
 			if (!empty($this->user->data['user_usermap_lon']))
 			{
-				$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $row['thing_lon'], $row['thing_lat']);
+				$distance = $this->get_distance($this->user->data['user_usermap_lon'], $this->user->data['user_usermap_lat'], $row['place_lon'], $row['place_lat']);
 				$text .= '<br>' . $this->user->lang('DISTANCE'). $this->user->lang('COLON') . ' ' . $distance;
 			}
 
 			if ($this->config['tas2580_usermap_display_coordinates'])
 			{
-				$text .= '<br>' . $this->user->lang('LON'). $this->user->lang('COLON') . ' ' . $row['thing_lon'];
-				$text .= '<br>' . $this->user->lang('LAT'). $this->user->lang('COLON') . ' ' . $row['thing_lat'];
+				$text .= '<br>' . $this->user->lang('LON'). $this->user->lang('COLON') . ' ' . $row['place_lon'];
+				$text .= '<br>' . $this->user->lang('LAT'). $this->user->lang('COLON') . ' ' . $row['place_lat'];
 			}
 
 			$return_data = array(
 				'marker'		=> 'things/' . $row['place_type_marker'],
-				'lon'			=> $row['thing_lon'],
-				'lat'			=> $row['thing_lat'],
+				'lon'			=> $row['place_lon'],
+				'lat'			=> $row['place_lat'],
 				'text'			=> $text,
 				'id'			=> 'p' . $row['place_type_id'],
 			);

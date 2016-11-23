@@ -84,7 +84,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 				switch ($action)
 				{
 					/**
-					 * Add thing type
+					 * Add place type
 					 */
 					case 'add':
 						$marker = '';
@@ -110,7 +110,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 
 							if (utf8_clean_string($title) === '')
 							{
-								$error[] = $this->user->lang['EMPTY_THING_TITLE'];
+								$error[] = $this->user->lang['EMPTY_PLACE_TITLE'];
 							}
 
 							if (empty($marker))
@@ -135,10 +135,10 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 								$sql = 'INSERT INTO ' . $table_prefix . 'usermap_place_types
 									' . $db->sql_build_array('INSERT', $sql_data);
 								$db->sql_query($sql);
-								trigger_error($user->lang('ACP_THING_TYPE_ADD_SUCCESS') . adm_back_link($this->u_action));
+								trigger_error($user->lang('ACP_PLACE_TYPE_ADD_SUCCESS') . adm_back_link($this->u_action));
 							}
 						}
-						$this->tpl_name = 'acp_usermap_things_form';
+						$this->tpl_name = 'acp_usermap_places_form';
 						$this->page_title = $user->lang('ACP_USERMAP_ADD_PLACE_TYPE');
 						global $phpbb_extension_manager;
 						$this->phpbb_extension_manager = $phpbb_extension_manager;
@@ -150,11 +150,11 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 						break;
 
 					/**
-					 * Edit thing type
+					 * Edit place type
 					 */
 					case 'edit':
 						$place_type_id = $request->variable('place_type_id', 0);
-						$this->tpl_name = 'acp_usermap_things_form';
+						$this->tpl_name = 'acp_usermap_places_form';
 						$this->page_title = $user->lang('ACP_USERMAP_EDIT_PLACE_TYPE');
 
 						$sql = 'SELECT place_type_title, place_type_marker, place_display_legend
@@ -177,7 +177,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 
 							if (utf8_clean_string($title) === '')
 							{
-								$error[] = $this->user->lang['EMPTY_THING_TITLE'];
+								$error[] = $this->user->lang['EMPTY_PLACE_TITLE'];
 							}
 
 							if (empty($marker))
@@ -222,7 +222,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 						break;
 
 					/**
-					 * Delete thing type
+					 * Delete place type
 					 */
 					case 'delete':
 						$place_type_id = $request->variable('place_type_id', 0);
@@ -231,7 +231,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 						{
 							$sql = 'DELETE FROM ' . $table_prefix . 'usermap_place_types WHERE place_type_id = ' . (int) $place_type_id;
 							$result = $db->sql_query($sql);
-							trigger_error($user->lang['THING_TYPE_DELETED'] . adm_back_link($this->u_action));
+							trigger_error($user->lang['PLACE_TYPE_DELETED'] . adm_back_link($this->u_action));
 						}
 						else
 						{
@@ -245,7 +245,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 						break;
 
 					default:
-						$this->tpl_name = 'acp_usermap_things';
+						$this->tpl_name = 'acp_usermap_places';
 						$this->page_title = $user->lang('ACP_USERMAP_TITLE');
 						// Form is submitted
 						if ($request->is_set_post('submit'))
@@ -267,7 +267,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 						// Send the curent settings to template
 						$template->assign_vars(array(
 							'U_ACTION'					=> $this->u_action,
-							'U_ADD_THING_TYPE'			=> $this->u_action . '&amp;action=add',
+							'U_ADD_PLACE_TYPE'			=> $this->u_action . '&amp;action=add',
 							'ALLOW_BBCODE'				=> $config['tas2580_usermap_allow_bbcode'],
 							'ALLOW_SMILIES'				=> $config['tas2580_usermap_allow_smilies'],
 							'ALLOW_URL'					=> $config['tas2580_usermap_allow_urls'],
@@ -284,7 +284,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 						$result = $db->sql_query($sql);
 						while ($row = $db->sql_fetchrow($result))
 						{
-							$template->assign_block_vars('thing_types', array(
+							$template->assign_block_vars('place_types', array(
 								'TITLE'		=> $row['place_type_title'],
 								'MARKER'	=> $this->phpbb_extension_manager->get_extension_path('tas2580/usermap', true) . 'marker/things/' . $row['place_type_marker'],
 								'U_EDIT'	=> $this->u_action . '&amp;action=edit&amp;place_type_id=' . $row['place_type_id'],

@@ -66,17 +66,17 @@
 	</tr>
 	</thead>
 	<tbody>
-		<!-- IF .thing_types -->
-		<!-- BEGIN thing_types -->
+		<!-- IF .place_types -->
+		<!-- BEGIN place_types -->
 		<tr>
-			<td><strong>{thing_types.TITLE}</strong></td>
-			<td><img src="{thing_types.MARKER}" id="image" alt=""></td>
+			<td><strong>{place_types.TITLE}</strong></td>
+			<td><img src="{place_types.MARKER}" id="image" alt=""></td>
 			<td class="actions">
-				<a href="{thing_types.U_EDIT}">{ICON_EDIT}</a>
-				<a href="{thing_types.U_DELETE}" data-ajax="row_delete">{ICON_DELETE}</a>
+				<a href="{place_types.U_EDIT}">{ICON_EDIT}</a>
+				<a href="{place_types.U_DELETE}" data-ajax="row_delete">{ICON_DELETE}</a>
 			</td>
 		</tr>
-		<!-- END thing_types -->
+		<!-- END place_types -->
 		<!-- ELSE -->
 		<tr>
 			<td colspan="3">{L_NO_ITEMS}</td>
@@ -84,7 +84,7 @@
 		<!-- ENDIF -->
 	</tbody>
 	</table>
-	<form method="post" action="{U_ADD_THING_TYPE}">
+	<form method="post" action="{U_ADD_PLACE_TYPE}">
 	<fieldset class="quick">
 		{L_ACP_ADD_PLACE_TYPE} <input type="text" name="title" value="" /> <input class="button2" type="submit" name="add_type" value="{L_SUBMIT}" />
 	</fieldset>

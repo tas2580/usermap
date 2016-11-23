@@ -120,15 +120,15 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 				'cat'		=> 'usermap'
 			),
 			'u_usermap_add_thing'	=> array(
-				'lang'		=> 'ACL_U_USERMAP_ADD_THING',
+				'lang'		=> 'ACL_U_USERMAP_ADD_PLACE',
 				'cat'		=> 'usermap'
 			),
 			'm_usermap_place_edit'	=> array(
-				'lang'		=> 'ACL_M_USERMAP_EDIT_THING',
+				'lang'		=> 'ACL_M_USERMAP_EDIT_PLACE',
 				'cat'		=> 'usermap'
 			),
 			'm_usermap_place_delete'	=> array(
-				'lang'		=> 'ACL_M_USERMAP_DELETE_THING',
+				'lang'		=> 'ACL_M_USERMAP_DELETE_PLACE',
 				'cat'		=> 'usermap'
 			),
 			'u_usermap_comment'	=> array(

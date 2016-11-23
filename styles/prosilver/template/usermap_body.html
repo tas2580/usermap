@@ -32,9 +32,9 @@
 <!-- BEGIN group_list -->
 <img src="{MARKER_PATH}/{group_list.MARKER}" alt="{group_list.ALT}" width="16" height="16" style="vertical-align: middle">{group_list.GROUP_NAME} &nbsp;
 <!-- END group_list -->
-<!-- BEGIN thing_types -->
-<img src="{thing_types.MARKER}" alt="{thing_types.TITLE}" width="16" height="16" style="vertical-align: middle"><a href="{thing_types.U_MARKER}">{thing_types.TITLE}</a> &nbsp;
-<!-- END thing_types -->
+<!-- BEGIN place_types -->
+<img src="{place_types.MARKER}" alt="{place_types.TITLE}" width="16" height="16" style="vertical-align: middle"><a href="{place_types.U_MARKER}">{place_types.TITLE}</a> &nbsp;
+<!-- END place_types -->
 <!-- ENDIF -->
 
 
@@ -43,7 +43,7 @@
 <div id="map_menu">
 	<ul>
 		<!-- IF A_USERMAP_ADD --><li><a href="{U_SET_POSITON}?LONLAT" onclick="usermap.hide_menu(false);" data-ajax="usermap.set_position">{L_SET_MY_POSITION}</a></li><!-- ENDIF -->
-		<!-- IF A_USERMAP_ADD_THING --><li><a href="{U_USERMAP_ADD_THING}?LONLAT">{L_MENU_ADD_PLACE}</a></li><!-- ENDIF -->
+		<!-- IF A_ADD_PLACE --><li><a href="{U_ADD_PLACE}?LONLAT">{L_MENU_ADD_PLACE}</a></li><!-- ENDIF -->
 		<!-- IF A_USERMAP_SEARCH --><li><a href="{U_USERMAP_SEARCH}?LONLAT">{L_MENU_SEARCH}</a></li><!-- ENDIF -->
 		<!-- IF not S_CAN_ADD --><li><a href="{U_GET_DISTANCE}?LONLAT" data-ajax="usermap.get_distance">{L_GET_DISTANCE}</a></li><!-- ENDIF -->
 

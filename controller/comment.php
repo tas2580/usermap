@@ -54,7 +54,7 @@ class comment extends \tas2580\usermap\includes\class_usermap
 	* @param string						$phpbb_root_path				phpbb_root_path
 	* @param string						$php_ext						php_ext
 	*/
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $things_table, $comment_table)
+	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\controller\helper $helper, \phpbb\request\request $request, \phpbb\user $user, \phpbb\template\template $template, $phpbb_root_path, $php_ext, $places_table, $comment_table)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -66,7 +66,7 @@ class comment extends \tas2580\usermap\includes\class_usermap
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $php_ext;
 
-		$this->things_table = $things_table;
+		$this->places_table = $places_table;
 		$this->comment_table = $comment_table;
 
 		$this->user->add_lang_ext('tas2580/usermap', 'controller');
@@ -87,15 +87,15 @@ class comment extends \tas2580\usermap\includes\class_usermap
 
 	public function add($id)
 	{
-		$sql = 'SELECT thing_title
-			FROM ' . $this->things_table . '
-			WHERE thing_id = ' . (int) $id;
+		$sql = 'SELECT place_title
+			FROM ' . $this->places_table . '
+			WHERE place_id = ' . (int) $id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 
 		// Add breadcrumb
 		$this->template->assign_block_vars('navlinks', array(
-			'FORUM_NAME'		=> $row['thing_title'],
+			'FORUM_NAME'		=> $row['place_title'],
 			'U_VIEW_FORUM'		=> $this->helper->route('tas2580_usermap_place', array('id' => $id)),
 		));
 
@@ -110,7 +110,7 @@ class comment extends \tas2580\usermap\includes\class_usermap
 				$this->db->sql_query($sql);
 
 				trigger_error($this->user->lang['COMMENT_ADDED'] . '<br /><br />'
-					. '<a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $id)) . '">' . $this->user->lang['BACK_TO_THING'] . '</a><br /><br />'
+					. '<a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $id)) . '">' . $this->user->lang['BACK_TO_PLACE'] . '</a><br /><br />'
 					. '<a href="' . $this->helper->route('tas2580_usermap_index', array()) . '">' . $this->user->lang['BACK_TO_USERMAP'] . '</a>');
 			}
 		}
@@ -146,15 +146,16 @@ class comment extends \tas2580\usermap\includes\class_usermap
 			$sql = 'DELETE FROM ' . $this->comment_table . '
 				WHERE place_comment_id = ' . (int) $id;
 			$this->db->sql_query($sql);
-
-			trigger_error($this->user->lang['DELETE_COMMENT_SUCCESS'] . '<br /><br /><a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $row['place_id']))  . '">' . $this->user->lang['BACK_TO_THING'] . '</a>');
+			trigger_error($this->user->lang['DELETE_COMMENT_SUCCESS'] . '<br /><br />'
+				. '<a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $row['place_id'])) . '">' . $this->user->lang['BACK_TO_PLACE'] . '</a><br /><br />'
+				. '<a href="' . $this->helper->route('tas2580_usermap_index', array()) . '">' . $this->user->lang['BACK_TO_USERMAP'] . '</a>');
 		}
 		else
 		{
 			$s_hidden_fields = build_hidden_fields(array(
 				'id'    => $id,
 			));
-			confirm_box(false, $this->user->lang['CONFIRM_DELETE_THING'], $s_hidden_fields);
+			confirm_box(false, $this->user->lang['CONFIRM_DELETE_PLACE'], $s_hidden_fields);
 		}
 		redirect($this->helper->route('tas2580_usermap_place', array('id' => $row['place_id'])));
 	}
@@ -184,8 +185,8 @@ class comment extends \tas2580\usermap\includes\class_usermap
 					' . $this->db->sql_build_array('UPDATE', $sql_data) . '
 						WHERE place_comment_id = ' . (int) $id;
 				$this->db->sql_query($sql);
-				trigger_error($this->user->lang['THING_UPDATED'] . '<br /><br />'
-					. '<a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $row['place_id'])) . '">' . $this->user->lang['BACK_TO_THING'] . '</a><br /><br />'
+				trigger_error($this->user->lang['PLACE_UPDATED'] . '<br /><br />'
+					. '<a href="' . $this->helper->route('tas2580_usermap_place', array('id' => $row['place_id'])) . '">' . $this->user->lang['BACK_TO_PLACE'] . '</a><br /><br />'
 					. '<a href="' . $this->helper->route('tas2580_usermap_index', array()) . '">' . $this->user->lang['BACK_TO_USERMAP'] . '</a>');
 			}
 		}
