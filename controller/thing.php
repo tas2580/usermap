@@ -361,7 +361,6 @@ class thing extends \tas2580\usermap\includes\class_usermap
 			'U_VIEW_FORUM'		=> $this->helper->route('tas2580_usermap_place', array('id' => $id)),
 		));
 
-
 		unset($sql_array);
 
 		if (!function_exists('phpbb_get_user_rank'))
@@ -393,7 +392,7 @@ class thing extends \tas2580\usermap\includes\class_usermap
 		$sql_array['WHERE'] = 'place_id = ' . (int) $id;
 		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query($sql);
-		while($row = $this->db->sql_fetchrow($result))
+		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$user_rank_data = phpbb_get_user_rank($row, $row['user_posts']);
 			$this->template->assign_block_vars('comments', array(
@@ -406,7 +405,6 @@ class thing extends \tas2580\usermap\includes\class_usermap
 				'U_DELETE'			=> $this->helper->route('tas2580_usermap_comment_delete', array('id' => $row['place_comment_id'])),
 			));
 		}
-
 
 		return $this->helper->render('usermap_places_view.html', $page_title);
 	}

@@ -328,7 +328,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 							{
 								$error[] = $this->user->lang['EMPTY_MAP_TITLE'];
 							}
-							if(!$map_active && $map_default)
+							if (!$map_active && $map_default)
 							{
 								$error[] = $this->user->lang['DEFAULT_MAP_NOT_ACTIVE'];
 							}
@@ -347,7 +347,7 @@ class usermap_module extends \tas2580\usermap\includes\class_usermap
 									'map_display_name'		=> $title,
 									'map_active'			=> $map_active,
 								);
-								if($map_default == 1)
+								if ($map_default == 1)
 								{
 									$this->set_map_default($map_id);
 								}

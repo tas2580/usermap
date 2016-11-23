@@ -24,7 +24,7 @@
 			"phpbb/phpbb": ">=3.1.0-RC2,<3.2.0@dev"
 		},
 		"version-check": {
-			"host": "phpbb-versionscheck.cf",
+			"host": "raw.githubusercontent.com",
 			"directory": "/tas2580/usermap/master",
 			"filename": "version-check.json"
 		}

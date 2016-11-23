@@ -63,18 +63,13 @@ services:
             - @auth
             - @config
             - @dbal.conn
-            - @dispatcher
             - @controller.helper
-            - @pagination
-            - @path_helper
             - @request
-            - @ext.manager
             - @user
             - @template
             - %core.root_path%
             - %core.php_ext%
             - %tables.usermap.things%
-            - %tables.usermap.place_types%
             - %tables.usermap.comments%
     tas2580.usermap.listener:
         class: tas2580\usermap\event\listener
