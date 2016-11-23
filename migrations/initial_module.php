@@ -74,7 +74,7 @@ class initial_module extends \phpbb\db\migration\migration
 			array('permission.add', array('u_usermap_add', true, 'u_')),
 			array('permission.add', array('u_usermap_search', true, 'u_')),
 			array('permission.add', array('u_usermap_hide', true, 'u_')),
-			array('permission.add', array('u_usermap_add_thing', true, 'u_usermap_add')),
+			array('permission.add', array('u_usermap_add_thing', true, 'U_')),
 			array('permission.add', array('u_usermap_comment', true, 'u_')),
 			array('permission.add', array('m_usermap_comment_delete', true, 'm_')),
 			array('permission.add', array('m_usermap_comment_edit', true, 'm_')),
