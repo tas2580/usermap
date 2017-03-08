@@ -306,8 +306,14 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 			WHERE group_id = ' . (int) $data['group_id'];
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
+
+		$markerfile = 'user.png';
+
+		if ($row['group_usermap_marker']!='')
+			$markerfile = $row['group_usermap_marker'];
+
 		$this->template->assign_vars(array(
-			'USERMAP_MARKER'		=> $row['group_usermap_marker'],
+			'USERMAP_MARKER'		=> $markerfile,
 		));
 	}
 
