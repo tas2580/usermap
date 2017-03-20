@@ -182,13 +182,8 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 				$text .= '<br>' . $this->user->lang('LAT'). $this->user->lang('COLON') . ' ' . $row['user_usermap_lat'];
 			}
 
-			$markerfile = 'user.png';
-
-			if ($row['group_usermap_marker']!='')
-				$markerfile = $row['group_usermap_marker'];
-
 			$return_data = array(
-				'marker'		=> 'groups/' . $markerfile,
+				'marker'	=> 'groups/' . (empty($row['group_usermap_marker']) ? 'user.png' : $row['group_usermap_marker']);
 				'lon'			=> $row['user_usermap_lon'],
 				'lat'			=> $row['user_usermap_lat'],
 				'text'			=> $text,
