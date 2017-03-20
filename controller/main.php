@@ -128,11 +128,12 @@ class main extends \tas2580\usermap\includes\class_usermap
 			{
 				$legend = '<a' . $colour_text . ' href="' . append_sid("{$this->phpbb_root_path}memberlist.{$this->php_ext}", 'mode=group&amp;g=' . $row['group_id']) . '">' . $group_name . '</a>';
 			}
+
 			$this->template->assign_block_vars('group_list', array(
 				'GROUP_ID'			=> $row['group_id'],
 				'GROUP_NAME'		=> $legend,
 				'ALT'				=> $group_name,
-				'MARKER'			=> 'groups/' . $row['group_usermap_marker'],
+				'MARKER'		=> 'groups/' . (empty($row['group_usermap_marker']) ? 'user.png' : $row['group_usermap_marker'])
 			));
 		}
 

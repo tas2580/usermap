@@ -62,7 +62,7 @@ class class_usermap
 		$this->file_downloader = new \phpbb\file_downloader();
 		try
 		{
-			$info = $this->file_downloader->get('maps.google.com', '/maps/api/geocode', 'json?address=' . $default_country . '%20' . $zip, 80);
+			$info = $this->file_downloader->get('maps.google.com', '/maps/api/geocode', 'json?address=' . $default_country . '%20' . urlencode($zip), 80);
 		}
 		catch (\phpbb\exception\runtime_exception $exception)
 		{
