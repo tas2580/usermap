@@ -133,7 +133,7 @@ class main extends \tas2580\usermap\includes\class_usermap
 				'GROUP_ID'			=> $row['group_id'],
 				'GROUP_NAME'		=> $legend,
 				'ALT'				=> $group_name,
-				'MARKER'		=> 'groups/' . (empty($row['group_usermap_marker']) ? 'user.png' : $row['group_usermap_marker']);
+				'MARKER'		=> 'groups/' . (empty($row['group_usermap_marker']) ? 'user.png' : $row['group_usermap_marker'])
 			));
 		}
 

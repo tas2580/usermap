@@ -183,7 +183,7 @@ class ajax extends \tas2580\usermap\includes\class_usermap
 			}
 
 			$return_data = array(
-				'marker'	=> 'groups/' . (empty($row['group_usermap_marker']) ? 'user.png' : $row['group_usermap_marker']);
+				'marker'	=> 'groups/' . (empty($row['group_usermap_marker']) ? 'user.png' : $row['group_usermap_marker']),
 				'lon'			=> $row['user_usermap_lon'],
 				'lat'			=> $row['user_usermap_lat'],
 				'text'			=> $text,

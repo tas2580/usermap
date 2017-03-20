@@ -308,7 +308,7 @@ class listener extends \tas2580\usermap\includes\class_usermap implements EventS
 		$row = $this->db->sql_fetchrow($result);
 
 		$this->template->assign_vars(array(
-			'USERMAP_MARKER'		=> (empty($row['group_usermap_marker']) ? 'user.png' : $row['group_usermap_marker']);
+			'USERMAP_MARKER'		=> (empty($row['group_usermap_marker']) ? 'user.png' : $row['group_usermap_marker'])
 		));
 	}
 
